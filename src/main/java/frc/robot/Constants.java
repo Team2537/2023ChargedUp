@@ -43,4 +43,9 @@ public final class Constants {
   
     // Maximum speed of swerve wheel (m/s)
     public static final double MAX_SPEED = 3.6;
+
+    // Maximum turning speed of chassis (rad/s)
+    public static final double MAX_ANGULAR_VELOCITY = Math.sqrt(Math.pow(WHEEL_BASE / 2, 2) * 2) * MAX_SPEED;
+
+    public static final double SPEED_MULTIPLIER = 0.5;
 }

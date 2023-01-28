@@ -21,7 +21,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
         DriveMotor driveFL = new DriveMotor(FRONT_LEFT_DRIVE, false);
         DriveMotor driveFR = new DriveMotor(FRONT_RIGHT_DRIVE, false);
-        DriveMotor driveBL = new DriveMotor(BACK_LEFT_DRIVE, false);
+        DriveMotor driveBL = new DriveMotor(BACK_LEFT_DRIVE, true);
         DriveMotor driveBR = new DriveMotor(BACK_RIGHT_DRIVE, false);
 
         SwerveModule swerveFL = new SwerveModule(steerFL, driveFL);
@@ -32,7 +32,11 @@ public class SwerveSubsystem extends SubsystemBase {
         m_modules = new SwerveModule[] {swerveFL, swerveFR, swerveBL, swerveBR};
     }
     
-    public void setStates(double forward, double strafe, double rotate){
+    public void setStates(double forward, double strafe, double rotate) {
+        forward *= MAX_SPEED * SPEED_MULTIPLIER;
+        strafe *= MAX_SPEED * SPEED_MULTIPLIER;
+        rotate *= MAX_ANGULAR_VELOCITY * SPEED_MULTIPLIER * 3;
+
         SwerveState[] desiredStates = SwerveKinematics.getSwerveStates(forward, strafe, rotate);
 
         for (int i = 0; i < desiredStates.length; i++) {
