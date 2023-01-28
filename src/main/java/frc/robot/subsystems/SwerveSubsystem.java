@@ -29,7 +29,12 @@ public class SwerveSubsystem extends SubsystemBase {
         SwerveModule swerveBL = new SwerveModule(steerBL, driveBL);
         SwerveModule swerveBR = new SwerveModule(steerBR, driveBR);
 
-        m_modules = new SwerveModule[] {swerveFL, swerveFR, swerveBL, swerveBR};
+        m_modules = new SwerveModule[] {
+            swerveFL,
+            swerveFR,
+            swerveBL,
+            swerveBR
+        };
     }
     
     public void setStates(double forward, double strafe, double rotate) {

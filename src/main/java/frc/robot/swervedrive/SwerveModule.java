@@ -13,15 +13,8 @@ public class SwerveModule {
         m_currentState = new SwerveState(steerMotor.getPosition(), driveMotor.getVelocity());
     }
 
-    public void setState(SwerveState desiredState) {
-        optimizeState(desiredState);
-
-        m_steerMotor.setDesiredState(desiredState.getAngle());
-        m_driveMotor.setDesiredState(desiredState.getSpeed());
-    }
-
     private double optimizeAngleRad(double angleRad) {
-        angleRad %= (2.0*Math.PI); //will be between -2pi and 2pi exclusive
+        angleRad %= (2.0*Math.PI); // Will be between -2pi and 2pi exclusive
         if(angleRad > Math.PI) {
           angleRad-= (2.0*Math.PI);
         }
@@ -44,5 +37,12 @@ public class SwerveModule {
         }
 
         desiredState.setAngle(m_currentState.getAngle() + deltaTheta);
+    }
+
+    public void setState(SwerveState desiredState) {
+        optimizeState(desiredState);
+
+        m_steerMotor.setDesiredState(desiredState.getAngle());
+        m_driveMotor.setDesiredState(desiredState.getSpeed());
     }
 }
