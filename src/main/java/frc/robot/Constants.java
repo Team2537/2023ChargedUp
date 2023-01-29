@@ -16,24 +16,6 @@ public final class Constants {
     // Frame measurements (meters)
     public static final double WHEEL_BASE = 0.52613;
     public static final double TRACK_WIDTH = 0.52695;
-
-    // ID of driving motors for each swerve module
-    public static final int FRONT_LEFT_DRIVE = 1;
-    public static final int FRONT_RIGHT_DRIVE = 2;
-    public static final int BACK_LEFT_DRIVE = 3;
-    public static final int BACK_RIGHT_DRIVE = 4;
-
-    // ID of steering motors for each swerve module
-    public static final int FRONT_LEFT_STEER = 5;
-    public static final int FRONT_RIGHT_STEER = 6;
-    public static final int BACK_LEFT_STEER = 7;
-    public static final int BACK_RIGHT_STEER = 8;
-  
-    // Encoder port ID for each swerve module
-    public static final int FRONT_LEFT_ENCODER = 11;
-    public static final int FRONT_RIGHT_ENCODER = 12;
-    public static final int BACK_LEFT_ENCODER = 9;
-    public static final int BACK_RIGHT_ENCODER = 10;
   
     // Absolute encoder offset for each swerve module (in radians)
     public static final double BACK_LEFT_OFFSET = 3.341;
