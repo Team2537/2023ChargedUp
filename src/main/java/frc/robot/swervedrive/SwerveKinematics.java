@@ -1,6 +1,6 @@
 package frc.robot.swervedrive;
 
-import static frc.robot.Constants.*;
+import static frc.robot.constants.Constants.*;
 
 public class SwerveKinematics {
 

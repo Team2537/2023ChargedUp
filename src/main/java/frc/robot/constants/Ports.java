@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.constants;
 
 public final class Ports {
         // ID of driving motors for each swerve module
