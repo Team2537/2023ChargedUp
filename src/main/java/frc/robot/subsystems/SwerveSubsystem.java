@@ -7,8 +7,8 @@ import frc.robot.swervedrive.SwerveKinematics;
 import frc.robot.swervedrive.SwerveModule;
 import frc.robot.swervedrive.SwerveState;
 
-import static frc.robot.Constants.*;
-import static frc.robot.Ports.*;
+import static frc.robot.constants.Constants.*;
+import static frc.robot.constants.Ports.*;
 
 public class SwerveSubsystem extends SubsystemBase {
 
