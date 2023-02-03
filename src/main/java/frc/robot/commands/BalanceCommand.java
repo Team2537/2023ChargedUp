@@ -40,7 +40,6 @@ public class BalanceCommand extends CommandBase {
     public void initialize() {
     }
 
-    /** This function is called periodically during autonomous. */
     @Override
     public void execute() {
         double pitch = m_pigeon_pitch.getAsDouble();
