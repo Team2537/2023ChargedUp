@@ -27,6 +27,7 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
   public ArmTelescopeSubsystem(int deviceID) {
     // initialize motor
     m_motor = new CANSparkMax(deviceID, MotorType.kBrushless);
+    m_motor.getEncoder().setPositionConversionFactor(1/16f);
     pid = m_motor.getPIDController();
 
     /**
