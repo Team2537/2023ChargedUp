@@ -4,14 +4,12 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import java.util.function.Function;
+import java.util.function.Consumer;
 
 // import revlib spark max motor
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 // import revlib encoder
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -22,76 +20,18 @@ import edu.wpi.first.wpilibj.DutyCycle;
 
 public class GripperSubsystem extends SubsystemBase {
   private static final double FILTERED_GAIN = 0;
-  private SparkMaxPIDController m_pidController;
-  private RelativeEncoder m_encoder;
-  private double kP;
-  private double kI;
-  private double kD;
-  private double kIz;
-  private double kFF;
-  private double kMaxOutput;
-  private double kMinOutput;
   private DigitalOutput m_trig;
   private double m_target_high;
   private double m_target_low;
   private DigitalInput m_read;
   private DutyCycle m_pwm;
   private boolean m_vibrate;
-  private final Function<Double, Boolean> m_rumble;
+  private final Consumer<Double> m_rumble;
 
-  public GripperSubsystem(int deviceID, double target_low, double target_high, Function<Double, Boolean> rumble, int lidar_read_port, int lidar_trigger_port) {
+  public GripperSubsystem(int deviceID, double target_low, double target_high, Consumer<Double> rumble, int lidar_read_port, int lidar_trigger_port) {
     // initialize motor
     m_motor = new CANSparkMax(deviceID, MotorType.kBrushless);
-    pid = m_motor.getPIDController();
     m_rumble = rumble;
-
-    /**
-     * The RestoreFactoryDefaults method can be used to reset the configuration
-     * parameters
-     * in the SPARK MAX to their factory default state. If no argument is passed,
-     * these
-     * parameters will not persist between power cycles
-     */
-    // m_motor.restoreFactoryDefaults();
-
-    /**
-     * In order to use PID functionality for a controller, a SparkMaxPIDController
-     * object
-     * is constructed by calling the getPIDController() method on an existing
-     * CANSparkMax object
-     */
-    m_pidController = m_motor.getPIDController();
-
-    // Encoder object created to display position values
-    m_encoder = m_motor.getEncoder();
-
-    // PID coefficients
-    kP = 6e-5;
-    kI = 0;
-    kD = 0;
-    kIz = 0;
-    kFF = 0.000015;
-    kMaxOutput = 1;
-    kMinOutput = -1;
-
-    // set PID coefficients
-    m_pidController.setP(kP);
-    m_pidController.setI(kI);
-    m_pidController.setD(kD);
-    m_pidController.setIZone(kIz);
-    m_pidController.setFF(kFF);
-    m_pidController.setOutputRange(kMinOutput, kMaxOutput);
-
-    m_motor.burnFlash();
-
-    // display PID coefficients on SmartDashboard
-    SmartDashboard.putNumber("P Gain", kP);
-    SmartDashboard.putNumber("I Gain", kI);
-    SmartDashboard.putNumber("D Gain", kD);
-    SmartDashboard.putNumber("I Zone", kIz);
-    SmartDashboard.putNumber("Feed Forward", kFF);
-    SmartDashboard.putNumber("Max Output", kMaxOutput);
-    SmartDashboard.putNumber("Min Output", kMinOutput);
 
     // init lidar
     m_target_low = target_low;
@@ -115,51 +55,25 @@ public class GripperSubsystem extends SubsystemBase {
 
   SparkMaxPIDController pid;
   CANSparkMax m_motor;
-  private double target;
   private int m_count;
   private double filtered_pulse_width;
 
-  /*
-   * Moves arm to position based on angleDef.
-   * Turns the motor;
-   * adjusting the angle based on a PIDloop which turns off the motor when the
-   * angle is close enough to val.
-   * 0 degrees is parallel with the ground
-   */
-  public void armRotate(double angleDeg) {
-    // set goal of pid to angleDeg
-    target = angleDeg;
+  public void openGripper() {
+  }
+
+  public void closeGripper() {
   }
 
   @Override
   public void periodic() {
-    /**
-     * PIDController objects are commanded to a set point using the
-     * SetReference() method.
-     * 
-     * The first parameter is the value of the set point, whose units vary
-     * depending on the control type set in the second parameter.
-     * 
-     * The second parameter is the control type can be set to one of four
-     * parameters:
-     * com.revrobotics.CANSparkMax.ControlType.kDutyCycle
-     * com.revrobotics.CANSparkMax.ControlType.kPosition
-     * com.revrobotics.CANSparkMax.ControlType.kVelocity
-     * com.revrobotics.CANSparkMax.ControlType.kVoltage
-     */
-    m_pidController.setReference(target, CANSparkMax.ControlType.kPosition);
-
-    SmartDashboard.putNumber("Target", target);
-    SmartDashboard.putNumber("ProcessVariable", m_encoder.getVelocity());
-
     // get and output the pulse width of m_read
     // System.out.println(DIOJNI.getDIO(m_read));
     boolean inTarget = isTarget();
     // only trigger the sensor every 10th time
     if (m_count++ % 10 == 0 && m_vibrate) {
-      m_rumble.apply(inTarget ? 1.0 / 4.0 : 0.0);
+      m_rumble.accept(inTarget ? 1.0 / 4.0 : 0.0);
     } else if (m_count % 10 == 0) {
-      m_rumble.apply(0.0);
+      m_rumble.accept(0.0);
     }
   }
 
