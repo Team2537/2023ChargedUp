@@ -94,6 +94,11 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
     target = amt;
   }
 
+  public double returnArmSensor(CANSparkMax motor){
+    double extension = motor.getEncoder().getPosition() / 16;
+    return extension;
+  }
+
   @Override
   public void periodic() {
     /**
