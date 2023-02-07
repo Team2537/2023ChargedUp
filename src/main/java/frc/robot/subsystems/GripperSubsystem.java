@@ -8,15 +8,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.function.Consumer;
 
-// import revlib spark max motor
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkMaxPIDController;
-// import revlib encoder
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 // import lidar tools
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycle;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
 
 public class GripperSubsystem extends SubsystemBase {
   private static final double FILTERED_GAIN = 0;
@@ -29,8 +26,6 @@ public class GripperSubsystem extends SubsystemBase {
   private final Consumer<Double> m_rumble;
 
   public GripperSubsystem(int deviceID, double target_low, double target_high, Consumer<Double> rumble, int lidar_read_port, int lidar_trigger_port) {
-    // initialize motor
-    m_motor = new CANSparkMax(deviceID, MotorType.kBrushless);
     m_rumble = rumble;
 
     // init lidar
@@ -53,15 +48,18 @@ public class GripperSubsystem extends SubsystemBase {
     m_pwm = new DutyCycle(m_read);
   }
 
-  SparkMaxPIDController pid;
-  CANSparkMax m_motor;
   private int m_count;
   private double filtered_pulse_width;
+  
+  // replace 0 with import from constants package
+  private final Solenoid m_solenoid = new Solenoid(PneumaticsModuleType.CTREPCM, 0);
 
   public void openGripper() {
+    m_solenoid.set(true);
   }
 
   public void closeGripper() {
+    m_solenoid.set(false);
   }
 
   @Override
