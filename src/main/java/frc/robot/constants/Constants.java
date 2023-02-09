@@ -13,6 +13,7 @@ package frc.robot.constants;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    public static final double ARM_FULCRUM_HEIGHT = 35;
     // Frame measurements (meters)
     public static final double WHEEL_BASE = 0.52613;
     public static final double TRACK_WIDTH = 0.52695;
