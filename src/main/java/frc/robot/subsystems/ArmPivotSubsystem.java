@@ -4,50 +4,38 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 // import revlib spark max motor
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.ControlType;
 // import revlib encoder
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxPIDController.AccelStrategy;
 
 public class ArmPivotSubsystem extends SubsystemBase {
+  private final CANSparkMax m_motor;
+
   private SparkMaxPIDController m_pidController;
   private RelativeEncoder m_encoder;
-  private double kP;
-  private double kI;
-  private double kD;
-  private double kIz;
-  private double kFF;
-  private double kMaxOutput;
-  private double kMinOutput;
+  private double kP, kI, kD, kIz, kFF;
+
+  private double kMaxOutput, kMinOutput;
+
+  private double target;
 
   public ArmPivotSubsystem(int deviceID) {
     // initialize motor
     m_motor = new CANSparkMax(deviceID, MotorType.kBrushless);
-    pid = m_motor.getPIDController();
 
-    /**
-     * The RestoreFactoryDefaults method can be used to reset the configuration
-     * parameters
-     * in the SPARK MAX to their factory default state. If no argument is passed,
-     * these
-     * parameters will not persist between power cycles
-     */
-    //m_motor.restoreFactoryDefaults();
-
-    /**
-     * In order to use PID functionality for a controller, a SparkMaxPIDController
-     * object
-     * is constructed by calling the getPIDController() method on an existing
-     * CANSparkMax object
-     */
     m_pidController = m_motor.getPIDController();
 
-    // Encoder object created to display position values
+    // Encoder object initialized to display position values
     m_encoder = m_motor.getEncoder();
+
+    m_encoder.setPositionConversionFactor(360/200f);
+    m_encoder.setVelocityConversionFactor(360/200f/60);
 
     // PID coefficients
     kP = 6e-5;
@@ -66,21 +54,14 @@ public class ArmPivotSubsystem extends SubsystemBase {
     m_pidController.setFF(kFF);
     m_pidController.setOutputRange(kMinOutput, kMaxOutput);
 
+    m_pidController.setSmartMotionMaxAccel(0.5, 0);
+    m_pidController.setSmartMotionMaxVelocity(15, 0);
+    m_pidController.setSmartMotionMinOutputVelocity(0, 0);
+    m_pidController.setSmartMotionAllowedClosedLoopError(1, 0);
+    m_pidController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);
+
     m_motor.burnFlash();
-
-    // display PID coefficients on SmartDashboard
-    SmartDashboard.putNumber("P Gain", kP);
-    SmartDashboard.putNumber("I Gain", kI);
-    SmartDashboard.putNumber("D Gain", kD);
-    SmartDashboard.putNumber("I Zone", kIz);
-    SmartDashboard.putNumber("Feed Forward", kFF);
-    SmartDashboard.putNumber("Max Output", kMaxOutput);
-    SmartDashboard.putNumber("Min Output", kMinOutput);
   }
-
-  SparkMaxPIDController pid;
-  CANSparkMax m_motor;
-  private double target;
 
   /*
    * Moves arm to position based on angleDef.
@@ -89,7 +70,7 @@ public class ArmPivotSubsystem extends SubsystemBase {
    * angle is close enough to val.
    * 0 degrees is parallel with the ground
    */
-  public void armRotate(double angleDeg) {
+  public void setAngle(double angleDeg) {
     // set goal of pid to angleDeg
     target = angleDeg;
   }
@@ -110,10 +91,8 @@ public class ArmPivotSubsystem extends SubsystemBase {
      * com.revrobotics.CANSparkMax.ControlType.kVelocity
      * com.revrobotics.CANSparkMax.ControlType.kVoltage
      */
-    m_pidController.setReference(target, CANSparkMax.ControlType.kPosition);
 
-    SmartDashboard.putNumber("Target", target);
-    SmartDashboard.putNumber("ProcessVariable", m_encoder.getVelocity());
+     m_pidController.setReference(target, ControlType.kSmartMotion);
   }
 
   @Override
