@@ -17,16 +17,13 @@ import com.revrobotics.SparkMaxPIDController.AccelStrategy;
 
 public class ArmPivotSubsystem extends SubsystemBase {
   private final CANSparkMax m_motor;
+  private final RelativeEncoder m_motorEncoder;
+  private final SparkMaxPIDController m_pidController;
+  private final DutyCycleEncoder m_shaftEncoder = new DutyCycleEncoder(0);
 
-  private SparkMaxPIDController m_pidController;
-  private RelativeEncoder m_encoder;
-  private double kP, kI, kD, kIz, kFF;
-
-  private double kMaxOutput, kMinOutput;
+  private final double kP, kI, kD;
 
   private double target;
-
-  private final DutyCycleEncoder m_shaftEncoder = new DutyCycleEncoder(0);
 
   public ArmPivotSubsystem(int deviceID) {
     // initialize motor
@@ -35,29 +32,22 @@ public class ArmPivotSubsystem extends SubsystemBase {
     m_pidController = m_motor.getPIDController();
 
     // Encoder object initialized to display position values
-    m_encoder = m_motor.getEncoder();
+    m_motorEncoder = m_motor.getEncoder();
 
-    m_encoder.setPositionConversionFactor(360/200f);
-    m_encoder.setVelocityConversionFactor(360/200f/60);
+    m_motorEncoder.setPositionConversionFactor(360/200f);
+    m_motorEncoder.setVelocityConversionFactor(360/200f/60);
 
-    m_encoder.setPosition(m_shaftEncoder.getAbsolutePosition());
+    m_motorEncoder.setPosition(m_shaftEncoder.getAbsolutePosition());
 
     // PID coefficients
-    kP = 6e-5;
+    kP = 0.01;
     kI = 0;
     kD = 0;
-    kIz = 0;
-    kFF = 0.000015;
-    kMaxOutput = 1;
-    kMinOutput = -1;
 
     // set PID coefficients
     m_pidController.setP(kP);
     m_pidController.setI(kI);
     m_pidController.setD(kD);
-    m_pidController.setIZone(kIz);
-    m_pidController.setFF(kFF);
-    m_pidController.setOutputRange(kMinOutput, kMaxOutput);
 
     m_pidController.setSmartMotionMaxAccel(0.5, 0);
     m_pidController.setSmartMotionMaxVelocity(15, 0);
@@ -82,20 +72,6 @@ public class ArmPivotSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    /**
-     * PIDController objects are commanded to a set point using the
-     * SetReference() method.
-     * 
-     * The first parameter is the value of the set point, whose units vary
-     * depending on the control type set in the second parameter.
-     * 
-     * The second parameter is the control type can be set to one of four
-     * parameters:
-     * com.revrobotics.CANSparkMax.ControlType.kDutyCycle
-     * com.revrobotics.CANSparkMax.ControlType.kPosition
-     * com.revrobotics.CANSparkMax.ControlType.kVelocity
-     * com.revrobotics.CANSparkMax.ControlType.kVoltage
-     */
 
      m_pidController.setReference(target, ControlType.kSmartMotion);
   }
