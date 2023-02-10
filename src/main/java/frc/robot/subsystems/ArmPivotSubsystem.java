@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 // import revlib spark max motor
 import com.revrobotics.CANSparkMax;
@@ -25,6 +26,8 @@ public class ArmPivotSubsystem extends SubsystemBase {
 
   private double target;
 
+  private final DutyCycleEncoder m_shaftEncoder = new DutyCycleEncoder(0);
+
   public ArmPivotSubsystem(int deviceID) {
     // initialize motor
     m_motor = new CANSparkMax(deviceID, MotorType.kBrushless);
@@ -36,6 +39,8 @@ public class ArmPivotSubsystem extends SubsystemBase {
 
     m_encoder.setPositionConversionFactor(360/200f);
     m_encoder.setVelocityConversionFactor(360/200f/60);
+
+    m_encoder.setPosition(m_shaftEncoder.getAbsolutePosition());
 
     // PID coefficients
     kP = 6e-5;
