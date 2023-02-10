@@ -18,4 +18,7 @@ public final class Ports {
         public static final int FRONT_RIGHT_ENCODER = 12;
         public static final int BACK_LEFT_ENCODER = 9;
         public static final int BACK_RIGHT_ENCODER = 10;
+
+        // ID of motor controlling pivoting arm
+        public static final int PIVOT_MOTOR = 0;
 }
