@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 // import revlib spark max motor
@@ -23,6 +25,8 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
   private double kFF;
   private double kMaxOutput;
   private double kMinOutput;
+
+  private final DigitalInput magnetSensor = new DigitalInput(9);
 
   public ArmTelescopeSubsystem(int deviceID) {
     // initialize motor
@@ -51,7 +55,7 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
     m_encoder = m_motor.getEncoder();
 
     // PID coefficients
-    kP = 6e-5;
+    kP = 0.5;
     kI = 0;
     kD = 0;
     kIz = 0;
@@ -69,19 +73,12 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
 
     m_motor.burnFlash();
 
-    // display PID coefficients on SmartDashboard
-    SmartDashboard.putNumber("P Gain", kP);
-    SmartDashboard.putNumber("I Gain", kI);
-    SmartDashboard.putNumber("D Gain", kD);
-    SmartDashboard.putNumber("I Zone", kIz);
-    SmartDashboard.putNumber("Feed Forward", kFF);
-    SmartDashboard.putNumber("Max Output", kMaxOutput);
-    SmartDashboard.putNumber("Min Output", kMinOutput);
+    Shuffleboard.getTab("Telescoping Arm").addNumber("error", () -> target - m_encoder.getPosition());
   }
 
   SparkMaxPIDController pid;
   CANSparkMax m_motor;
-  private double target;
+  private double target = 0;
 
   /*
    * Moves arm to position based on angleDef.
@@ -96,8 +93,7 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
   }
 
   public double getPosition() {
-    double extension = m_motor.getEncoder().getPosition();
-    return extension;
+    return m_encoder.getPosition();
   }
 
   @Override
@@ -117,9 +113,10 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
      * com.revrobotics.CANSparkMax.ControlType.kVoltage
      */
     m_pidController.setReference(target, CANSparkMax.ControlType.kPosition);
-
-    SmartDashboard.putNumber("Target", target);
-    SmartDashboard.putNumber("ProcessVariable", m_encoder.getVelocity());
+    if (!magnetSensor.get()){
+      m_encoder.setPosition(0.0);
+      target = 0.0;
+    }
   }
 
   @Override
