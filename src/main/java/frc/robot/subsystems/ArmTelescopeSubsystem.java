@@ -87,7 +87,7 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
    * angle is close enough to val.
    * 0 degrees is parallel with the ground
    */
-  public void setPosition(double amt) {
+  public void setExtension(double amt) {
     // set goal of pid to amt
     target = amt;
   }
