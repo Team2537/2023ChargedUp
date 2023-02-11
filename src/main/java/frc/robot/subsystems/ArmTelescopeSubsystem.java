@@ -105,6 +105,10 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
     return m_encoder.getPosition();
   }
 
+public double getPosInches(){
+  return Math.PI*m_encoder.setPosition(pos);
+}
+
   @Override
   public void periodic() {
     /**
