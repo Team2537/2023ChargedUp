@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.Ports;
+
 // import revlib spark max motor
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -25,9 +27,9 @@ public class ArmPivotSubsystem extends SubsystemBase {
 
   private double target;
 
-  public ArmPivotSubsystem(int deviceID) {
+  public ArmPivotSubsystem() {
     // initialize motor
-    m_motor = new CANSparkMax(deviceID, MotorType.kBrushless);
+    m_motor = new CANSparkMax(Ports.PIVOT_MOTOR, MotorType.kBrushless);
 
     m_pidController = m_motor.getPIDController();
 

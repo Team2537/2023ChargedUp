@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.Ports;
+
 // import revlib spark max motor
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -28,9 +30,9 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
 
   private final DigitalInput magnetSensor = new DigitalInput(9);
 
-  public ArmTelescopeSubsystem(int deviceID) {
+  public ArmTelescopeSubsystem() {
     // initialize motor
-    m_motor = new CANSparkMax(deviceID, MotorType.kBrushless);
+    m_motor = new CANSparkMax(Ports.EXTENSION_MOTOR, MotorType.kBrushless);
     m_motor.getEncoder().setPositionConversionFactor(1/16f);
     pid = m_motor.getPIDController();
 

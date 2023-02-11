@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 
 public class SetPositionCommand extends CommandBase {
 
-    SetPositionCommand(FixedAngleCommand angleCommand, FixedExtensionCommand extensionCommand){
+    public SetPositionCommand(FixedAngleCommand angleCommand, FixedExtensionCommand extensionCommand){
         Commands.parallel(extensionCommand, angleCommand).schedule();
     }
 

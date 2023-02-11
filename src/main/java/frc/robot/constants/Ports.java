@@ -21,6 +21,8 @@ public final class Ports {
 
         // ID of motor controlling pivoting arm
         public static final int PIVOT_MOTOR = 0;
+
+        public static final int EXTENSION_MOTOR = 0;
         
         // Ports for sensors
         public static final int TELESCOPE_MAGNET_SENSOR = 9;
