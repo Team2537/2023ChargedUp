@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycle;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
 public class GripperSubsystem extends SubsystemBase {
   private static final double FILTERED_GAIN = 0;
@@ -46,6 +48,7 @@ public class GripperSubsystem extends SubsystemBase {
      */
     m_read = new DigitalInput(lidar_read_port);
     m_pwm = new DutyCycle(m_read);
+    Shuffleboard.getTab("Gripper Subsystem").addBoolean("Gamepiece detected", () -> isTarget());
   }
 
   private int m_count;
