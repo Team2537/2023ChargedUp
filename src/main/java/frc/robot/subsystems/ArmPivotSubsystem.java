@@ -4,7 +4,9 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Ports;
 
@@ -17,11 +19,15 @@ import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxPIDController.AccelStrategy;
 
+import static frc.robot.constants.Ports.*;
+
 public class ArmPivotSubsystem extends SubsystemBase {
   private final CANSparkMax m_motor;
   private final RelativeEncoder m_motorEncoder;
   private final SparkMaxPIDController m_pidController;
   private final DutyCycleEncoder m_shaftEncoder = new DutyCycleEncoder(0);
+  DigitalInput m_pivotMagnet = new DigitalInput(PIVOT_MAGNET_SENSOR);
+
 
   private final double kP, kI, kD;
 
@@ -58,6 +64,8 @@ public class ArmPivotSubsystem extends SubsystemBase {
     m_pidController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);
 
     m_motor.burnFlash();
+
+    Shuffleboard.getTab("Pivoting Arm Subsystem").addBoolean("Homed", () -> getMagnetClosed());
   }
 
   /*
@@ -74,6 +82,10 @@ public class ArmPivotSubsystem extends SubsystemBase {
   
   public void setRawSpeed(double speed){
     m_motor.set(speed);
+  }
+
+  public boolean getMagnetClosed(){
+    return !m_pivotMagnet.get();
   }
 
   @Override

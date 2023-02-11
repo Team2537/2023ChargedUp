@@ -8,7 +8,7 @@ public final class Ports {
         public static final int BACK_RIGHT_DRIVE = 4;
     
         // ID of steering motors for each swerve module
-        public static final int FRONT_LEFT_STEER = 5;
+        public static final int FRONT_LEFT_STEER = 13;
         public static final int FRONT_RIGHT_STEER = 6;
         public static final int BACK_LEFT_STEER = 7;
         public static final int BACK_RIGHT_STEER = 8;
@@ -20,11 +20,11 @@ public final class Ports {
         public static final int BACK_RIGHT_ENCODER = 10;
 
         // ID of motor controlling pivoting arm
-        public static final int PIVOT_MOTOR = 0;
+        public static final int PIVOT_MOTOR = 14;
 
-        public static final int EXTENSION_MOTOR = 0;
+        public static final int EXTENSION_MOTOR = 5;
         
-        // Ports for sensors
-        public static final int TELESCOPE_MAGNET_SENSOR = 9;
-        public static final int PIVOT_MAGNET_SENSOR = 9;
+        // DIO Ports for sensors
+        public static final int TELESCOPE_MAGNET_SENSOR = 1;
+        public static final int PIVOT_MAGNET_SENSOR = 2;
 }

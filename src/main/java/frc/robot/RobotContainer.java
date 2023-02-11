@@ -5,15 +5,19 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.FixedAngleCommand;
 import frc.robot.commands.FixedExtensionCommand;
+import frc.robot.commands.HomingCommand;
 import frc.robot.commands.SetPositionCommand;
 import frc.robot.subsystems.ArmPivotSubsystem;
 import frc.robot.subsystems.ArmTelescopeSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.Button;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import static frc.robot.constants.Constants.*;
 
@@ -24,6 +28,8 @@ import static frc.robot.constants.Constants.*;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+  Joystick m_gunnerJoystick = new Joystick(0);
+
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final ArmTelescopeSubsystem m_armTelescopeSubsystem = new ArmTelescopeSubsystem();
@@ -42,6 +48,9 @@ public class RobotContainer {
   private final FixedAngleCommand m_topRowAngle = new FixedAngleCommand(m_armPivotSubsystem, TOP_CONE_ANGLE);
   private final FixedExtensionCommand m_topRowExtension = new FixedExtensionCommand(m_armTelescopeSubsystem, TOP_CONE_EXTENSION);
   private final SetPositionCommand m_topRowPosition = new SetPositionCommand(m_topRowAngle, m_topRowExtension);
+
+  private final FixedExtensionCommand test = new FixedExtensionCommand(m_armTelescopeSubsystem, 7);
+  private final HomingCommand m_homingCommand = new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem);
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
@@ -54,7 +63,13 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
-  private void configureButtonBindings() {}
+  private void configureButtonBindings() {
+    Trigger bottomRowPositionButton = new Trigger(() -> m_gunnerJoystick.getRawButton(8));
+    bottomRowPositionButton.onTrue(test);
+
+    Trigger homingButton = new Trigger(() -> m_gunnerJoystick.getRawButton(9));
+    homingButton.onTrue(m_homingCommand);
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
