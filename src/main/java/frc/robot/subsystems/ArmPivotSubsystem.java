@@ -40,7 +40,7 @@ public class ArmPivotSubsystem extends SubsystemBase {
     m_motorEncoder.setPosition(m_shaftEncoder.getAbsolutePosition());
 
     // PID coefficients
-    kP = 0.01;
+    kP = 0.0001;
     kI = 0;
     kD = 0;
 
@@ -49,10 +49,10 @@ public class ArmPivotSubsystem extends SubsystemBase {
     m_pidController.setI(kI);
     m_pidController.setD(kD);
 
-    m_pidController.setSmartMotionMaxAccel(0.5, 0);
-    m_pidController.setSmartMotionMaxVelocity(15, 0);
+    m_pidController.setSmartMotionMaxAccel(10000, 0);
+    m_pidController.setSmartMotionMaxVelocity(2500, 0);
     m_pidController.setSmartMotionMinOutputVelocity(0, 0);
-    m_pidController.setSmartMotionAllowedClosedLoopError(1, 0);
+    m_pidController.setSmartMotionAllowedClosedLoopError(0.1, 0);
     m_pidController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);
 
     m_motor.burnFlash();
