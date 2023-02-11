@@ -13,7 +13,8 @@ public class HomingCommand extends CommandBase{
 
     private final ArmPivotSubsystem m_pivot;
     private final ArmTelescopeSubsystem m_telecope;
-    DigitalInput magnetSensor = new DigitalInput(MAGNET_SENSOR);
+    DigitalInput telescopeMagnet = new DigitalInput(TELESCOPE_MAGNET_SENSOR);
+    DigitalInput pivotMagnet = new DigitalInput(PIVOT_MAGNET_SENSOR);
 
 
     public HomingCommand(ArmPivotSubsystem pivotSubsystem, ArmTelescopeSubsystem telescopeSubsystem){
@@ -30,11 +31,13 @@ public class HomingCommand extends CommandBase{
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if(magnetSensor.get()){
+        if(telescopeMagnet.get()){
             m_telecope.setRawSpeed(-0.1);
+        } else if (pivotMagnet.get()){
+            m_telecope.setRawSpeed(0.0);
+            m_pivot.setRawSpeed(-0.1);
         } else {
-            m_telecope.setRawSpeed(0);
-            m_telecope.setRawPosition(0.0);
+            m_pivot.setRawSpeed(0.0);
         }
     }
   
@@ -45,7 +48,11 @@ public class HomingCommand extends CommandBase{
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-      return false;
+      boolean finished = false;
+      if (pivotMagnet.get() && telescopeMagnet.get()){
+        finished = true;
+      }
+      return finished;
     }
 
 }

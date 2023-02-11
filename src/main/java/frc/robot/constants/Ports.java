@@ -23,5 +23,6 @@ public final class Ports {
         public static final int PIVOT_MOTOR = 0;
         
         // Ports for sensors
-        public static final int MAGNET_SENSOR = 9;
+        public static final int TELESCOPE_MAGNET_SENSOR = 9;
+        public static final int PIVOT_MAGNET_SENSOR = 9;
 }

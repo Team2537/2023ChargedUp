@@ -69,6 +69,10 @@ public class ArmPivotSubsystem extends SubsystemBase {
     // set goal of pid to angleDeg
     target = angleDeg;
   }
+  
+  public void setRawSpeed(double speed){
+    m_motor.set(speed);
+  }
 
   @Override
   public void periodic() {
