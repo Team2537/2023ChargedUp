@@ -30,6 +30,7 @@ public class FixedExtensionCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    //sets the extension to the givin evtension
     m_subsystem.setExtension(m_targetExtension);
     return true;
   }

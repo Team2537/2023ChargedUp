@@ -15,7 +15,7 @@ package frc.robot.constants;
 public final class Constants {
     // Arm angle and extension to get to each cone/cube node from starting position in inches
     // This is in inches/degrees and assuming that the bumpers are against the community
-    public static final double BOTTOM_HYBRID_ANGLE = 36.8;
+    public static final double BOTTOM_HYBRID_ANGLE = -36.8;
     public static final double BOTTOM_HYBRID_EXTENSION = 35;
     public static final double MIDDLE_CONE_ANGLE = 1.3;
     public static final double MIDDLE_CONE_EXTENSION = 41;
