@@ -92,6 +92,14 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
     target = amt;
   }
 
+  public void setRawSpeed(double speed){
+    m_motor.set(speed);
+  }
+
+  public void setRawPosition(double pos){
+    m_encoder.setPosition(pos);
+  }
+
   public double getPosition() {
     return m_encoder.getPosition();
   }
@@ -117,6 +125,7 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
       m_encoder.setPosition(0.0);
       target = 0.0;
     }
+    
   }
 
   @Override
