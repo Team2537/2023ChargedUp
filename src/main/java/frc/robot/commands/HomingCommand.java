@@ -36,7 +36,7 @@ public class HomingCommand extends CommandBase{
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-        // When the command ends, it sets the speed to zero, as well as the target position and encoder value
+        // When the command ends, both subsystems are reset
         m_telescopeSubsystem.reset();
         m_pivotSubsystem.reset();
     }

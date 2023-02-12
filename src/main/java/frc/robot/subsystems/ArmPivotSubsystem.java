@@ -69,7 +69,11 @@ public class ArmPivotSubsystem extends SubsystemBase {
 
     armPivotTab.addBoolean("Homed", () -> getMagnetClosed());
     armPivotTab.addNumber("Target Position", () -> target);
-    armPivotTab.addNumber("Current Position", () -> m_motorEncoder.getPosition());
+    armPivotTab.addNumber("Current Position", () -> getAngle());
+  }
+
+  public double getAngle() {
+    return m_motorEncoder.getPosition();
   }
 
   /**

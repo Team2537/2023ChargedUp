@@ -8,6 +8,7 @@ import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.FixedAngleCommand;
 import frc.robot.commands.FixedExtensionCommand;
 import frc.robot.commands.HomingCommand;
+import frc.robot.commands.ManualArmControlCommand;
 import frc.robot.commands.SetPositionCommand;
 import frc.robot.subsystems.ArmPivotSubsystem;
 import frc.robot.subsystems.ArmTelescopeSubsystem;
@@ -51,12 +52,17 @@ public class RobotContainer {
   private final FixedExtensionCommand test = new FixedExtensionCommand(m_armTelescopeSubsystem, 7);
   private final HomingCommand m_homingCommand = new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem);
 
+  private final ManualArmControlCommand m_manualControl = new ManualArmControlCommand(
+    m_armPivotSubsystem, 
+    m_armTelescopeSubsystem, 
+    () -> -m_gunnerJoystick.getAxis(1), 
+    () -> m_gunnerJoystick.getHatSwitch());
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
   }
-
 
   /*
    * Method to bind buttons to predefined commands (Declared above)
@@ -64,11 +70,18 @@ public class RobotContainer {
    * Add the trigger conditions
    */
   private void configureButtonBindings() {
-    Trigger bottomRowPositionButton = m_gunnerJoystick.getButton(8);
-    bottomRowPositionButton.onTrue(test);
+    // Driver bindings
 
-    Trigger homingButton = m_gunnerJoystick.getButton(9);
-    homingButton.onTrue(m_homingCommand);
+    // Gunner bindings
+    m_gunnerJoystick.getButton(8).onTrue(test);
+
+    // TODO: decide on button bindings for preset positions
+    m_gunnerJoystick.getButton(-1).onTrue(m_bottomRowPosition);
+    m_gunnerJoystick.getButton(-1).onTrue(m_middleRowPosition);
+    m_gunnerJoystick.getButton(-1).onTrue(m_topRowPosition);
+    
+    m_gunnerJoystick.getButton(9).onTrue(m_homingCommand);
+    m_gunnerJoystick.getButton(1).whileTrue(m_manualControl);
   }
 
 
