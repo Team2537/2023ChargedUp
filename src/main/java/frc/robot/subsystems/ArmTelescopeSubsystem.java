@@ -8,14 +8,10 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constants.Ports;
-
-// import revlib spark max motor
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.ControlType;
-// import revlib encoder
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import static frc.robot.constants.Ports.*;
 
@@ -46,8 +42,6 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
     m_motor.getEncoder().setVelocityConversionFactor(1/16f);
 
     m_pidController = m_motor.getPIDController();
-
-    // Encoder object created to display position values
     m_encoder = m_motor.getEncoder();
 
     // PID coefficients
@@ -93,10 +87,6 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
     telescopingTab.addBoolean("Retracted", () -> getMagnetClosed());
   }
 
-  
-
-
-
   public void setExtension(double amt) {
     // set goal of pid to amt
     positionPID = true;
@@ -106,36 +96,49 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
   /*
    * Disables the positional PID temporarily and uses a velocity PID loop
    * Instead of trying to make it to a target position the loop tries to reach a target velocity
-   * Micah broke it :(
+   * Micah broke it :( 
+   * NOOO I didn't do anything
    */
-
   public void setVelocity(double velocity) {
     positionPID = false;
     m_pidController.setReference(velocity, ControlType.kSmartVelocity, 1);
   }
 
-  // Sets a raw speed to the motor in RPM
+  /**
+   * Sets a raw speed to the motor in RPM
+   * 
+   * @param speed the raw speed (0-1) to set to the motor
+   */
   public void setRawSpeed(double speed) {
     positionPID = false;
     m_motor.set(speed);
   }
 
-  // Manually sets the encoder position to a specified value
+  /**
+   * Manually sets the encoder position to a specified value
+   * @param pos the position to set the encoder to
+   */
   public void setEncoderPosition(double pos){
     m_encoder.setPosition(pos);
   }
 
-  // Returns the encoder value
+  /**
+   * @return the encoder value
+   */ 
   public double getPosition() {
     return m_encoder.getPosition();
   }
 
-  // Returns the encoder value in inches
+  /**
+   * @return the encoder value in inches
+   */
   public double getPosInches(){
     return Math.PI*0.75*m_encoder.getPosition();
   }
 
-  // Returns true when the magnets pick each other up
+  /**
+   * @return true when the magnets pick each other up
+   */
   public boolean getMagnetClosed(){
     return !m_telescopeMagnet.get();
   }
@@ -150,5 +153,6 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
     // I still dislike this method - falon
+    // same honestly - micah
   }
 }

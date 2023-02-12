@@ -15,17 +15,20 @@ package frc.robot.constants;
 public final class Constants {
     // Arm angle and extension to get to each cone/cube node from starting position in inches
     // This is in inches/degrees and assuming that the bumpers are against the community
-    public static final double BOTTOM_HYBRID_ANGLE = -36.8;
-    public static final double BOTTOM_HYBRID_EXTENSION = 35;
-    public static final double MIDDLE_CONE_ANGLE = 1.3;
-    public static final double MIDDLE_CONE_EXTENSION = 41;
-    public static final double TOP_CONE_ANGLE = 25;
-    public static final double TOP_CONE_EXTENSION = 58;
+    public static final double BOTTOM_ROW_ANGLE = -36.8;
+    public static final double BOTTOM_ROW_EXTENSION = 35;
+
+    public static final double MIDDLE_ROW_ANGLE = 1.3;
+    public static final double MIDDLE_ROW_EXTENSION = 41;
+
+    public static final double TOP_ROW_ANGLE = 25;
+    public static final double TOP_ROW_EXTENSION = 58;
+
     // Frame measurements (meters)
     public static final double WHEEL_BASE = 0.52613;
     public static final double TRACK_WIDTH = 0.52695;
   
-    // Absolute encoder offset for each swerve module (in radians)
+    // Absolute encoder offset for each swerve module (radians)
     public static final double BACK_LEFT_OFFSET = 3.341;
     public static final double BACK_RIGHT_OFFSET = 4.562;
     public static final double FRONT_LEFT_OFFSET = 0.821;

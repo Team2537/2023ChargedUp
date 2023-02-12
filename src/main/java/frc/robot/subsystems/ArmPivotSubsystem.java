@@ -7,15 +7,13 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Ports;
-
-// import revlib spark max motor
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.ControlType;
-// import revlib encoder
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxPIDController.AccelStrategy;
 
@@ -26,7 +24,7 @@ public class ArmPivotSubsystem extends SubsystemBase {
   private final RelativeEncoder m_motorEncoder;
   private final SparkMaxPIDController m_pidController;
   private final DutyCycleEncoder m_shaftEncoder = new DutyCycleEncoder(0);
-  DigitalInput m_pivotMagnet = new DigitalInput(PIVOT_MAGNET_SENSOR);
+  private final DigitalInput m_pivotMagnet = new DigitalInput(PIVOT_MAGNET_SENSOR);
 
 
   private final double kP, kI, kD;
@@ -65,21 +63,32 @@ public class ArmPivotSubsystem extends SubsystemBase {
 
     m_motor.burnFlash();
 
-    // Shuffleboard displayed variables for testing
-    Shuffleboard.getTab("Pivoting Arm Subsystem").addBoolean("Homed", () -> getMagnetClosed());
+    ShuffleboardTab armPivotTab = Shuffleboard.getTab("Pivoting Arm Subsystem");
+
+    armPivotTab.addBoolean("Homed", () -> getMagnetClosed());
+    armPivotTab.addNumber("Target Position", () -> target);
+    armPivotTab.addNumber("Current Position", () -> m_motorEncoder.getPosition());
   }
 
-  // Sets the target of the PID control loop to the given angle, with 0 being parallel to the ground
+  /**
+   * Sets the target of the PID control loop to the given angle, with 0 being parallel to the ground
+   * @param angleDeg angle to set the target to in degrees
+   */
   public void setAngle(double angleDeg) {
     target = angleDeg;
   }
   
-  // Sets a raw RPM value for the motor (Overrides the PID controls)
+  /**
+   * Sets a raw value for the motor (Overrides the PID controls)
+   * @param speed the percent output (0-1) to set the motor to
+   */
   public void setRawSpeed(double speed){
     m_motor.set(speed);
   }
 
-  // Returns true if the magnet sensors are withing ~2cm of each other
+  /**
+   * @return true if the magnet sensors are within ~2cm of each other
+   */
   public boolean getMagnetClosed(){
     return !m_pivotMagnet.get();
   }
@@ -87,7 +96,8 @@ public class ArmPivotSubsystem extends SubsystemBase {
   // Runs once per scheduler run (every 20ms)
   @Override
   public void periodic() {
-    // Sets the target of the PID loop to the "target" double, with the smart motion control type (Idk what that does)
+    // Sets the target of the PID loop to the "target" double,
+    // using smart motion to control velocity and acceleration while in motion
      m_pidController.setReference(target, ControlType.kSmartMotion);
   }
 
@@ -95,5 +105,6 @@ public class ArmPivotSubsystem extends SubsystemBase {
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
     // Nobody likes this method - falon
+    // Factual - micah
   }
 }
