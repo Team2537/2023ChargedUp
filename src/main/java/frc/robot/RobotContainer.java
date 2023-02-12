@@ -14,7 +14,6 @@ import frc.robot.subsystems.ArmPivotSubsystem;
 import frc.robot.subsystems.ArmTelescopeSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import static frc.robot.constants.Constants.*;
 
@@ -56,7 +55,7 @@ public class RobotContainer {
     m_armPivotSubsystem, 
     m_armTelescopeSubsystem, 
     () -> -m_gunnerJoystick.getAxis(1), 
-    () -> m_gunnerJoystick.getHatSwitch());
+    () -> 0.25 * m_gunnerJoystick.getHatSwitch());
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
