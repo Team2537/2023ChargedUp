@@ -16,7 +16,6 @@ import frc.robot.subsystems.ArmPivotSubsystem;
 import frc.robot.subsystems.ArmTelescopeSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import static frc.robot.constants.Constants.*;
@@ -30,21 +29,21 @@ import static frc.robot.constants.Constants.*;
 public class RobotContainer {
   Joystick m_gunnerJoystick = new Joystick(0);
 
-  // The robot's subsystems and commands are defined here...
+// The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final ArmTelescopeSubsystem m_armTelescopeSubsystem = new ArmTelescopeSubsystem();
   private final ArmPivotSubsystem m_armPivotSubsystem = new ArmPivotSubsystem();
 
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
-//Position for bottom row when bumpers are against the community
+// Position for bottom row when bumpers are against the community
   private final FixedAngleCommand m_bottomRowAngle = new FixedAngleCommand(m_armPivotSubsystem, BOTTOM_HYBRID_ANGLE);
   private final FixedExtensionCommand m_bottomRowExtension = new FixedExtensionCommand(m_armTelescopeSubsystem, BOTTOM_HYBRID_EXTENSION);
   private final SetPositionCommand m_bottomRowPosition = new SetPositionCommand(m_bottomRowAngle, m_bottomRowExtension);
-//Position for middle cone row when bumpers are against the community
+// Position for middle cone row when bumpers are against the community
   private final FixedAngleCommand m_middleRowAngle = new FixedAngleCommand(m_armPivotSubsystem, MIDDLE_CONE_ANGLE);
   private final FixedExtensionCommand m_middleRowExtension = new FixedExtensionCommand(m_armTelescopeSubsystem, MIDDLE_CONE_EXTENSION);
   private final SetPositionCommand m_middleRowPosition = new SetPositionCommand(m_middleRowAngle, m_middleRowExtension);
-//Position for top cone row when bumpers are against the community
+// Position for top cone row when bumpers are against the community
   private final FixedAngleCommand m_topRowAngle = new FixedAngleCommand(m_armPivotSubsystem, TOP_CONE_ANGLE);
   private final FixedExtensionCommand m_topRowExtension = new FixedExtensionCommand(m_armTelescopeSubsystem, TOP_CONE_EXTENSION);
   private final SetPositionCommand m_topRowPosition = new SetPositionCommand(m_topRowAngle, m_topRowExtension);
@@ -57,11 +56,11 @@ public class RobotContainer {
     configureButtonBindings();
   }
 
-  /**
-   * Use this method to define your button->command mappings. Buttons can be created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+
+  /*
+   * Method to bind buttons to predefined commands (Declared above)
+   * Create a trigger object bound to a button, and then bind the trigger object to a command
+   * Add the trigger conditions
    */
   private void configureButtonBindings() {
     Trigger bottomRowPositionButton = new Trigger(() -> m_gunnerJoystick.getRawButton(8));
@@ -71,11 +70,7 @@ public class RobotContainer {
     homingButton.onTrue(m_homingCommand);
   }
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
+
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     return m_autoCommand;

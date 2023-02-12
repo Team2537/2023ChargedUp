@@ -65,37 +65,35 @@ public class ArmPivotSubsystem extends SubsystemBase {
 
     m_motor.burnFlash();
 
+    // Shuffleboard displayed variables for testing
     Shuffleboard.getTab("Pivoting Arm Subsystem").addBoolean("Homed", () -> getMagnetClosed());
   }
 
-  /*
-   * Moves arm to position based on angleDef.
-   * Turns the motor;
-   * adjusting the angle based on a PIDloop which turns off the motor when the
-   * angle is close enough to val.
-   * 0 degrees is parallel with the ground
-   */
+  // Sets the target of the PID control loop to the given angle, with 0 being parallel to the ground
   public void setAngle(double angleDeg) {
-    // set goal of pid to angleDeg
     target = angleDeg;
   }
   
+  // Sets a raw RPM value for the motor (Overrides the PID controls)
   public void setRawSpeed(double speed){
     m_motor.set(speed);
   }
 
+  // Returns true if the magnet sensors are withing ~2cm of each other
   public boolean getMagnetClosed(){
     return !m_pivotMagnet.get();
   }
 
+  // Runs once per scheduler run (every 20ms)
   @Override
   public void periodic() {
-
+    // Sets the target of the PID loop to the "target" double, with the smart motion control type (Idk what that does)
      m_pidController.setReference(target, ControlType.kSmartMotion);
   }
 
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
+    // Nobody likes this method - falon
   }
 }

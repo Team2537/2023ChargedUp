@@ -30,6 +30,11 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
 
   private boolean positionPID = true;
 
+  CANSparkMax m_motor;
+
+  private double target = 0;
+
+
   private final DigitalInput m_telescopeMagnet = new DigitalInput(TELESCOPE_MAGNET_SENSOR);
 
   public ArmTelescopeSubsystem() {
@@ -78,6 +83,8 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
 
     m_motor.burnFlash();
 
+    // Shuffleboard variable display for testing
+
     ShuffleboardTab telescopingTab = Shuffleboard.getTab("Telescoping Arm");
 
     telescopingTab.addNumber("Position (revolutions)", () -> getPosition());
@@ -86,49 +93,62 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
     telescopingTab.addBoolean("Retracted", () -> getMagnetClosed());
   }
 
-  CANSparkMax m_motor;
-  private double targetPosition = 0;
+  
+
 
 
   public void setExtension(double amt) {
     // set goal of pid to amt
     positionPID = true;
-    targetPosition = amt;
+    target = amt;
   }
+
+  /*
+   * Disables the positional PID temporarily and uses a velocity PID loop
+   * Instead of trying to make it to a target position the loop tries to reach a target velocity
+   * Micah broke it :(
+   */
 
   public void setVelocity(double velocity) {
     positionPID = false;
     m_pidController.setReference(velocity, ControlType.kSmartVelocity, 1);
   }
 
+  // Sets a raw speed to the motor in RPM
   public void setRawSpeed(double speed) {
     positionPID = false;
     m_motor.set(speed);
   }
 
+  // Manually sets the encoder position to a specified value
   public void setEncoderPosition(double pos){
     m_encoder.setPosition(pos);
   }
 
+  // Returns the encoder value
   public double getPosition() {
     return m_encoder.getPosition();
   }
 
+  // Returns the encoder value in inches
   public double getPosInches(){
     return Math.PI*0.75*m_encoder.getPosition();
   }
 
+  // Returns true when the magnets pick each other up
   public boolean getMagnetClosed(){
     return !m_telescopeMagnet.get();
   }
 
+  // Runs every time the scheduler is called (Every 20ms)
   @Override
   public void periodic() {
-    if (positionPID) m_pidController.setReference(targetPosition, CANSparkMax.ControlType.kPosition, 0);
+    if (positionPID) m_pidController.setReference(target, CANSparkMax.ControlType.kPosition, 0);
   }
 
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
+    // I still dislike this method - falon
   }
 }
