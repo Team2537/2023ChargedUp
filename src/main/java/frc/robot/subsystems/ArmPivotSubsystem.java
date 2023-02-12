@@ -23,9 +23,11 @@ public class ArmPivotSubsystem extends SubsystemBase {
   private final CANSparkMax m_motor;
   private final RelativeEncoder m_motorEncoder;
   private final SparkMaxPIDController m_pidController;
+  
   private final DutyCycleEncoder m_shaftEncoder = new DutyCycleEncoder(0);
   private final DigitalInput m_pivotMagnet = new DigitalInput(PIVOT_MAGNET_SENSOR);
 
+  boolean m_positionPID = true;
 
   private final double kP, kI, kD;
 
@@ -75,6 +77,7 @@ public class ArmPivotSubsystem extends SubsystemBase {
    * @param angleDeg angle to set the target to in degrees
    */
   public void setAngle(double angleDeg) {
+    m_positionPID = true;
     target = angleDeg;
   }
   
@@ -82,15 +85,35 @@ public class ArmPivotSubsystem extends SubsystemBase {
    * Sets a raw value for the motor (Overrides the PID controls)
    * @param speed the percent output (0-1) to set the motor to
    */
-  public void setRawSpeed(double speed){
+  public void setRawSpeed(double speed) {
+    m_positionPID = false;
     m_motor.set(speed);
+  }
+
+  /**
+   * Switches motor to using velocity PID
+   * @param velocity the velocity to pivot at (degrees/s)
+   */
+  public void setVelocity(double velocity) {
+    m_positionPID = false;
+    m_pidController.setReference(velocity, ControlType.kVelocity);
   }
 
   /**
    * @return true if the magnet sensors are within ~2cm of each other
    */
-  public boolean getMagnetClosed(){
+  public boolean getMagnetClosed() {
     return !m_pivotMagnet.get();
+  }
+
+  /**
+   * Resets the motor encoder to sync with the absolute encoder
+   */
+  public void reset() {
+    setVelocity(0);
+
+    m_motorEncoder.setPosition(m_shaftEncoder.getAbsolutePosition());
+    setAngle(m_shaftEncoder.getAbsolutePosition());
   }
 
   // Runs once per scheduler run (every 20ms)
@@ -98,7 +121,7 @@ public class ArmPivotSubsystem extends SubsystemBase {
   public void periodic() {
     // Sets the target of the PID loop to the "target" double,
     // using smart motion to control velocity and acceleration while in motion
-     m_pidController.setReference(target, ControlType.kSmartMotion);
+    if (m_positionPID) m_pidController.setReference(target, ControlType.kSmartMotion);
   }
 
   @Override

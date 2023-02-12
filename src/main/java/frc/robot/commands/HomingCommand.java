@@ -14,8 +14,7 @@ public class HomingCommand extends CommandBase{
         m_pivotSubsystem = pivotSubsystem;
         m_telescopeSubsystem = telescopeSubsystem;
 
-        addRequirements(telescopeSubsystem);
-        addRequirements(pivotSubsystem);
+        addRequirements(pivotSubsystem, telescopeSubsystem);
     }
   
     // Called every time the scheduler runs while the command is scheduled.
@@ -38,10 +37,8 @@ public class HomingCommand extends CommandBase{
     @Override
     public void end(boolean interrupted) {
         // When the command ends, it sets the speed to zero, as well as the target position and encoder value
-        m_telescopeSubsystem.setRawSpeed(0);
-
-        m_telescopeSubsystem.setEncoderPosition(0);
-        m_telescopeSubsystem.setExtension(0);
+        m_telescopeSubsystem.reset();
+        m_pivotSubsystem.reset();
     }
   
     // Returns true when the command should end.

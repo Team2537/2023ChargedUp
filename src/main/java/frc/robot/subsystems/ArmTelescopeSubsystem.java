@@ -143,6 +143,15 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
     return !m_telescopeMagnet.get();
   }
 
+  /**
+   * Stops the motor for telescoping and resets encoder position
+   */
+  public void reset() {
+    setRawSpeed(0);
+    setEncoderPosition(0);
+    setExtension(0);
+  }
+
   // Runs every time the scheduler is called (Every 20ms)
   @Override
   public void periodic() {
