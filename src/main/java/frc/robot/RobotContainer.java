@@ -4,9 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.FixedAngleCommand;
 import frc.robot.commands.FixedExtensionCommand;
@@ -35,21 +32,25 @@ public class RobotContainer {
   private final ArmPivotSubsystem m_armPivotSubsystem = new ArmPivotSubsystem();
 
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
-// Position for bottom row when bumpers are against the community
+  
+  // Position for bottom row when bumpers are against the community
   private final FixedAngleCommand m_bottomRowAngle = new FixedAngleCommand(m_armPivotSubsystem, BOTTOM_ROW_ANGLE);
   private final FixedExtensionCommand m_bottomRowExtension = new FixedExtensionCommand(m_armTelescopeSubsystem, BOTTOM_ROW_EXTENSION);
   private final SetPositionCommand m_bottomRowPosition = new SetPositionCommand(m_bottomRowAngle, m_bottomRowExtension);
-// Position for middle cone row when bumpers are against the community
+
+  // Position for middle cone row when bumpers are against the community
   private final FixedAngleCommand m_middleRowAngle = new FixedAngleCommand(m_armPivotSubsystem, MIDDLE_ROW_ANGLE);
   private final FixedExtensionCommand m_middleRowExtension = new FixedExtensionCommand(m_armTelescopeSubsystem, MIDDLE_ROW_EXTENSION);
   private final SetPositionCommand m_middleRowPosition = new SetPositionCommand(m_middleRowAngle, m_middleRowExtension);
-// Position for top cone row when bumpers are against the community
+
+  // Position for top cone row when bumpers are against the community
   private final FixedAngleCommand m_topRowAngle = new FixedAngleCommand(m_armPivotSubsystem, TOP_ROW_ANGLE);
   private final FixedExtensionCommand m_topRowExtension = new FixedExtensionCommand(m_armTelescopeSubsystem, TOP_ROW_EXTENSION);
   private final SetPositionCommand m_topRowPosition = new SetPositionCommand(m_topRowAngle, m_topRowExtension);
 
   private final FixedExtensionCommand test = new FixedExtensionCommand(m_armTelescopeSubsystem, 7);
   private final HomingCommand m_homingCommand = new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem);
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
