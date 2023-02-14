@@ -6,7 +6,10 @@ package frc.robot.commands;
 
 import frc.robot.subsystems.ArmTelescopeSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-
+/**
+ * this sets the target arm extension to what we want it to be
+ * this will mostly only be used for the set position command 
+ */
 public class FixedExtensionCommand extends CommandBase {
   private final ArmTelescopeSubsystem m_subsystem;
 
