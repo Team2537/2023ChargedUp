@@ -47,8 +47,8 @@ public class ArmPivotSubsystem extends SubsystemBase {
   public ArmPivotSubsystem() {
     //this will but the values in the log (untested)
     homedLogEntry = new BooleanLogEntry(DataLogManager.getLog(), "/ArmPivotSubsystem/Homing");
-    targetAngleLogEntry = new DoubleLogEntry(DataLogManager.getLog(), "/ArmPivotSubsystem/TargetAngle")
-    currentAngleLogEntry = new DoubleLogEntry(DataLogManager.getLog(), "/ArmPivotSubsystem/CurrentAngle")
+    targetAngleLogEntry = new DoubleLogEntry(DataLogManager.getLog(), "/ArmPivotSubsystem/TargetAngle");
+    currentAngleLogEntry = new DoubleLogEntry(DataLogManager.getLog(), "/ArmPivotSubsystem/CurrentAngle");
     // initialize motor
     m_motor = new CANSparkMax(PIVOT_MOTOR, MotorType.kBrushless);
 
