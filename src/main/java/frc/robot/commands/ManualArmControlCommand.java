@@ -6,6 +6,9 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ArmPivotSubsystem;
 import frc.robot.subsystems.ArmTelescopeSubsystem;
 
+/**
+ * Command that allows manual control of the arm pivot and telescope mechanisms
+ */
 public class ManualArmControlCommand extends CommandBase {
     private final ArmPivotSubsystem m_pivotSubsystem;
     private final ArmTelescopeSubsystem m_telescopeSubsystem;

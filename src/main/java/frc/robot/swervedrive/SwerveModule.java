@@ -1,5 +1,8 @@
 package frc.robot.swervedrive;
 
+/**
+ * This class represents a swerve module, which consists of a drive motor and a steer motor.
+ */
 public class SwerveModule {
     private final SteerMotor m_steerMotor;
     private final DriveMotor m_driveMotor;

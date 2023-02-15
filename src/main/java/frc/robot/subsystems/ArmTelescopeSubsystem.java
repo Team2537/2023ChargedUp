@@ -15,6 +15,9 @@ import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import static frc.robot.constants.Ports.*;
 
+/**
+ * The ArmTelescopeSubsystem class is the subsystem that controls the telescoping motor.
+ */
 public class ArmTelescopeSubsystem extends SubsystemBase {
   private SparkMaxPIDController m_pidController;
   private RelativeEncoder m_encoder;

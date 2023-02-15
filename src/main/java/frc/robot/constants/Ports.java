@@ -1,5 +1,8 @@
 package frc.robot.constants;
 
+/**
+ * This class contains all of the ports for the robot
+ */
 public final class Ports {
         // ID's of driving motors for each swerve module
         public static final int FRONT_LEFT_DRIVE = 35;
