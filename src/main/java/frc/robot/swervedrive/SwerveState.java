@@ -1,5 +1,8 @@
 package frc.robot.swervedrive;
 
+/**
+ * This class represents a state of a swerve module, which consists of a speed and an angle.
+ */
 public class SwerveState {
     private double m_angleRad;
     private double m_speedMPS;

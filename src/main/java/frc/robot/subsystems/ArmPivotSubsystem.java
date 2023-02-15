@@ -19,6 +19,9 @@ import com.revrobotics.SparkMaxPIDController.AccelStrategy;
 
 import static frc.robot.constants.Ports.*;
 
+/**
+ * The ArmPivotSubsystem class is the subsystem that controls the arm pivot motor.
+ */
 public class ArmPivotSubsystem extends SubsystemBase {
   private final CANSparkMax m_motor;
   private final RelativeEncoder m_motorEncoder;

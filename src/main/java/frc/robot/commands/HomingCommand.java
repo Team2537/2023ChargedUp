@@ -3,6 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ArmPivotSubsystem;
 import frc.robot.subsystems.ArmTelescopeSubsystem;
+
 /**
  * This command will reset the arm's position and angle to their origional positions, as well as make sure that the encoder values are correct
  * this uses magnet sensors on the arm thet will send a boolean set to true when they are close

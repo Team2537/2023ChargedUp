@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ArmPivotSubsystem;
+
 /**
  * this sets the target arm angle to what we want it to be
  * this will mostly only be used for the set position command 
