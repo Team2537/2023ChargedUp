@@ -14,6 +14,7 @@ import frc.robot.subsystems.ArmPivotSubsystem;
 import frc.robot.subsystems.ArmTelescopeSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 
 import static frc.robot.constants.Constants.*;
 
@@ -48,14 +49,17 @@ public class RobotContainer {
   private final FixedExtensionCommand m_topRowExtension = new FixedExtensionCommand(m_armTelescopeSubsystem, TOP_ROW_EXTENSION);
   private final SetPositionCommand m_topRowPosition = new SetPositionCommand(m_topRowAngle, m_topRowExtension);
 
-  private final FixedExtensionCommand test = new FixedExtensionCommand(m_armTelescopeSubsystem, 7);
+  private final FixedExtensionCommand test = new FixedExtensionCommand(m_armTelescopeSubsystem, 5);
   private final HomingCommand m_homingCommand = new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem);
+
+  private final FixedAngleCommand testAngle = new FixedAngleCommand(m_armPivotSubsystem, -20);
+  //private final SetPositionCommand testPosition = new SetPositionCommand(testAngle, test);
 
   private final ManualArmControlCommand m_manualControl = new ManualArmControlCommand(
     m_armPivotSubsystem, 
     m_armTelescopeSubsystem, 
-    () -> -m_gunnerJoystick.getAxis(1), 
-    () -> 0.25 * m_gunnerJoystick.getHatSwitch());
+    () -> m_gunnerJoystick.getAxis(1), 
+    () -> 0.1 * m_gunnerJoystick.getHatSwitch());
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -75,11 +79,12 @@ public class RobotContainer {
     m_gunnerJoystick.getButton(8).onTrue(test);
 
     // TODO: decide on button bindings for preset positions
-    m_gunnerJoystick.getButton(-1).onTrue(m_bottomRowPosition);
-    m_gunnerJoystick.getButton(-1).onTrue(m_middleRowPosition);
-    m_gunnerJoystick.getButton(-1).onTrue(m_topRowPosition);
+    //m_gunnerJoystick.getButton(2).onTrue(m_bottomRowPosition);
+    //m_gunnerJoystick.getButton(2).onTrue(m_middleRowPosition);
+    //m_gunnerJoystick.getButton(2).onTrue(m_topRowPosition);
     
     m_gunnerJoystick.getButton(9).onTrue(m_homingCommand);
+    //m_gunnerJoystick.getButton(12).onTrue(Commands.sequence(testAngle, test));
     m_gunnerJoystick.getButton(1).whileTrue(m_manualControl);
   }
 

@@ -26,6 +26,6 @@ public class FixedExtensionCommand extends CommandBase {
   public boolean isFinished() {
     // Sets the PID target in the Telescoping Subsystem to be the passed in variable
     m_subsystem.setExtension(m_targetExtension);
-    return true;
+    return Math.abs((m_targetExtension - m_subsystem.getPosition()) / m_targetExtension) <= 0.02;
   }
 }

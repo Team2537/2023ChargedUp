@@ -29,7 +29,7 @@ public class HomingCommand extends CommandBase{
             m_telescopeSubsystem.setRawSpeed(-0.75);
         } else if (!m_pivotSubsystem.getMagnetClosed()){
             m_telescopeSubsystem.setRawSpeed(0);
-            m_pivotSubsystem.setRawSpeed(-0.1);
+            //m_pivotSubsystem.setRawSpeed(-0.1);
         }
     }
   

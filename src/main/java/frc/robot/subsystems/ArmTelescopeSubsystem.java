@@ -35,7 +35,7 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
 
   public ArmTelescopeSubsystem() {
     // initialize motor
-    m_motor = new CANSparkMax(FRONT_LEFT_DRIVE, MotorType.kBrushless);
+    m_motor = new CANSparkMax(EXTENSION_MOTOR, MotorType.kBrushless);
     m_motor.setInverted(true);
 
     m_motor.getEncoder().setPositionConversionFactor(1/16f);

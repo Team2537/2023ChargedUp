@@ -24,7 +24,7 @@ public class ArmPivotSubsystem extends SubsystemBase {
   private final RelativeEncoder m_motorEncoder;
   private final SparkMaxPIDController m_pidController;
   
-  private final DutyCycleEncoder m_shaftEncoder = new DutyCycleEncoder(0);
+  private final DutyCycleEncoder m_shaftEncoder = new DutyCycleEncoder(ABSOLUTE_ENCODER);
   private final DigitalInput m_pivotMagnet = new DigitalInput(PIVOT_MAGNET_SENSOR);
 
   boolean m_positionPID = true;
@@ -35,7 +35,7 @@ public class ArmPivotSubsystem extends SubsystemBase {
 
   public ArmPivotSubsystem() {
     // initialize motor
-    m_motor = new CANSparkMax(Ports.PIVOT_MOTOR, MotorType.kBrushless);
+    m_motor = new CANSparkMax(PIVOT_MOTOR, MotorType.kBrushless);
 
     m_pidController = m_motor.getPIDController();
 
@@ -45,7 +45,8 @@ public class ArmPivotSubsystem extends SubsystemBase {
     m_motorEncoder.setPositionConversionFactor(360/200f);
     m_motorEncoder.setVelocityConversionFactor(360/200f/60);
 
-    m_motorEncoder.setPosition(m_shaftEncoder.getAbsolutePosition());
+    m_shaftEncoder.setPositionOffset(0.222);
+    m_motorEncoder.setPosition(m_shaftEncoder.get() * 360);
 
     // PID coefficients
     kP = 0.0001;
@@ -70,6 +71,8 @@ public class ArmPivotSubsystem extends SubsystemBase {
     armPivotTab.addBoolean("Homed", () -> getMagnetClosed());
     armPivotTab.addNumber("Target Position", () -> target);
     armPivotTab.addNumber("Current Position", () -> getAngle());
+    armPivotTab.addNumber("Absolute Position", () -> m_shaftEncoder.get());
+    armPivotTab.addNumber("Angular Velocity", () -> m_motorEncoder.getVelocity());
   }
 
   public double getAngle() {
@@ -107,7 +110,8 @@ public class ArmPivotSubsystem extends SubsystemBase {
    * @return true if the magnet sensors are within ~2cm of each other
    */
   public boolean getMagnetClosed() {
-    return !m_pivotMagnet.get();
+    //return !m_pivotMagnet.get(); TODO change later
+    return true;
   }
 
   /**
@@ -116,8 +120,8 @@ public class ArmPivotSubsystem extends SubsystemBase {
   public void reset() {
     setVelocity(0);
 
-    m_motorEncoder.setPosition(m_shaftEncoder.getAbsolutePosition());
-    setAngle(m_shaftEncoder.getAbsolutePosition());
+    m_motorEncoder.setPosition(m_shaftEncoder.get());
+    setAngle(m_shaftEncoder.get());
   }
 
   // Runs once per scheduler run (every 20ms)
