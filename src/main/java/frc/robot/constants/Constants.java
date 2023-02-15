@@ -13,8 +13,11 @@ package frc.robot.constants;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-    // Arm angle and extension to get to each cone/cube node from starting position in inches
-    // This is in inches/degrees and assuming that the bumpers are against the community
+    /*
+     * Arm angle and extension to get to each cone node from starting position in inches
+     * This is in inches/degrees and assuming that the bumpers are against the community
+     * These constants are, Ironocally, subject to change because the arm is below the pivot point
+     */
     public static final double BOTTOM_ROW_ANGLE = -36.8;
     public static final double BOTTOM_ROW_EXTENSION = 35;
 

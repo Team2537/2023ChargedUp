@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.util.datalog.BooleanLogEntry;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -23,6 +26,11 @@ import static frc.robot.constants.Ports.*;
  * The ArmPivotSubsystem class is the subsystem that controls the arm pivot motor.
  */
 public class ArmPivotSubsystem extends SubsystemBase {
+
+  private static BooleanLogEntry homedLogEntry;
+  private static DoubleLogEntry targetAngleLogEntry;
+  private static DoubleLogEntry currentAngleLogEntry;
+
   private final CANSparkMax m_motor;
   private final RelativeEncoder m_motorEncoder;
   private final SparkMaxPIDController m_pidController;
@@ -37,6 +45,10 @@ public class ArmPivotSubsystem extends SubsystemBase {
   private double target;
 
   public ArmPivotSubsystem() {
+    //this will but the values in the log (untested)
+    homedLogEntry = new BooleanLogEntry(DataLogManager.getLog(), "/ArmPivotSubsystem/Homing");
+    targetAngleLogEntry = new DoubleLogEntry(DataLogManager.getLog(), "/ArmPivotSubsystem/TargetAngle")
+    currentAngleLogEntry = new DoubleLogEntry(DataLogManager.getLog(), "/ArmPivotSubsystem/CurrentAngle")
     // initialize motor
     m_motor = new CANSparkMax(PIVOT_MOTOR, MotorType.kBrushless);
 
