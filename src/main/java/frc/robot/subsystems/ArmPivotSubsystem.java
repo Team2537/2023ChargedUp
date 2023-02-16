@@ -38,6 +38,7 @@ public class ArmPivotSubsystem extends SubsystemBase {
   private final DutyCycleEncoder m_shaftEncoder = new DutyCycleEncoder(ABSOLUTE_ENCODER);
   private final DigitalInput m_pivotMagnet = new DigitalInput(PIVOT_MAGNET_SENSOR);
 
+  // decides if the pid is targeting position or velocity, true for position, false for velocity
   boolean m_positionPID = true;
 
   private final double kP, kI, kD;
@@ -57,6 +58,7 @@ public class ArmPivotSubsystem extends SubsystemBase {
     // Encoder object initialized to display position values
     m_motorEncoder = m_motor.getEncoder();
 
+    // set position conversion factor to convert encoder counts to degrees
     m_motorEncoder.setPositionConversionFactor(360/200f);
     m_motorEncoder.setVelocityConversionFactor(360/200f/60);
 
@@ -73,14 +75,17 @@ public class ArmPivotSubsystem extends SubsystemBase {
     m_pidController.setI(kI);
     m_pidController.setD(kD);
 
+    // set up motor pid settings
     m_pidController.setSmartMotionMaxAccel(10000, 0);
     m_pidController.setSmartMotionMaxVelocity(2500, 0);
     m_pidController.setSmartMotionMinOutputVelocity(0, 0);
     m_pidController.setSmartMotionAllowedClosedLoopError(0.1, 0);
     m_pidController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);
 
+    // reset motor to keep tests consistent and to resist pid settings continuing from previous runs
     m_motor.burnFlash();
 
+    // Setup Shuffleboard
     ShuffleboardTab armPivotTab = Shuffleboard.getTab("Pivoting Arm Subsystem");
 
     armPivotTab.addBoolean("Homed", () -> getMagnetClosed());
@@ -117,6 +122,7 @@ public class ArmPivotSubsystem extends SubsystemBase {
    * @param velocity the velocity to pivot at (degrees/s)
    */
   public void setVelocity(double velocity) {
+    // set to velocity mode
     m_positionPID = false;
     m_pidController.setReference(velocity, ControlType.kVelocity);
   }
@@ -152,5 +158,6 @@ public class ArmPivotSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run during simulation
     // Nobody likes this method - falon
     // Factual - micah
+    // fr - matthew
   }
 }
