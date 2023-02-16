@@ -27,6 +27,7 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
   private double kMaxOutput;
   private double kMinOutput;
 
+  // decides if the pid is targeting position or velocity, true for position, false for velocity
   private boolean positionPID = true;
 
   CANSparkMax m_motor;
@@ -41,10 +42,14 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
     m_motor = new CANSparkMax(EXTENSION_MOTOR, MotorType.kBrushless);
     m_motor.setInverted(true);
 
+    // Encoder object initialized to display position values
     m_motor.getEncoder().setPositionConversionFactor(1/16f);
     m_motor.getEncoder().setVelocityConversionFactor(1/16f);
 
+    // PID object created to display PID values
     m_pidController = m_motor.getPIDController();
+
+    // Encoder object created to display position values
     m_encoder = m_motor.getEncoder();
 
     // PID coefficients
@@ -82,8 +87,10 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
 
     // Shuffleboard variable display for testing
 
+    // Designate Shuffleboard tab
     ShuffleboardTab telescopingTab = Shuffleboard.getTab("Telescoping Arm");
 
+    // Init Shuffleboard variables on tab
     telescopingTab.addNumber("Position (revolutions)", () -> getPosition());
     telescopingTab.addNumber("Position (inches)", () -> getPosInches());
     telescopingTab.addNumber("Velocity", () -> m_encoder.getVelocity());
@@ -103,7 +110,10 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
    * NOOO I didn't do anything
    */
   public void setVelocity(double velocity) {
+    // set goal of pid to a velocity value
     positionPID = false;
+    // set reference for pid in velocity mode
+    // notice the use of kSmartVelocity not kVelocity
     m_pidController.setReference(velocity, ControlType.kSmartVelocity, 1);
   }
 
@@ -166,5 +176,6 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run during simulation
     // I still dislike this method - falon
     // same honestly - micah
+    // tbh fr - matthew
   }
 }
