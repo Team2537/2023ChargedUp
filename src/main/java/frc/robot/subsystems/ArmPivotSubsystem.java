@@ -26,10 +26,12 @@ import static frc.robot.constants.Ports.*;
  * The ArmPivotSubsystem class is the subsystem that controls the arm pivot motor.
  */
 public class ArmPivotSubsystem extends SubsystemBase {
-
-  private static BooleanLogEntry homedLogEntry;
-  private static DoubleLogEntry targetAngleLogEntry;
-  private static DoubleLogEntry currentAngleLogEntry;
+//This will create the logs for the entries
+  private static BooleanLogEntry homedLog;
+  private static DoubleLogEntry targetAngleLog;
+  private static DoubleLogEntry currentAngleLog;
+  private static DoubleLogEntry absolutePositionLog;
+  private static DoubleLogEntry angularPositionLog;
 
   private final CANSparkMax m_motor;
   private final RelativeEncoder m_motorEncoder;
@@ -46,10 +48,12 @@ public class ArmPivotSubsystem extends SubsystemBase {
   private double target;
 
   public ArmPivotSubsystem() {
-    //this will but the values in the log (untested)
-    homedLogEntry = new BooleanLogEntry(DataLogManager.getLog(), "/ArmPivotSubsystem/Homing");
-    targetAngleLogEntry = new DoubleLogEntry(DataLogManager.getLog(), "/ArmPivotSubsystem/TargetAngle");
-    currentAngleLogEntry = new DoubleLogEntry(DataLogManager.getLog(), "/ArmPivotSubsystem/CurrentAngle");
+    //this will but the values in the log
+    homedLog = new BooleanLogEntry(DataLogManager.getLog(), "/ArmPivotSubsystem/Homing");
+    targetAngleLog = new DoubleLogEntry(DataLogManager.getLog(), "/ArmPivotSubsystem/TargetAngle");
+    currentAngleLog = new DoubleLogEntry(DataLogManager.getLog(), "/ArmPivotSubsystem/CurrentAngle");
+    absolutePositionLog = new DoubleLogEntry(DataLogManager.getLog(), "/ArmPivotSubsystem/AbsolutePosition");
+    angularPositionLog = new DoubleLogEntry(DataLogManager.getLog(), "/ArmPivotSubsystem/AngularPosition");
     // initialize motor
     m_motor = new CANSparkMax(PIVOT_MOTOR, MotorType.kBrushless);
 
@@ -151,6 +155,12 @@ public class ArmPivotSubsystem extends SubsystemBase {
     // Sets the target of the PID loop to the "target" double,
     // using smart motion to control velocity and acceleration while in motion
     if (m_positionPID) m_pidController.setReference(target, ControlType.kSmartMotion);
+    //this will continually update the logs
+    homedLog.append(getMagnetClosed());
+    targetAngleLog.append(target);
+    currentAngleLog.append(getAngle());
+    absolutePositionLog.append(m_shaftEncoder.get());
+    angularPositionLog.append(m_motorEncoder.getVelocity());
   }
 
   @Override
