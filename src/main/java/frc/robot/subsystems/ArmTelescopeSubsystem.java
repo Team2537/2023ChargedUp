@@ -58,9 +58,8 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
     m_motor = new CANSparkMax(EXTENSION_MOTOR, MotorType.kBrushless);
     m_motor.setInverted(true);
 
-    // Encoder object initialized to display position values
-    m_motor.getEncoder().setPositionConversionFactor(1/16f);
-    m_motor.getEncoder().setVelocityConversionFactor(1/16f);
+    m_motor.getEncoder().setPositionConversionFactor(1/16f * 0.75 * Math.PI);
+    //m_motor.getEncoder().setVelocityConversionFactor(1/16f);
 
     // PID object created to display PID values
     m_pidController = m_motor.getPIDController();
@@ -106,9 +105,9 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
     // Designate Shuffleboard tab
     ShuffleboardTab telescopingTab = Shuffleboard.getTab("Telescoping Arm");
 
-    // Init Shuffleboard variables on tab
-    telescopingTab.addNumber("Position (revolutions)", () -> getPosition());
-    telescopingTab.addNumber("Position (inches)", () -> getPosInches());
+
+    telescopingTab.addNumber("Position (inches)", () -> getPosition());
+    //telescopingTab.addNumber("Position (inches)", () -> getPosInches());
     telescopingTab.addNumber("Velocity", () -> m_encoder.getVelocity());
     telescopingTab.addBoolean("Retracted", () -> getMagnetClosed());
   }
@@ -170,6 +169,10 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
    */
   public boolean getMagnetClosed(){
     return !m_telescopeMagnet.get();
+  }
+
+  public boolean isClose(double target){
+    return Math.abs((target - m_encoder.getPosition()) / target) <= 0.02;  
   }
 
   /**

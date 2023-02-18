@@ -24,12 +24,11 @@ public class FixedExtensionCommand extends CommandBase {
     addRequirements(subsystem);
   }
 
-
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     // Sets the PID target in the Telescoping Subsystem to be the passed in variable
     m_subsystem.setExtension(m_targetExtension);
-    return Math.abs((m_targetExtension - m_subsystem.getPosition()) / m_targetExtension) <= 0.02;
+    return m_subsystem.isClose(m_targetExtension);
   }
 }

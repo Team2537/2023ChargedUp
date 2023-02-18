@@ -64,7 +64,7 @@ public class ArmPivotSubsystem extends SubsystemBase {
 
     // set position conversion factor to convert encoder counts to degrees
     m_motorEncoder.setPositionConversionFactor(360/200f);
-    m_motorEncoder.setVelocityConversionFactor(360/200f/60);
+    //m_motorEncoder.setVelocityConversionFactor(1/60f);
 
     m_shaftEncoder.setPositionOffset(0.222);
     m_motorEncoder.setPosition(m_shaftEncoder.get() * 360);
@@ -75,7 +75,8 @@ public class ArmPivotSubsystem extends SubsystemBase {
     kD = 0;
 
     // set PID coefficients
-    m_pidController.setP(kP);
+    m_pidController.setP(kP, 0);
+    m_pidController.setP(0.001, 1);
     m_pidController.setI(kI);
     m_pidController.setD(kD);
 
@@ -111,6 +112,14 @@ public class ArmPivotSubsystem extends SubsystemBase {
     m_positionPID = true;
     target = angleDeg;
   }
+
+  public void syncEncoders() {
+    m_motorEncoder.setPosition(m_shaftEncoder.get() * 360);
+  }
+
+  public boolean isClose(double target){
+    return Math.abs((target - m_motorEncoder.getPosition()) / target) <= 0.02;  
+  }
   
   /**
    * Sets a raw value for the motor (Overrides the PID controls)
@@ -128,7 +137,7 @@ public class ArmPivotSubsystem extends SubsystemBase {
   public void setVelocity(double velocity) {
     // set to velocity mode
     m_positionPID = false;
-    m_pidController.setReference(velocity, ControlType.kVelocity);
+    m_pidController.setReference(velocity, ControlType.kVelocity, 1);
   }
 
   /**
@@ -145,8 +154,8 @@ public class ArmPivotSubsystem extends SubsystemBase {
   public void reset() {
     setVelocity(0);
 
-    m_motorEncoder.setPosition(m_shaftEncoder.get());
-    setAngle(m_shaftEncoder.get());
+    m_motorEncoder.setPosition(m_shaftEncoder.get() * 360);
+    setAngle(m_motorEncoder.getPosition());
   }
 
   // Runs once per scheduler run (every 20ms)

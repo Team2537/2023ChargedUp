@@ -84,7 +84,7 @@ public class RobotContainer {
     //m_gunnerJoystick.getButton(2).onTrue(m_topRowPosition);
     
     m_gunnerJoystick.getButton(9).onTrue(m_homingCommand);
-    //m_gunnerJoystick.getButton(12).onTrue(Commands.sequence(testAngle, test));
+    m_gunnerJoystick.getButton(12).onTrue(Commands.sequence(testAngle, test));
     m_gunnerJoystick.getButton(1).whileTrue(m_manualControl);
   }
 

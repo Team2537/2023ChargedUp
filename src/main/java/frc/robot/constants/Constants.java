@@ -27,6 +27,8 @@ public final class Constants {
     public static final double TOP_ROW_ANGLE = 25;
     public static final double TOP_ROW_EXTENSION = 58;
 
+    public static final double HOME_ANGLE = 55;
+
     // Frame measurements (meters)
     public static final double WHEEL_BASE = 0.52613;
     public static final double TRACK_WIDTH = 0.52695;

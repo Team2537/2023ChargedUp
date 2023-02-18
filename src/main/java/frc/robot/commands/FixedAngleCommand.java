@@ -25,6 +25,6 @@ public class FixedAngleCommand extends CommandBase {
     public boolean isFinished() {
       // Sets the target angle of the pivot arm PID system, then returns true to end the command
       m_subsystem.setAngle(m_targetAngle);
-      return Math.abs((m_targetAngle - m_subsystem.getAngle()) / m_targetAngle) <= 0.02;
+      return m_subsystem.isClose(m_targetAngle);
     }
 }
