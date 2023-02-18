@@ -1,52 +1,146 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.sensors.Pigeon2;
+import com.ctre.phoenix.sensors.Pigeon2Configuration;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.swervedrive.DriveMotor;
-import frc.robot.swervedrive.SteerMotor;
-import frc.robot.swervedrive.SwerveKinematics;
-import frc.robot.swervedrive.SwerveModule;
-import frc.robot.swervedrive.SwerveState;
+import frc.robot.Constants.DriveConstants;
 
-import static frc.robot.constants.Constants.*;
-import static frc.robot.constants.Ports.*;
+public class SwerveSubsystem extends SubsystemBase{
+    //declare and instantiate all swerve modules
+    private final SwerveModule mFrontLeft = new SwerveModule(
+        DriveConstants.kFrontLeftDriveMotorPort,
+        DriveConstants.kFrontLeftSteerMotorPort,
+        DriveConstants.kFrontLeftDriveEncoderReversed,
+        DriveConstants.kFrontLeftSteerEncoderReversed,
+        DriveConstants.kFrontLeftAbsoluteEncoderPort,
+        DriveConstants.kFrontLeftAbsoluteEncoderOffsetRad,
+        DriveConstants.kFrontLeftAbsoluteEncoderReversed);
 
-public class SwerveSubsystem extends SubsystemBase {
+    private final SwerveModule mFrontRight = new SwerveModule(
+        DriveConstants.kFrontRightDriveMotorPort,
+        DriveConstants.kFrontRightSteerMotorPort,
+        DriveConstants.kFrontRightDriveEncoderReversed,
+        DriveConstants.kFrontRightSteerEncoderReversed,
+        DriveConstants.kFrontRightAbsoluteEncoderPort,
+        DriveConstants.kFrontRightAbsoluteEncoderOffsetRad,
+        DriveConstants.kFrontRightAbsoluteEncoderReversed);
 
-    private final SwerveModule[] m_modules;
+    private final SwerveModule mBackLeft = new SwerveModule(
+        DriveConstants.kBackLeftDriveMotorPort,
+        DriveConstants.kBackLeftSteerMotorPort,
+        DriveConstants.kBackLeftDriveEncoderReversed,
+        DriveConstants.kBackLeftSteerEncoderReversed,
+        DriveConstants.kBackLeftAbsoluteEncoderPort,
+        DriveConstants.kBackLeftAbsoluteEncoderOffsetRad,
+        DriveConstants.kBackLeftAbsoluteEncoderReversed);
 
+    private final SwerveModule mBackRight = new SwerveModule(
+        DriveConstants.kBackRightDriveMotorPort,
+        DriveConstants.kBackRightSteerMotorPort,
+        DriveConstants.kBackRightDriveEncoderReversed,
+        DriveConstants.kBackRightSteerEncoderReversed,
+        DriveConstants.kBackRightAbsoluteEncoderPort,
+        DriveConstants.kBackRightAbsoluteEncoderOffsetRad,
+        DriveConstants.kBackRightAbsoluteEncoderReversed);
+
+    //declare and instantiate Inertial Measurement Unit (Pigeon2)
+    private Pigeon2 imu = new Pigeon2(DriveConstants.kPigeonPort); 
+
+    private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(DriveConstants.kDriveKinematics, new Rotation2d(0), getModulePositions());
+    //SwerveSubsystem constructor
     public SwerveSubsystem() {
-        SteerMotor steerFL = new SteerMotor(FRONT_LEFT_STEER, FRONT_LEFT_ENCODER, false, FRONT_LEFT_OFFSET);
-        SteerMotor steerFR = new SteerMotor(FRONT_RIGHT_STEER, FRONT_RIGHT_ENCODER, false, FRONT_RIGHT_OFFSET);
-        SteerMotor steerBL = new SteerMotor(BACK_LEFT_STEER, BACK_LEFT_ENCODER, false, BACK_LEFT_OFFSET);
-        SteerMotor steerBR = new SteerMotor(BACK_RIGHT_STEER, BACK_RIGHT_ENCODER, false, BACK_RIGHT_OFFSET);
 
-        DriveMotor driveFL = new DriveMotor(FRONT_LEFT_DRIVE, false);
-        DriveMotor driveFR = new DriveMotor(FRONT_RIGHT_DRIVE, false);
-        DriveMotor driveBL = new DriveMotor(BACK_LEFT_DRIVE, true);
-        DriveMotor driveBR = new DriveMotor(BACK_RIGHT_DRIVE, false);
+        new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+                resetImu();
+                zeroHeading();
+            } catch(Exception e) {
+            }        
+        }).start();
+    }
 
-        SwerveModule swerveFL = new SwerveModule(steerFL, driveFL);
-        SwerveModule swerveFR = new SwerveModule(steerFR, driveFR);
-        SwerveModule swerveBL = new SwerveModule(steerBL, driveBL);
-        SwerveModule swerveBR = new SwerveModule(steerBR, driveBR);
 
-        m_modules = new SwerveModule[] {
-            swerveFL,
-            swerveFR,
-            swerveBL,
-            swerveBR
+
+
+    public void resetImu() {
+        /* 
+        Pigeon2Configuration config = new Pigeon2Configuration();
+        config.MountPoseYaw = 0;
+        config.MountPosePitch = 0;
+        config.MountPoseRoll = 0;
+        imu.configAllSettings(config);
+        */
+
+        imu.configMountPose(0.0, 0.0, 0.0);
+    }
+
+    public double getHeading() {
+        return Math.IEEEremainder(imu.getYaw(), 360); //Pigeon2 is continuous (yaw value will go past 360 degrees). this converts it to between -180 and 180
+    }
+
+    public void zeroHeading() {
+        imu.setYaw(0.0);
+    }
+
+    public Rotation2d getRotation2d() {
+        return Rotation2d.fromDegrees(-getHeading());
+    }
+
+    public Pose2d getPose() {
+        return odometer.getPoseMeters();
+    }
+
+    //TODO: module positions
+    public void resetOdometry(Pose2d pose) {
+        odometer.resetPosition(getRotation2d(),getModulePositions(), pose);
+    }
+
+    @Override
+    public void periodic() {
+        odometer.update(getRotation2d(), getModulePositions());
+        SmartDashboard.putNumber("Robot Heading", getHeading());
+        SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
+        SmartDashboard.putNumber("Yaw", imu.getYaw());
+        SmartDashboard.putNumber("Pitch", imu.getPitch());
+        SmartDashboard.putNumber("Roll", imu.getRoll());
+
+    }
+
+
+
+    public void stopModules() {
+        mFrontLeft.stop();
+        mFrontRight.stop();
+        mBackLeft.stop();
+        mBackRight.stop();
+    }
+
+    public void setModuleStates(SwerveModuleState[] desiredStates) {
+        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.kPhysicalMaxSpeedMps);
+        mFrontLeft.setDesiredState(desiredStates[0]);
+        mFrontRight.setDesiredState(desiredStates[1]);
+        mBackLeft.setDesiredState(desiredStates[2]);
+        mBackRight.setDesiredState(desiredStates[3]);
+    }
+
+    public SwerveModulePosition[] getModulePositions() {
+        SwerveModulePosition[] modulePositions = {
+            new SwerveModulePosition(mFrontLeft.getDrivePosition(), mFrontLeft.getState().angle),
+            new SwerveModulePosition(mFrontRight.getDrivePosition(), mFrontRight.getState().angle),
+            new SwerveModulePosition(mBackLeft.getDrivePosition(), mBackLeft.getState().angle),
+            new SwerveModulePosition(mBackRight.getDrivePosition(), mBackRight.getState().angle)
         };
-    }
-    
-    public void setStates(double forward, double strafe, double rotate) {
-        forward *= MAX_SPEED * SPEED_MULTIPLIER;
-        strafe *= MAX_SPEED * SPEED_MULTIPLIER;
-        rotate *= MAX_ANGULAR_VELOCITY * SPEED_MULTIPLIER * 3;
 
-        SwerveState[] desiredStates = SwerveKinematics.getSwerveStates(forward, strafe, rotate);
-
-        for (int i = 0; i < desiredStates.length; i++) {
-            m_modules[i].setState(desiredStates[i]);
-        }
+        return modulePositions;
     }
+
 }
