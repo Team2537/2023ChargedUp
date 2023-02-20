@@ -22,20 +22,30 @@ public class VisionSubsystem extends SubsystemBase{
     private double y;
     private double area;
     private double skew;
+    private boolean viewedBool;
 
     private NetworkTableEntry tx;
     private NetworkTableEntry ty;
     private NetworkTableEntry ta;
     private NetworkTableEntry ts;
+    private NetworkTableEntry tv;
+    private NetworkTableEntry currPipe;
+
+    private NetworkTable table;
 
     public VisionSubsystem(){
 
 //Creates the network tables for use
-        NetworkTable limeTable = NetworkTableInstance.getDefault().getTable("limelight");
-        tx = limeTable.getEntry("tx");
-        ty = limeTable.getEntry("ty");
-        ta = limeTable.getEntry("ta");
-        ts = limeTable.getEntry("ts");
+        table = NetworkTableInstance.getDefault().getTable("limelight");
+        tx = table.getEntry("tx");
+        ty = table.getEntry("ty");
+        ta = table.getEntry("ta");
+        ts = table.getEntry("ts");
+        tv = table.getEntry("tv");
+        
+        
+
+
 
 // creates the logs
         XOffsetLog = new DoubleLogEntry(DataLogManager.getLog(), "/VisionSubsystem/XOffset");
@@ -51,7 +61,33 @@ public class VisionSubsystem extends SubsystemBase{
         visionTab.addNumber("Y Offset", () -> y);
         visionTab.addNumber("Area", () -> area);
         visionTab.addNumber("Skew", () -> skew);
+        visionTab.addBoolean("Viewed Target", () -> viewedBool);
+        visionTab.addNumber("Current Pipeline", () -> getPipeline());
+        visionTab.addNumber("Set Pipeline", () -> getSetPipeline());
      }
+
+     public boolean getIsTargetFound(){
+        double v = tv.getDouble(0.0);
+        return v != 0.0f;
+     }
+
+
+     public void setPipeline(Integer pipeline) {
+        table.getEntry("pipeline").setValue(pipeline);
+    }
+
+    public double getPipeline(){
+        NetworkTableEntry pipeline = table.getEntry("getpipe");
+        double pipe = pipeline.getDouble(0.0);
+        return pipe;
+    }
+
+    public double getSetPipeline(){
+        NetworkTableEntry pipeline = table.getEntry("pipeline");
+        double pipe = pipeline.getDouble(0.0);
+        return pipe;
+    }
+
 
      @Override
      public void periodic() {
@@ -63,10 +99,12 @@ public class VisionSubsystem extends SubsystemBase{
         SkewLog.append(skew);
 
 // continually updates the network tables
-        skew = ts;
-        x = tx;
-        y = ty;
-        area = ta;
+        skew = ts.getDouble(0.0);
+        x = tx.getDouble(0.0);
+        y = ty.getDouble(0.0);
+        area = ta.getDouble(0.0);
+        viewedBool = getIsTargetFound();
+        
 
      }
    

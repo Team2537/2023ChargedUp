@@ -7,8 +7,12 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.SetPipelineCommand;
+import frc.robot.commands.SwitchPipelineCommand;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -18,9 +22,16 @@ import edu.wpi.first.wpilibj2.command.Command;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
+  GameController m_controller = new GameController(0);
+
+  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  private final VisionSubsystem m_VisionSubsystem = new VisionSubsystem();
+
+  private final SwitchPipelineCommand switchPipe = new SwitchPipelineCommand(m_VisionSubsystem);
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
+  private final SetPipelineCommand apriltagCommand = new SetPipelineCommand(m_VisionSubsystem, 1);
+  private final SetPipelineCommand reflectorCommand = new SetPipelineCommand(m_VisionSubsystem, 0);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -34,7 +45,10 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
-  private void configureButtonBindings() {}
+  private void configureButtonBindings() {
+    m_controller.getButton(1).onTrue(apriltagCommand);
+    m_controller.getButton(3).onTrue(reflectorCommand);
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
