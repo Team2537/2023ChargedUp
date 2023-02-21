@@ -28,7 +28,6 @@ public class RobotContainer {
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final VisionSubsystem m_VisionSubsystem = new VisionSubsystem();
 
-  private final SwitchPipelineCommand switchPipe = new SwitchPipelineCommand(m_VisionSubsystem);
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
   private final SetPipelineCommand apriltagCommand = new SetPipelineCommand(m_VisionSubsystem, 1);
   private final SetPipelineCommand reflectorCommand = new SetPipelineCommand(m_VisionSubsystem, 0);
