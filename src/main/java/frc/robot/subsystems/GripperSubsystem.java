@@ -13,9 +13,11 @@ import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycle;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 
 public class GripperSubsystem extends SubsystemBase {
   private static final double FILTERED_GAIN = 0;
@@ -55,14 +57,18 @@ public class GripperSubsystem extends SubsystemBase {
   private double filtered_pulse_width;
   
   // replace 0 with import from constants package
-  private final Solenoid m_solenoid = new Solenoid(PneumaticsModuleType.CTREPCM, 0);
+  private final DoubleSolenoid m_left_solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
+  private final DoubleSolenoid m_right_solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 1,2);
+
 
   public void openGripper() {
-    m_solenoid.set(true);
+    m_left_solenoid.set(kForward);
+    m_right_solenoid.set(kForward);
   }
 
   public void closeGripper() {
-    m_solenoid.set(false);
+    m_left_solenoid.set(kReverse);
+    m_right_solenoid.set(kReverse);
   }
 
   @Override
