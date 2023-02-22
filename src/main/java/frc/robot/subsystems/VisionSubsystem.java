@@ -8,6 +8,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
+import static frc.robot.constants.Constants.*;
 
 public class VisionSubsystem extends SubsystemBase{
 
@@ -29,7 +30,6 @@ public class VisionSubsystem extends SubsystemBase{
     private NetworkTableEntry ta;
     private NetworkTableEntry ts;
     private NetworkTableEntry tv;
-    private NetworkTableEntry currPipe;
 
     private NetworkTable table;
 
@@ -64,6 +64,7 @@ public class VisionSubsystem extends SubsystemBase{
         visionTab.addBoolean("Viewed Target", () -> viewedBool);
         visionTab.addNumber("Current Pipeline", () -> getPipeline());
         visionTab.addNumber("Set Pipeline", () -> getSetPipeline());
+        visionTab.addDoubleArray("Position", () -> offsetFromTarget());
      }
 
      public boolean getIsTargetFound(){
@@ -106,6 +107,17 @@ public class VisionSubsystem extends SubsystemBase{
         viewedBool = getIsTargetFound();
         
 
+     }
+
+     public double[] offsetFromTarget() {
+        if (getPipeline() != 1) return new double[] {-1, -1};
+
+        double heightOffset = APRIL_TAG_HEIGHT - LIMELIGHT_HEIGHT;
+        
+        double yOff = heightOffset / Math.tan(Math.toRadians(y));
+        double xOff = (heightOffset / Math.sin(Math.toRadians(y))) * Math.tan(Math.toRadians(x));
+
+        return new double[] {xOff, yOff};
      }
    
 }
