@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -37,8 +38,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
-  private final XboxController controller = new XboxController(IOConstants.kXboxControllerPort);
-  private final LockCommand lockCommand = new LockCommand(swerveSubsystem);
+  private final CommandXboxController controller = new CommandXboxController(IOConstants.kXboxControllerPort);
+  //private final LockCommand lockCommand = new LockCommand(swerveSubsystem);
 
 
 
@@ -49,7 +50,7 @@ public class RobotContainer {
                 () -> -controller.getLeftY(), //xSpdFunction is for forward direction 
                 () -> controller.getLeftX(), 
                 () -> controller.getRightX(),
-                () -> !controller.getAButton()));
+                !controller.a()));
       
     // Configure the button bindings
     configureButtonBindings();
@@ -64,8 +65,9 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    Trigger rightTrigger = new Trigger(() -> controller.getRightTriggerAxis() > 0.9);
-    rightTrigger.onTrue(lockCommand);
+    Trigger yButton = new JoystickButton(exampleController, XboxController.Button.kY.value); 
+    Trigger rightTrigger = new Trigger(controller,() -> controller.getRightTriggerAxis() > 0.9);
+    rightTrigger.onTrue(new LockCommand(swerveSubsystem));
   }
 
   /**

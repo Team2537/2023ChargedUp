@@ -36,6 +36,11 @@ public class SwerveTeleopCommand extends CommandBase {
       addRequirements(mSwerveSubsystem);
     }
   
+    public SwerveTeleopCommand(SwerveSubsystem swerveSubsystem, Supplier<Double> xSpdFunction2,
+            Supplier<Double> ySpdFunction2, Supplier<Double> turningSpdFunction2,
+            Supplier<Boolean> fieldOrientedFunction2) {
+    }
+
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {}
@@ -72,7 +77,7 @@ public class SwerveTeleopCommand extends CommandBase {
 
         // 5. Convert chassis speeds to individual module states
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
-
+   
         // 6. Output each module states to wheels
         mSwerveSubsystem.setModuleStates(moduleStates);
     }

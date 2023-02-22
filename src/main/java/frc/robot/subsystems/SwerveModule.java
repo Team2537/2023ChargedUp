@@ -82,6 +82,7 @@ public class SwerveModule {
     public double getDriveVelocity() {
         return mDriveEncoder.getVelocity(); // should be in meters per second
     }
+    
 
     public double getSteerVelocity() {
         return mSteerEncoder.getVelocity();
@@ -92,6 +93,8 @@ public class SwerveModule {
         return angle * (mAbsoluteEncoderReversed ? -1.0 : 1.0);
 
     }
+
+    
 
     public void resetEncoders() {
         mDriveEncoder.setPosition(0.0);

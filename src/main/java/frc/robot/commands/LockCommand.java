@@ -28,20 +28,22 @@ public class LockCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+   
+  }
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
     SwerveModuleState[] moduleStates = {
-      new SwerveModuleState(0.0, new Rotation2d(Math.PI/4)),
-      new SwerveModuleState(0.0, new Rotation2d(-Math.PI/4)),
-      new SwerveModuleState(0.0, new Rotation2d(Math.PI/4)),
-      new SwerveModuleState(0.0, new Rotation2d(-Math.PI/4)),
+      new SwerveModuleState(0.2, new Rotation2d(Math.PI/4)),
+      new SwerveModuleState(0.2, new Rotation2d(-Math.PI/4)),
+      new SwerveModuleState(0.2, new Rotation2d(Math.PI/4)),
+      new SwerveModuleState(0.2, new Rotation2d(-Math.PI/4)),
   };
 
     // 6. Output each module states to wheels
     mSwerveSubsystem.setModuleStates(moduleStates);
   }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
