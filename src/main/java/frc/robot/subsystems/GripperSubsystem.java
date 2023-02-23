@@ -29,7 +29,7 @@ public class GripperSubsystem extends SubsystemBase {
   private boolean m_vibrate;
   private final Consumer<Double> m_rumble;
 
-  public GripperSubsystem(int deviceID, double target_low, double target_high, Consumer<Double> rumble, int lidar_read_port, int lidar_trigger_port) {
+  public GripperSubsystem(double target_low, double target_high, Consumer<Double> rumble, int lidar_read_port, int lidar_trigger_port) {
     m_rumble = rumble;
 
     // init lidar
