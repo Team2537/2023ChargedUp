@@ -18,7 +18,15 @@ public class GameController {
         return m_controller.getRawAxis(axis);
     }
 
-    public double getHatSwitch() {
+    public boolean getRawButton(int button){
+        return m_controller.getRawButton(button);
+    }
+
+    public int getRawDPad(){
+        return m_controller.getPOV();
+    }
+
+    public double getDPad() {
         return m_controller.getPOV() == -1 ? 0 : Math.cos(Math.toRadians(m_controller.getPOV()));
     }
 

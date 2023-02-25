@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.SetPipelineCommand;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.RGBSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -26,6 +27,7 @@ public class RobotContainer {
 
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final VisionSubsystem m_VisionSubsystem = new VisionSubsystem();
+  private final RGBSubsystem m_RgbSubsystem = new RGBSubsystem(0, 0);
 
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
   private final SetPipelineCommand apriltagCommand = new SetPipelineCommand(m_VisionSubsystem, 1);
