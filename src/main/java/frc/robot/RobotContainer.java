@@ -12,11 +12,22 @@ import frc.robot.commands.ManualArmControlCommand;
 import frc.robot.commands.SetPositionCommand;
 import frc.robot.subsystems.ArmPivotSubsystem;
 import frc.robot.subsystems.ArmTelescopeSubsystem;
+import javax.xml.namespace.QName;
+
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.commands.CloseGripperCommand;
+import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.OpenGripperCommand;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.GripperSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
 import static frc.robot.constants.Constants.*;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -60,9 +71,16 @@ public class RobotContainer {
     m_armTelescopeSubsystem, 
     () -> m_gunnerJoystick.getAxis(1), 
     () -> 0.1 * m_gunnerJoystick.getHatSwitch());
+  // The robot's subsystems and commands are defined here...
+  Joystick m_GunnerJoystick = new Joystick(0);
+
+  private final GripperSubsystem m_gripperSubsystem = new GripperSubsystem(0, 0, null, 10, 11);
+
+  private final OpenGripperCommand openGripper = new OpenGripperCommand(m_gripperSubsystem);
+  private final CloseGripperCommand closeGripper = new CloseGripperCommand(m_gripperSubsystem);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
-  public RobotContainer() {
+  public RobotContainer() {                                                                                                                               
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -86,7 +104,14 @@ public class RobotContainer {
     m_gunnerJoystick.getButton(9).onTrue(m_homingCommand);
     m_gunnerJoystick.getButton(12).onTrue(Commands.sequence(testAngle, test));
     m_gunnerJoystick.getButton(1).whileTrue(m_manualControl);
+
+    Trigger closeGrip = new Trigger(() -> m_GunnerJoystick.getRawButton(11));
+    closeGrip.onTrue(closeGripper);
+
+    Trigger openGrip = new Trigger(() -> m_GunnerJoystick.getRawButton(12));
+    openGrip.onTrue(closeGripper);
   }
+
 
 
   public Command getAutonomousCommand() {
