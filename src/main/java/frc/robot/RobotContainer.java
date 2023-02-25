@@ -7,12 +7,16 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.SetColorCommand;
 import frc.robot.commands.SetPipelineCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.RGBSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+
+import static frc.robot.constants.Constants.*;
+import static frc.robot.constants.Ports.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -32,6 +36,12 @@ public class RobotContainer {
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
   private final SetPipelineCommand apriltagCommand = new SetPipelineCommand(m_VisionSubsystem, 1);
   private final SetPipelineCommand reflectorCommand = new SetPipelineCommand(m_VisionSubsystem, 0);
+
+  private final SetColorCommand redColor = new SetColorCommand(m_RgbSubsystem, RED);
+  private final SetColorCommand yellowColor = new SetColorCommand(m_RgbSubsystem, YELLOW);
+  private final SetColorCommand purpleColor = new SetColorCommand(m_RgbSubsystem, PURPLE);
+  private final SetColorCommand greenColor = new SetColorCommand(m_RgbSubsystem, GREEN);
+  private final SetColorCommand awesomeColor = new SetColorCommand(m_RgbSubsystem, AWESOME);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
