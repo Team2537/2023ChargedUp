@@ -11,12 +11,8 @@ public class CloseGripperCommand extends CommandBase {
     }
 
     @Override
-    public void initialize() {
-        m_gripperSubsystem.closeGripper();
-    }
-
-    @Override
     public boolean isFinished() {
+        m_gripperSubsystem.closeGripper();
         return true;
     }
 }
