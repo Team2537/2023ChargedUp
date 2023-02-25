@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.subsystems.SwerveSubsystem;
-import edu.wpi.first.wpilibj.XboxController;
 
 public class SwerveTeleopCommand extends CommandBase {
     @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
@@ -35,11 +34,7 @@ public class SwerveTeleopCommand extends CommandBase {
       // Use addRequirements() here to declare subsystem dependencies.
       addRequirements(mSwerveSubsystem);
     }
-  
-    public SwerveTeleopCommand(SwerveSubsystem swerveSubsystem, Supplier<Double> xSpdFunction2,
-            Supplier<Double> ySpdFunction2, Supplier<Double> turningSpdFunction2,
-            Supplier<Boolean> fieldOrientedFunction2) {
-    }
+
 
     // Called when the command is initially scheduled.
     @Override

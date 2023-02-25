@@ -19,7 +19,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 public final class Constants {
         public static final class ModuleConstants {
         public static final double kWheelDiameterMeters = 0.1016; //in meters //4 inches
-        public static final double kSteerEncoderGearRatio = (150/7); //(150/7): one revolution of wheel equals 21 revolutions on steering motor
+        public static final double kSteerEncoderGearRatio = (150/7f); //(150/7): one revolution of wheel equals 21 revolutions on steering motor
         public static final double kDriveEncoderGearRatio = (8.14); //8.14/2*pi: gear ratio*revolution to radians
         public static final double kDriveEncoderRotToMeters = Math.PI * kWheelDiameterMeters/kDriveEncoderGearRatio;
         public static final double kSteerEncoderRot2Rad = (2.0*Math.PI)/kSteerEncoderGearRatio;
@@ -68,10 +68,10 @@ public final class Constants {
         public static final boolean kBackRightDriveEncoderReversed = false;
         
 
-        public static final boolean kFrontLeftSteerEncoderReversed = false;
-        public static final boolean kFrontRightSteerEncoderReversed = false;
-        public static final boolean kBackLeftSteerEncoderReversed = false;
-        public static final boolean kBackRightSteerEncoderReversed = false;
+        public static final boolean kFrontLeftSteerEncoderReversed = true;
+        public static final boolean kFrontRightSteerEncoderReversed = true;
+        public static final boolean kBackLeftSteerEncoderReversed = true;
+        public static final boolean kBackRightSteerEncoderReversed = true;
 
         public static final boolean kFrontLeftAbsoluteEncoderReversed = false;
         public static final boolean kFrontRightAbsoluteEncoderReversed = false;
@@ -79,10 +79,10 @@ public final class Constants {
         public static final boolean kBackRightAbsoluteEncoderReversed = false;
         
 
-        public static final double kFrontLeftAbsoluteEncoderOffsetRad = 5.561;
-        public static final double kFrontRightAbsoluteEncoderOffsetRad = 5.502;
-        public static final double kBackLeftAbsoluteEncoderOffsetRad = 6.113;
-        public static final double kBackRightAbsoluteEncoderOffsetRad = 4.913;
+        public static final double kFrontLeftAbsoluteEncoderOffsetRad = 1.958889506757259;//5.561;
+        public static final double kFrontRightAbsoluteEncoderOffsetRad = 0.395766243338585;//5.502;
+        public static final double kBackLeftAbsoluteEncoderOffsetRad = 0.681086093187332;//6.113;
+        public static final double kBackRightAbsoluteEncoderOffsetRad = 3.298052027821541;//4.913;
     
         public static final double kWheelBaseMeters = 0.52705; //20.75 inches
         // Distance between right and left wheels

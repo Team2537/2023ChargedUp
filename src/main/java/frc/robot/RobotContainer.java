@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.IOConstants;
 import frc.robot.commands.LockCommand;
 import frc.robot.commands.SwerveTeleopCommand;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -26,8 +25,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+
+import static frc.robot.Constants.IOConstants.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -38,9 +38,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
-  private final CommandXboxController controller = new CommandXboxController(IOConstants.kXboxControllerPort);
-  //private final LockCommand lockCommand = new LockCommand(swerveSubsystem);
-
+  private final XboxController controller = new XboxController(0);
+  
+  private final LockCommand lockCommand = new LockCommand(swerveSubsystem);
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -50,7 +50,8 @@ public class RobotContainer {
                 () -> -controller.getLeftY(), //xSpdFunction is for forward direction 
                 () -> controller.getLeftX(), 
                 () -> controller.getRightX(),
-                !controller.a()));
+                () -> !controller.getAButton()));
+      //swerveSubsystem.setDefaultCommand(lockCommand);
       
     // Configure the button bindings
     configureButtonBindings();
@@ -65,9 +66,11 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    Trigger yButton = new JoystickButton(exampleController, XboxController.Button.kY.value); 
-    Trigger rightTrigger = new Trigger(controller,() -> controller.getRightTriggerAxis() > 0.9);
-    rightTrigger.onTrue(new LockCommand(swerveSubsystem));
+    Trigger yButton = new Trigger(() -> controller.getYButton()); 
+    //Trigger rightTrigger = new Trigger(() -> controller.getRightTriggerAxis() > 0.9);
+    //rightTrigger.onTrue(new LockCommand(swerveSubsystem));
+
+    yButton.onTrue(lockCommand);
   }
 
   /**

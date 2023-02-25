@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 /** An example command that uses an example subsystem. */
 public class LockCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final SwerveSubsystem mSwerveSubsystem;
+  private final SwerveSubsystem m_subsystem;
 
   /**
    * Creates a new ExampleCommand.
@@ -20,7 +20,7 @@ public class LockCommand extends CommandBase {
    * @param subsystem The subsystem used by this command.
    */
   public LockCommand(SwerveSubsystem subsystem) {
-    mSwerveSubsystem = subsystem;
+    m_subsystem = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
@@ -35,14 +35,21 @@ public class LockCommand extends CommandBase {
   @Override
   public void execute() {
     SwerveModuleState[] moduleStates = {
-      new SwerveModuleState(0.2, new Rotation2d(Math.PI/4)),
-      new SwerveModuleState(0.2, new Rotation2d(-Math.PI/4)),
-      new SwerveModuleState(0.2, new Rotation2d(Math.PI/4)),
-      new SwerveModuleState(0.2, new Rotation2d(-Math.PI/4)),
-  };
+      new SwerveModuleState(0, new Rotation2d(Math.PI/4)),
+      new SwerveModuleState(0, new Rotation2d(-Math.PI/4)),
+      new SwerveModuleState(0, new Rotation2d(-Math.PI/4)),
+      new SwerveModuleState(0, new Rotation2d(Math.PI/4)),
+    };
+
+  /*SwerveModuleState[] moduleStates = {
+    new SwerveModuleState(0, new Rotation2d(0)),
+    new SwerveModuleState(0, new Rotation2d(0)),
+    new SwerveModuleState(0, new Rotation2d(0)),
+    new SwerveModuleState(0, new Rotation2d(0)),
+  };*/
 
     // 6. Output each module states to wheels
-    mSwerveSubsystem.setModuleStates(moduleStates);
+    m_subsystem.setModuleStates(moduleStates);
   }
 
   // Called once the command ends or is interrupted.
