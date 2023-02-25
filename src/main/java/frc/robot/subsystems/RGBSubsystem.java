@@ -1,10 +1,6 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.GameController;
-import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -14,43 +10,45 @@ public class RGBSubsystem extends SubsystemBase{
 
     private PWM lightLine;
     
-    private GameController m_controller;
-
     private ShuffleboardTab pwmTab;
 
     private int targetValue;
 
-    /*
-     * Purple: 
-     * Yellow: 
-     */
+    private boolean updatePause = false;
 
     public RGBSubsystem(int port, int control){
         lightLine = new PWM(port);
-        m_controller = new GameController(control);        
 
-        pwmTab = Shuffleboard.getTab("Test");
+        pwmTab = Shuffleboard.getTab("RGB");
 
-        pwmTab.addInteger("PWM", () -> targetValue);
-        pwmTab.addInteger("Raw PWM", () -> lightLine.getRaw());
-
-
-
+        pwmTab.addInteger("Target PWM", () -> targetValue);
     }
 
-    public void setPurple(){
+    /*
+     * NGUYEN-EDELEN Protocol 2023:
+     * 1: Purple -> 20
+     * 2: Yellow -> 40
+     * 3: Green -> 60
+     * 4: Red -> 80
+     * 7: Awesome -> 140
+     */
+    public void setCommand(int command) {
+        // command should be 1-5
 
-    }
-    
-    public void setYellow(){
+        // convert command to targetValue
+        targetValue = command*20;
 
+        // make sure to not send any commands for one pulse to avoid decoding errors on the arduino
+        updatePause = true;
     }
 
     @Override
     public void periodic(){
-        targetValue = m_controller.getRawDPad() > -1 ? m_controller.getRawDPad() %255 : 0;
-        lightLine.setRaw(m_controller.getRawDPad() > -1 ? m_controller.getRawDPad() %255 : 0);
-        
+        if (!updatePause) {
+            lightLine.setRaw(targetValue);
+        } else {
+            updatePause = true;
+        }
     }
 
 
