@@ -63,7 +63,7 @@ public final class Constants {
     
 
         public static final boolean kFrontLeftDriveEncoderReversed = false;
-        public static final boolean kFrontRightDriveEncoderReversed = true;
+        public static final boolean kFrontRightDriveEncoderReversed = false;
         public static final boolean kBackLeftDriveEncoderReversed = false;
         public static final boolean kBackRightDriveEncoderReversed = false;
         
@@ -99,10 +99,10 @@ public final class Constants {
         
         
         public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
-                new Translation2d(kWheelBaseMeters / 2, -kTrackWidthMeters / 2),
                 new Translation2d(kWheelBaseMeters / 2, kTrackWidthMeters / 2),
-                new Translation2d(-kWheelBaseMeters / 2, -kTrackWidthMeters / 2),
-                new Translation2d(-kWheelBaseMeters / 2, kTrackWidthMeters / 2));
+                new Translation2d(kWheelBaseMeters / 2, -kTrackWidthMeters / 2),
+                new Translation2d(-kWheelBaseMeters / 2, kTrackWidthMeters / 2),
+                new Translation2d(-kWheelBaseMeters / 2, -kTrackWidthMeters / 2));
 		
 		
                       
