@@ -10,6 +10,7 @@ import frc.robot.commands.FixedExtensionCommand;
 import frc.robot.commands.HomingCommand;
 import frc.robot.commands.ManualArmControlCommand;
 import frc.robot.commands.SetPositionCommand;
+import frc.robot.commands.ToggleGripperCommand;
 import frc.robot.subsystems.ArmPivotSubsystem;
 import frc.robot.subsystems.ArmTelescopeSubsystem;
 import javax.xml.namespace.QName;
@@ -42,6 +43,8 @@ public class RobotContainer {
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final ArmTelescopeSubsystem m_armTelescopeSubsystem = new ArmTelescopeSubsystem();
   private final ArmPivotSubsystem m_armPivotSubsystem = new ArmPivotSubsystem();
+  private final GripperSubsystem m_gripperSubsystem = new GripperSubsystem(0, 0, null, 10, 11);
+
 
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
   
@@ -66,6 +69,10 @@ public class RobotContainer {
   private final FixedAngleCommand testAngle = new FixedAngleCommand(m_armPivotSubsystem, -20);
   //private final SetPositionCommand testPosition = new SetPositionCommand(testAngle, test);
 
+  private final OpenGripperCommand openGripper = new OpenGripperCommand(m_gripperSubsystem);
+  private final CloseGripperCommand closeGripper = new CloseGripperCommand(m_gripperSubsystem);
+  private final ToggleGripperCommand toggleGripper = new ToggleGripperCommand(m_gripperSubsystem);
+
   private final ManualArmControlCommand m_manualControl = new ManualArmControlCommand(
     m_armPivotSubsystem, 
     m_armTelescopeSubsystem, 
@@ -74,10 +81,8 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   Joystick m_GunnerJoystick = new Joystick(0);
 
-  private final GripperSubsystem m_gripperSubsystem = new GripperSubsystem(0, 0, null, 10, 11);
 
-  private final OpenGripperCommand openGripper = new OpenGripperCommand(m_gripperSubsystem);
-  private final CloseGripperCommand closeGripper = new CloseGripperCommand(m_gripperSubsystem);
+
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {                                                                                                                               
