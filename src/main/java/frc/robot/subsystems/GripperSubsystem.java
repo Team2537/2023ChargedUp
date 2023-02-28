@@ -28,9 +28,11 @@ public class GripperSubsystem extends SubsystemBase {
   private DutyCycle m_pwm;
   private boolean m_vibrate;
   private final Consumer<Double> m_rumble;
+  private boolean opened;
 
   public GripperSubsystem(double target_low, double target_high, Consumer<Double> rumble, int lidar_read_port, int lidar_trigger_port) {
     m_rumble = rumble;
+    
 
     // init lidar
     m_target_low = target_low;
@@ -51,6 +53,9 @@ public class GripperSubsystem extends SubsystemBase {
     m_read = new DigitalInput(lidar_read_port);
     m_pwm = new DutyCycle(m_read);
     Shuffleboard.getTab("Gripper Subsystem").addBoolean("Gamepiece detected", () -> isTarget());
+
+    openGripper();
+    opened = true;
   }
 
   private int m_count;
@@ -64,11 +69,21 @@ public class GripperSubsystem extends SubsystemBase {
   public void openGripper() {
     m_left_solenoid.set(kForward);
     m_right_solenoid.set(kForward);
+    opened = true;
   }
 
   public void closeGripper() {
     m_left_solenoid.set(kReverse);
     m_right_solenoid.set(kReverse);
+    opened = false;
+  }
+
+  public boolean isOpened(){
+    if(opened == true){
+      return true;
+    } else {
+      return false;
+    }
   }
 
   @Override
