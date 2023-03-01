@@ -24,13 +24,13 @@ public final class Ports {
         public static final int BACK_RIGHT_ENCODER = 10;
 
         // ID's of motors for the arm
-        public static final int PIVOT_MOTOR = 1;
-        public static final int EXTENSION_MOTOR = 5; // Front Right Steer
+        public static final int PIVOT_MOTOR = 12;
+        public static final int EXTENSION_MOTOR = 9;
 
         // Absolute Encoder for pivoting arm
-        public static final int ABSOLUTE_ENCODER = 0;
+        public static final int ABSOLUTE_ENCODER = 1;
         
         // DIO Ports for sensors
-        public static final int TELESCOPE_MAGNET_SENSOR = 1;
+        public static final int TELESCOPE_MAGNET_SENSOR = 0;
         public static final int PIVOT_MAGNET_SENSOR = 2;
 }

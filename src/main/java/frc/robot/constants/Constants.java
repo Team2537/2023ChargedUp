@@ -28,6 +28,7 @@ public final class Constants {
     public static final double TOP_ROW_EXTENSION = 58;
 
     public static final double HOME_ANGLE = 55;
+    public static final double PIVOT_OFFSET = 0;
 
     // Frame measurements (meters)
     public static final double WHEEL_BASE = 0.52613;

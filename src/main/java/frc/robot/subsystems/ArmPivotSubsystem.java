@@ -37,8 +37,8 @@ public class ArmPivotSubsystem extends SubsystemBase {
   private final RelativeEncoder m_motorEncoder;
   private final SparkMaxPIDController m_pidController;
   
-  private final DutyCycleEncoder m_shaftEncoder = new DutyCycleEncoder(ABSOLUTE_ENCODER);
-  private final DigitalInput m_pivotMagnet = new DigitalInput(PIVOT_MAGNET_SENSOR);
+  private final DutyCycleEncoder m_shaftEncoder;
+  //private final DigitalInput m_pivotMagnet = new DigitalInput(PIVOT_MAGNET_SENSOR);
 
   // decides if the pid is targeting position or velocity, true for position, false for velocity
   boolean m_positionPID = true;
@@ -55,6 +55,8 @@ public class ArmPivotSubsystem extends SubsystemBase {
     absolutePositionLog = new DoubleLogEntry(DataLogManager.getLog(), "/ArmPivotSubsystem/AbsolutePosition");
     angularPositionLog = new DoubleLogEntry(DataLogManager.getLog(), "/ArmPivotSubsystem/AngularPosition");
     // initialize motor
+    m_shaftEncoder = new DutyCycleEncoder(ABSOLUTE_ENCODER);
+
     m_motor = new CANSparkMax(PIVOT_MOTOR, MotorType.kBrushless);
 
     m_pidController = m_motor.getPIDController();
@@ -63,11 +65,10 @@ public class ArmPivotSubsystem extends SubsystemBase {
     m_motorEncoder = m_motor.getEncoder();
 
     // set position conversion factor to convert encoder counts to degrees
-    m_motorEncoder.setPositionConversionFactor(360/200f);
+    m_motorEncoder.setPositionConversionFactor(1/189f);
     //m_motorEncoder.setVelocityConversionFactor(1/60f);
 
-    m_shaftEncoder.setPositionOffset(0.222);
-    m_motorEncoder.setPosition(m_shaftEncoder.get() * 360);
+    //m_shaftEncoder.setPositionOffset(0.222);
 
     // PID coefficients
     kP = 0.0001;
@@ -98,6 +99,8 @@ public class ArmPivotSubsystem extends SubsystemBase {
     armPivotTab.addNumber("Current Position", () -> getAngle());
     armPivotTab.addNumber("Absolute Position", () -> m_shaftEncoder.get());
     armPivotTab.addNumber("Angular Velocity", () -> m_motorEncoder.getVelocity());
+
+    syncEncoders();
   }
 
   public double getAngle() {
@@ -114,7 +117,7 @@ public class ArmPivotSubsystem extends SubsystemBase {
   }
 
   public void syncEncoders() {
-    m_motorEncoder.setPosition(m_shaftEncoder.get() * 360);
+    m_motorEncoder.setPosition(m_shaftEncoder.get());
   }
 
   public boolean isClose(double target){
@@ -154,7 +157,7 @@ public class ArmPivotSubsystem extends SubsystemBase {
   public void reset() {
     setVelocity(0);
 
-    m_motorEncoder.setPosition(m_shaftEncoder.get() * 360);
+    syncEncoders();
     setAngle(m_motorEncoder.getPosition());
   }
 

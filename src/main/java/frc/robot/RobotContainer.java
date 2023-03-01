@@ -37,13 +37,13 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  LogitechJoystick m_gunnerJoystick = new LogitechJoystick(0);
+  private final LogitechJoystick m_gunnerJoystick = new LogitechJoystick(0);
 
 // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final ArmTelescopeSubsystem m_armTelescopeSubsystem = new ArmTelescopeSubsystem();
   private final ArmPivotSubsystem m_armPivotSubsystem = new ArmPivotSubsystem();
-  private final GripperSubsystem m_gripperSubsystem = new GripperSubsystem(0, 0, null, 10, 11);
+  private final GripperSubsystem m_gripperSubsystem = new GripperSubsystem(0, 0, i -> {}, 10, 11);
 
 
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
@@ -79,10 +79,6 @@ public class RobotContainer {
     () -> m_gunnerJoystick.getAxis(1), 
     () -> 0.1 * m_gunnerJoystick.getHatSwitch());
   // The robot's subsystems and commands are defined here...
-  Joystick m_GunnerJoystick = new Joystick(0);
-
-
-
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {                                                                                                                               
@@ -109,12 +105,6 @@ public class RobotContainer {
     m_gunnerJoystick.getButton(9).onTrue(m_homingCommand);
     m_gunnerJoystick.getButton(12).onTrue(Commands.sequence(testAngle, test));
     m_gunnerJoystick.getButton(1).whileTrue(m_manualControl);
-
-    Trigger closeGrip = new Trigger(() -> m_GunnerJoystick.getRawButton(11));
-    closeGrip.onTrue(closeGripper);
-
-    Trigger openGrip = new Trigger(() -> m_GunnerJoystick.getRawButton(12));
-    openGrip.onTrue(closeGripper);
   }
 
 }
