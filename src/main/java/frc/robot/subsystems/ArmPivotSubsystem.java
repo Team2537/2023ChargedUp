@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constants.Ports;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
@@ -21,6 +20,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxPIDController.AccelStrategy;
 
 import static frc.robot.constants.Ports.*;
+import static frc.robot.constants.Constants.*;
 
 /**
  * The ArmPivotSubsystem class is the subsystem that controls the arm pivot motor.
@@ -89,7 +89,7 @@ public class ArmPivotSubsystem extends SubsystemBase {
     m_pidController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);
 
     // reset motor to keep tests consistent and to resist pid settings continuing from previous runs
-    m_motor.burnFlash();
+    //m_motor.burnFlash();
 
     // Setup Shuffleboard
     ShuffleboardTab armPivotTab = Shuffleboard.getTab("Pivoting Arm Subsystem");
@@ -97,7 +97,7 @@ public class ArmPivotSubsystem extends SubsystemBase {
     armPivotTab.addBoolean("Homed", () -> getMagnetClosed());
     armPivotTab.addNumber("Target Position", () -> target);
     armPivotTab.addNumber("Current Position", () -> getAngle());
-    armPivotTab.addNumber("Absolute Position", () -> m_shaftEncoder.get());
+    armPivotTab.addNumber("Absolute Position", () -> getAbsoluteAngle());
     armPivotTab.addNumber("Angular Velocity", () -> m_motorEncoder.getVelocity());
 
     syncEncoders();
@@ -105,6 +105,10 @@ public class ArmPivotSubsystem extends SubsystemBase {
 
   public double getAngle() {
     return m_motorEncoder.getPosition();
+  }
+
+  public double getAbsoluteAngle() {
+    return m_shaftEncoder.get();
   }
 
   /**
