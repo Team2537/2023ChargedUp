@@ -62,19 +62,16 @@ public class GripperSubsystem extends SubsystemBase {
   private double filtered_pulse_width;
   
   // replace 0 with import from constants package
-  private final DoubleSolenoid m_left_solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
-  private final DoubleSolenoid m_right_solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 1,2);
+  private final DoubleSolenoid m_solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 2, 3);
 
 
   public void openGripper() {
-    m_left_solenoid.set(kForward);
-    m_right_solenoid.set(kForward);
+    m_solenoid.set(kForward);
     opened = true;
   }
 
   public void closeGripper() {
-    m_left_solenoid.set(kReverse);
-    m_right_solenoid.set(kReverse);
+    m_solenoid.set(kReverse);
     opened = false;
   }
 
