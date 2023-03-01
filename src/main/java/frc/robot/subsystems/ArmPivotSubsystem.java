@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constants.Ports;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
@@ -21,6 +20,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxPIDController.AccelStrategy;
 
 import static frc.robot.constants.Ports.*;
+import static frc.robot.constants.Constants.*;
 
 /**
  * The ArmPivotSubsystem class is the subsystem that controls the arm pivot motor.
@@ -38,7 +38,7 @@ public class ArmPivotSubsystem extends SubsystemBase {
   private final SparkMaxPIDController m_pidController;
   
   private final DutyCycleEncoder m_shaftEncoder = new DutyCycleEncoder(ABSOLUTE_ENCODER);
-  private final DigitalInput m_pivotMagnet = new DigitalInput(PIVOT_MAGNET_SENSOR);
+  //private final DigitalInput m_pivotMagnet = new DigitalInput(PIVOT_MAGNET_SENSOR);
 
   // decides if the pid is targeting position or velocity, true for position, false for velocity
   boolean m_positionPID = true;
@@ -66,8 +66,7 @@ public class ArmPivotSubsystem extends SubsystemBase {
     m_motorEncoder.setPositionConversionFactor(360/200f);
     //m_motorEncoder.setVelocityConversionFactor(1/60f);
 
-    m_shaftEncoder.setPositionOffset(0.222);
-    m_motorEncoder.setPosition(m_shaftEncoder.get() * 360);
+    //m_shaftEncoder.setPositionOffset(0);
 
     // PID coefficients
     kP = 0.0001;
@@ -88,7 +87,7 @@ public class ArmPivotSubsystem extends SubsystemBase {
     m_pidController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);
 
     // reset motor to keep tests consistent and to resist pid settings continuing from previous runs
-    m_motor.burnFlash();
+    //m_motor.burnFlash();
 
     // Setup Shuffleboard
     ShuffleboardTab armPivotTab = Shuffleboard.getTab("Pivoting Arm Subsystem");
@@ -96,12 +95,18 @@ public class ArmPivotSubsystem extends SubsystemBase {
     armPivotTab.addBoolean("Homed", () -> getMagnetClosed());
     armPivotTab.addNumber("Target Position", () -> target);
     armPivotTab.addNumber("Current Position", () -> getAngle());
-    armPivotTab.addNumber("Absolute Position", () -> m_shaftEncoder.get());
+    armPivotTab.addNumber("Absolute Position", () -> getAbsoluteAngle());
     armPivotTab.addNumber("Angular Velocity", () -> m_motorEncoder.getVelocity());
+
+    syncEncoders();
   }
 
   public double getAngle() {
     return m_motorEncoder.getPosition();
+  }
+
+  public double getAbsoluteAngle() {
+    return m_shaftEncoder.get();
   }
 
   /**
@@ -114,7 +119,7 @@ public class ArmPivotSubsystem extends SubsystemBase {
   }
 
   public void syncEncoders() {
-    m_motorEncoder.setPosition(m_shaftEncoder.get() * 360);
+    m_motorEncoder.setPosition(getAbsoluteAngle() * 360);
   }
 
   public boolean isClose(double target){
@@ -154,7 +159,7 @@ public class ArmPivotSubsystem extends SubsystemBase {
   public void reset() {
     setVelocity(0);
 
-    m_motorEncoder.setPosition(m_shaftEncoder.get() * 360);
+    syncEncoders();
     setAngle(m_motorEncoder.getPosition());
   }
 
