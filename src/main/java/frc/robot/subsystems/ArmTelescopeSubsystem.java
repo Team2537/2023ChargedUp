@@ -58,7 +58,7 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
     m_motor = new CANSparkMax(EXTENSION_MOTOR, MotorType.kBrushless);
     m_motor.setInverted(true);
 
-    m_motor.getEncoder().setPositionConversionFactor(1/16f * 0.75 * Math.PI);
+    m_motor.getEncoder().setPositionConversionFactor(1/16f);
     //m_motor.getEncoder().setVelocityConversionFactor(1/16f);
 
     // PID object created to display PID values

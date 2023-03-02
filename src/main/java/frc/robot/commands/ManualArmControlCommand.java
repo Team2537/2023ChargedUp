@@ -15,6 +15,12 @@ public class ManualArmControlCommand extends CommandBase {
 
     private final DoubleSupplier m_pivotControl, m_telescopeControl;
 
+    private double angleRate = 0.05;
+    private double extendRate = 0.05;
+
+    private double angleTarget = 0;
+    private double extendTarget = 0;
+
     public ManualArmControlCommand(ArmPivotSubsystem pivotSubsystem, ArmTelescopeSubsystem telescopeSubsystem, DoubleSupplier pivotControl, DoubleSupplier telescopeControl) {
         m_pivotSubsystem = pivotSubsystem;
         m_telescopeSubsystem = telescopeSubsystem;
@@ -27,20 +33,20 @@ public class ManualArmControlCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        // Set pivoting and telescoping to 0 to freeze mechanisms and disable positional PID for both
-        m_pivotSubsystem.setVelocity(0);
-        m_telescopeSubsystem.setRawSpeed(0);
+        extendTarget = m_telescopeSubsystem.getPosition();
+        angleTarget = m_pivotSubsystem.getAngle();
     }
 
     @Override
     public void execute() {
+
+        m_telescopeSubsystem.setExtension(extendTarget += extendRate);
+
         m_telescopeSubsystem.setRawSpeed(m_telescopeControl.getAsDouble());
         if (m_pivotSubsystem.getAngle() >= 105 && !(m_pivotControl.getAsDouble() > 0)) {
-            m_pivotSubsystem.setVelocity(0);
         } else if (m_pivotSubsystem.getAngle() <= 15 && !(m_pivotControl.getAsDouble() < 0)) {
-            m_pivotSubsystem.setVelocity(0);
         } else {
-            m_pivotSubsystem.setVelocity(-m_pivotControl.getAsDouble() * 90);
+            m_pivotSubsystem.setAngle(angleTarget += angleRate);
         }
     }
 
