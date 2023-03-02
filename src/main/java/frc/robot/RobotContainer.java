@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
+import frc.robot.commands.SetChassisState;
 import frc.robot.commands.SwerveTeleopCommand;
 import frc.robot.subsystems.SwerveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -67,6 +68,10 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    return new SetChassisState(swerveSubsystem, 0.0, 0.0, 0.0);
+  }
+  /* 
+  public Command getAutonomousCommand() {
     // 1. Create trajectory settings
     TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
       AutoConstants.kMaxSpeedMps,
@@ -103,5 +108,6 @@ SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
 // 5. Add some init and wrap-up, and return everything
 return new SequentialCommandGroup(new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())), swerveControllerCommand,  new InstantCommand(() -> swerveSubsystem.stopModules()));
   }
+*/
 
 }
