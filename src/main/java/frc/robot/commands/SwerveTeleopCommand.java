@@ -44,10 +44,10 @@ public class SwerveTeleopCommand extends CommandBase {
     @Override
     public void execute() {
         // 1. Get real-time joystick inputs
-        double xSpeed = xSpdFunction.get();
-        double ySpeed = ySpdFunction.get();
+        double xSpeed = xSpdFunction.get()*5.0;
+        double ySpeed = ySpdFunction.get()*5.0;
         double turningSpeed = turningSpdFunction.get();
-
+/* 
         // 2. Apply deadband
         xSpeed = Math.abs(xSpeed) > IOConstants.kDeadband ? xSpeed : 0.0;
         ySpeed = Math.abs(ySpeed) > IOConstants.kDeadband ? ySpeed : 0.0;
@@ -58,7 +58,7 @@ public class SwerveTeleopCommand extends CommandBase {
         ySpeed = yLimiter.calculate(ySpeed) * DriveConstants.kTeleDriveMaxSpeedMps;
         turningSpeed = turningLimiter.calculate(turningSpeed)
                 * DriveConstants.kTeleopMaxAngularSpeedRps;
-
+*/
         // 4. Construct desired chassis speeds
         ChassisSpeeds chassisSpeeds;
         if (fieldOrientedFunction.get()) {
