@@ -56,6 +56,8 @@ public class ArmPivotSubsystem extends SubsystemBase {
     angularPositionLog = new DoubleLogEntry(DataLogManager.getLog(), "/ArmPivotSubsystem/AngularPosition");
     // initialize motor
     m_shaftEncoder = new DutyCycleEncoder(ABSOLUTE_ENCODER);
+    m_shaftEncoder.setPositionOffset(0);
+    m_shaftEncoder.reset();
 
     m_motor = new CANSparkMax(PIVOT_MOTOR, MotorType.kBrushless);
 
@@ -65,7 +67,7 @@ public class ArmPivotSubsystem extends SubsystemBase {
     m_motorEncoder = m_motor.getEncoder();
 
     // set position conversion factor to convert encoder counts to degrees
-    m_motorEncoder.setPositionConversionFactor(1/189f);
+    m_motorEncoder.setPositionConversionFactor(360/189f);
     //m_motorEncoder.setVelocityConversionFactor(1/60f);
 
     //m_shaftEncoder.setPositionOffset(0.222);
@@ -97,7 +99,7 @@ public class ArmPivotSubsystem extends SubsystemBase {
     armPivotTab.addBoolean("Homed", () -> getMagnetClosed());
     armPivotTab.addNumber("Target Position", () -> target);
     armPivotTab.addNumber("Current Position", () -> getAngle());
-    armPivotTab.addNumber("Absolute Position", () -> getAbsoluteAngle());
+    armPivotTab.addNumber("Absolute Position", () -> m_shaftEncoder.get());
     armPivotTab.addNumber("Angular Velocity", () -> m_motorEncoder.getVelocity());
 
     syncEncoders();
@@ -105,10 +107,6 @@ public class ArmPivotSubsystem extends SubsystemBase {
 
   public double getAngle() {
     return m_motorEncoder.getPosition();
-  }
-
-  public double getAbsoluteAngle() {
-    return m_shaftEncoder.get();
   }
 
   /**
@@ -121,7 +119,7 @@ public class ArmPivotSubsystem extends SubsystemBase {
   }
 
   public void syncEncoders() {
-    m_motorEncoder.setPosition(m_shaftEncoder.get());
+    m_motorEncoder.setPosition(m_shaftEncoder.get() * 360);
   }
 
   public boolean isClose(double target){

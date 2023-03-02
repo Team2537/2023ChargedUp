@@ -62,6 +62,7 @@ public class GripperSubsystem extends SubsystemBase {
   private double filtered_pulse_width;
   
   // replace 0 with import from constants package
+  
   private final DoubleSolenoid m_solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 2, 3);
 
 

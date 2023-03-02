@@ -66,7 +66,7 @@ public class RobotContainer {
   private final FixedExtensionCommand test = new FixedExtensionCommand(m_armTelescopeSubsystem, 5);
   private final HomingCommand m_homingCommand = new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem);
 
-  private final FixedAngleCommand testAngle = new FixedAngleCommand(m_armPivotSubsystem, -20);
+  private final FixedAngleCommand testAngle = new FixedAngleCommand(m_armPivotSubsystem, 35);
   //private final SetPositionCommand testPosition = new SetPositionCommand(testAngle, test);
 
   private final OpenGripperCommand openGripper = new OpenGripperCommand(m_gripperSubsystem);
@@ -103,8 +103,11 @@ public class RobotContainer {
     //m_gunnerJoystick.getButton(2).onTrue(m_topRowPosition);
     
     m_gunnerJoystick.getButton(9).onTrue(m_homingCommand);
-    m_gunnerJoystick.getButton(12).onTrue(Commands.sequence(testAngle, test));
+    m_gunnerJoystick.getButton(6).onTrue(testAngle);
+    //m_gunnerJoystick.getButton(12).onTrue(Commands.sequence(testAngle, test));
     m_gunnerJoystick.getButton(1).whileTrue(m_manualControl);
+    m_gunnerJoystick.getButton(5).onTrue(openGripper);
+    m_gunnerJoystick.getButton(3).onTrue(closeGripper);
   }
 
 }
