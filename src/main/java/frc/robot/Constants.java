@@ -79,10 +79,10 @@ public final class Constants {
         public static final boolean kBackRightAbsoluteEncoderReversed = false;
         
 
-        public static final double kFrontLeftAbsoluteEncoderOffsetRad = 5.561;
-        public static final double kFrontRightAbsoluteEncoderOffsetRad = 5.502;
-        public static final double kBackLeftAbsoluteEncoderOffsetRad = 6.113;
-        public static final double kBackRightAbsoluteEncoderOffsetRad = 4.913;
+        public static final double kFrontLeftAbsoluteEncoderOffsetRad = 1.948;
+        public static final double kFrontRightAbsoluteEncoderOffsetRad = 0.397 ;
+        public static final double kBackLeftAbsoluteEncoderOffsetRad = 0.675;
+        public static final double kBackRightAbsoluteEncoderOffsetRad = 3.286;
     
         public static final double kWheelBaseMeters = 0.52705; //20.75 inches
         // Distance between right and left wheels

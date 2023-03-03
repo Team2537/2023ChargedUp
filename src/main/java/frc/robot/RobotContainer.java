@@ -35,13 +35,13 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
+  
   private final XboxController controller = new XboxController(IOConstants.kXboxControllerPort);
 
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
-  public RobotContainer() {
+  public RobotContainer(SwerveSubsystem swerveSubsystem) {
      swerveSubsystem.setDefaultCommand(new SwerveTeleopCommand(
                 swerveSubsystem,
                 () -> -controller.getLeftY(), //xSpdFunction is for forward direction 
@@ -67,11 +67,15 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand() {
+
+  public Command getAutonomousCommand(SwerveSubsystem swerveSubsystem) {
     return new SetChassisState(swerveSubsystem, 0.0, 0.0, 90.0);
   }
   /* 
   public Command getAutonomousCommand() {
+=======
+  public Command getAutonomousCommand(SwerveSubsystem swerveSubsystem) {
+>>>>>>> Stashed changes
     // 1. Create trajectory settings
     TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
       AutoConstants.kMaxSpeedMps,
