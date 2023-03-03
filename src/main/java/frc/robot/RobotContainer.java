@@ -68,7 +68,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new SetChassisState(swerveSubsystem, 0.0, 0.0, 0.0);
+    return new SetChassisState(swerveSubsystem, 0.0, 0.0, 90.0);
   }
   /* 
   public Command getAutonomousCommand() {
