@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.SensorTimeBase;
 import com.revrobotics.RelativeEncoder;
@@ -11,7 +10,6 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -31,20 +29,16 @@ public class SwerveModule {
     private final boolean mAbsoluteEncoderReversed;
     private final double mAbsoluteEncoderOffsetRad;
 
-    public double CANcoderInitTime = 0.0;
-
     public SwerveModule(int driveMotorId, int steerMotorId, boolean driveMotorReversed, boolean steerMotorReversed,
             int absoluteEncoderId, double absoluteEncoderOffset, boolean absoluteEncoderReversed) {
         // absolute encoders
-        
         mAbsoluteEncoderOffsetRad = absoluteEncoderOffset;
-   
         mAbsoluteEncoderReversed = absoluteEncoderReversed;
         mAbsoluteEncoder = new CANCoder(absoluteEncoderId); // default is degrees per second
 
         mAbsoluteEncoder.configFeedbackCoefficient(ModuleConstants.kAbsoluteEncoderCountsPerMin2Rad, "rad",
                 SensorTimeBase.PerSecond); // convert to radians per second
-        mAbsoluteEncoder.setPositionToAbsolute();
+
         // motors
         mDriveMotor = new CANSparkMax(driveMotorId, MotorType.kBrushless);
         mSteerMotor = new CANSparkMax(steerMotorId, MotorType.kBrushless);
@@ -77,37 +71,6 @@ public class SwerveModule {
 
     }
 
-    private void waitForCanCoder(){
-        /*
-         * Wait for up to 1000 ms for a good CANcoder signal.
-         *
-         * This prevents a race condition during program startup
-         * where we try to synchronize the Falcon encoder to the
-         * CANcoder before we have received any position signal
-         * from the CANcoder.
-         */
-        for (int i = 0; i < 100; ++i) {
-            mAbsoluteEncoder.getAbsolutePosition();
-            if (mAbsoluteEncoder.getLastError() == ErrorCode.OK) {
-                break;
-            }
-            Timer.delay(0.010);            
-            CANcoderInitTime += 10;
-        }
-
-    }
-
-    // double absolutePosition = Conversions.degreesToFalcon(mAbsoluteEncoder).getDegrees() - angleOffset.getDegrees(), Constants.Swerve.angleGearRatio);
-    //     mAngleMotor.setSelectedSensorPosition(absolutePosition);
-
-    // private void resetToAbsolute(){
-    //     waitForCanCoder();
-        
-    //     double absolutePosition = Conversions.degreesToFalcon(getCanCoder().getDegrees() - angleOffset.getDegrees(), Constants.Swerve.angleGearRatio);
-    //     mAngleMotor.setSelectedSensorPosition(absolutePosition);
-        
-    // }
-
     public double getDrivePosition() {
         return mDriveEncoder.getPosition();
     }
@@ -131,7 +94,6 @@ public class SwerveModule {
     }
 
     public void resetEncoders() {
-        waitForCanCoder();
         mDriveEncoder.setPosition(0.0);
         mSteerEncoder.setPosition(getAbsoluteEncoder());
     }

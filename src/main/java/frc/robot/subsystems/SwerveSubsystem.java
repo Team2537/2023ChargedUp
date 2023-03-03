@@ -104,13 +104,6 @@ public class SwerveSubsystem extends SubsystemBase{
         odometer.resetPosition(getRotation2d(),getModulePositions(), pose);
     }
 
-    public void resetModulesToAbsolute() {
-        mFrontLeft.resetEncoders();
-        mFrontRight.resetEncoders();
-        mBackLeft.resetEncoders();
-        mBackRight.resetEncoders();
-    }
-
     @Override
     public void periodic() {
         odometer.update(getRotation2d(), getModulePositions());
