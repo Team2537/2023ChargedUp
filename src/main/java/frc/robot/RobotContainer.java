@@ -52,6 +52,15 @@ public class RobotContainer {
     configureButtonBindings();
   }
 
+  public Command getTeleopCommand() {
+      return new SwerveTeleopCommand(
+        swerveSubsystem,
+        () -> -controller.getLeftY(), //xSpdFunction is for forward direction 
+        () -> -controller.getLeftX(), 
+        () -> -controller.getRightX(),
+        () -> !controller.getAButton());
+  }
+
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
