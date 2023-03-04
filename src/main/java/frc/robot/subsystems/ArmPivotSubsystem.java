@@ -42,7 +42,7 @@ public class ArmPivotSubsystem extends SubsystemBase {
 
   private final double kP, kI, kD;
 
-  private double target;
+  private double target = DEFAULT_ANGLE;
 
   public ArmPivotSubsystem() {
     //this will but the values in the log
