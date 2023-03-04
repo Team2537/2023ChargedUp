@@ -69,7 +69,7 @@ public class ArmPivotSubsystem extends SubsystemBase {
     // set position conversion factor to convert encoder counts to degrees
     m_motorEncoder.setPositionConversionFactor(360/201.6);
     //m_motorEncoder.setVelocityConversionFactor(1/60f);
-    m_motorEncoder.setPosition(PIVOT_MOTOR_OFFSET);
+    m_motorEncoder.setPosition(ARM_PIVOT_OFFSET);
 
     //m_shaftEncoder.setPositionOffset(0.222);
 
