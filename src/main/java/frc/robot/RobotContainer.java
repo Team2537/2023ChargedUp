@@ -26,6 +26,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.SetColorCommand;
+import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.RGBSubsystem;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+
+import static frc.robot.constants.Constants.*;
+import static frc.robot.constants.Ports.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -46,6 +55,12 @@ public class RobotContainer {
   private final ArmTelescopeSubsystem m_armTelescopeSubsystem = new ArmTelescopeSubsystem();
   private final GripperSubsystem m_gripperSubsystem = new GripperSubsystem(0, 0, i -> {
   }, 10, 11);
+
+
+  XboxController m_controller = new XboxController(0);
+
+  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  private final RGBSubsystem m_RgbSubsystem = new RGBSubsystem(0, 0);
 
   private final FixedAngleCommand m_bottomRowAngle = new FixedAngleCommand(m_armPivotSubsystem, BOTTOM_ROW_ANGLE);
   private final FixedExtensionCommand m_bottomRowExtension = new FixedExtensionCommand(m_armTelescopeSubsystem,
@@ -89,6 +104,13 @@ public class RobotContainer {
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
+  private final SetColorCommand redColor = new SetColorCommand(m_RgbSubsystem, RED);
+  private final SetColorCommand yellowColor = new SetColorCommand(m_RgbSubsystem, YELLOW);
+  private final SetColorCommand purpleColor = new SetColorCommand(m_RgbSubsystem, PURPLE);
+  private final SetColorCommand greenColor = new SetColorCommand(m_RgbSubsystem, GREEN);
+  private final SetColorCommand awesomeColor = new SetColorCommand(m_RgbSubsystem, AWESOME);
+
+  /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     m_swerveSubsystem.setDefaultCommand(new SwerveTeleopCommand(
         m_swerveSubsystem,
