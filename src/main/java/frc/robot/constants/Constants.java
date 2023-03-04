@@ -32,8 +32,6 @@ public final class Constants {
     public static final double SPEED_MULTIPLIER = 0.5;
 
     // Relevant heights for vision processing (inches)
-    public static final double LIMELIGHT_HEIGHT = 27.5;
-    public static final double APRIL_TAG_HEIGHT = 55.5;
 
     // Our color modes
     public static final int PURPLE = 1;
