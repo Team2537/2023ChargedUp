@@ -40,13 +40,10 @@ public class ManualArmControlCommand extends CommandBase {
     @Override
     public void execute() {
 
-        m_telescopeSubsystem.setExtension(extendTarget += extendRate * m_telescopeControl.getAsDouble());
+        m_telescopeSubsystem.setExtension(extendTarget += (extendRate * m_telescopeControl.getAsDouble()));
 
-        m_telescopeSubsystem.setRawSpeed(m_telescopeControl.getAsDouble());
-        if (m_pivotSubsystem.getAngle() >= 105 && !(m_pivotControl.getAsDouble() > 0)) {
-        } else if (m_pivotSubsystem.getAngle() <= 15 && !(m_pivotControl.getAsDouble() < 0)) {
-        } else {
-            m_pivotSubsystem.setAngle(angleTarget += angleRate * m_pivotControl.getAsDouble());
+        if (Math.abs(m_pivotControl.getAsDouble()) > 0 && m_pivotSubsystem.getAngle() <= 45 && m_pivotSubsystem.getAngle >= -45) {
+            m_pivotSubsystem.setAngle(angleTarget += (angleRate * m_pivotControl.getAsDouble()));
         }
     }
 
