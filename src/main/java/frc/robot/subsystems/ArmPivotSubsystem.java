@@ -167,7 +167,7 @@ public class ArmPivotSubsystem extends SubsystemBase {
   public void periodic() {
     // Sets the target of the PID loop to the "target" double,
     // using smart motion to control velocity and acceleration while in motion
-    if (m_positionPID) m_pidController.setReference(target, ControlType.kSmartMotion);
+    m_pidController.setReference(target, ControlType.kSmartMotion);
     //this will continually update the logs
     homedLog.append(getMagnetClosed());
     targetAngleLog.append(target);
