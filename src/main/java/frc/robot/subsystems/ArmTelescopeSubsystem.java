@@ -32,13 +32,13 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
   private SparkMaxPIDController m_pidController;
   private RelativeEncoder m_encoder;
   private final double kPPosition, kIPosition, kDPosition, kIzPosition, kFFPosition;
-  private final double kPVelocity, kIVelocity, kDVelocity, kIzVelocity, kFFVelocity;
+  //private final double kPVelocity, kIVelocity, kDVelocity, kIzVelocity, kFFVelocity;
 
   private double kMaxOutput;
   private double kMinOutput;
 
   // decides if the pid is targeting position or velocity, true for position, false for velocity
-  private boolean positionPID = true;
+  //private boolean positionPID = true;
 
   CANSparkMax m_motor;
 
@@ -74,27 +74,15 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
     kIzPosition = 0;
     kFFPosition = 0.000015;
 
-    kPVelocity = 0.005;
-    kIVelocity = 2e-5;
-    kDVelocity = 1e-7;
-    kIzVelocity = 0;
-    kFFVelocity = 0.00001;
-
     kMaxOutput = 1;
     kMinOutput = -1;
 
     // set PID coefficients
-    m_pidController.setP(kPPosition, 0);
-    m_pidController.setI(kIPosition, 0);
-    m_pidController.setD(kDPosition, 0);
-    m_pidController.setIZone(kIzPosition, 0);
-    m_pidController.setFF(kFFPosition, 0);
-
-    m_pidController.setP(kPVelocity, 1);
-    m_pidController.setI(kIVelocity, 1);
-    m_pidController.setD(kDVelocity, 1);
-    m_pidController.setIZone(kIzVelocity, 1);
-    m_pidController.setFF(kFFVelocity, 1);
+    m_pidController.setP(kPPosition);
+    m_pidController.setI(kIPosition);
+    m_pidController.setD(kDPosition);
+    m_pidController.setIZone(kIzPosition);
+    m_pidController.setFF(kFFPosition);
 
     m_pidController.setOutputRange(kMinOutput, kMaxOutput);
 
@@ -106,15 +94,14 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
     ShuffleboardTab telescopingTab = Shuffleboard.getTab("Telescoping Arm");
 
 
-    telescopingTab.addNumber("Position (inches)", () -> getPosition());
+    telescopingTab.addNumber("Position", () -> getPosition());
     //telescopingTab.addNumber("Position (inches)", () -> getPosInches());
     telescopingTab.addNumber("Velocity", () -> m_encoder.getVelocity());
     telescopingTab.addBoolean("Retracted", () -> getMagnetClosed());
+    telescopingTab.addNumber("Target", () -> target);
   }
 
   public void setExtension(double amt) {
-    // set goal of pid to amt
-    positionPID = true;
     target = amt;
   }
 
@@ -124,13 +111,13 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
    * Micah broke it :( 
    * NOOO I didn't do anything
    */
-  public void setVelocity(double velocity) {
+  /*public void setVelocity(double velocity) {
     // set goal of pid to a velocity value
-    positionPID = false;
+    //positionPID = false;
     // set reference for pid in velocity mode
     // notice the use of kSmartVelocity not kVelocity
     m_pidController.setReference(velocity, ControlType.kSmartVelocity, 1);
-  }
+  }*/
 
   /**
    * Sets a raw speed to the motor in RPM
@@ -138,7 +125,6 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
    * @param speed the raw speed (0-1) to set to the motor
    */
   public void setRawSpeed(double speed) {
-    positionPID = false;
     m_motor.set(speed);
   }
 
@@ -179,7 +165,7 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
    * Stops the motor for telescoping and resets encoder position
    */
   public void reset() {
-    setRawSpeed(0);
+    //setRawSpeed(0);
     setEncoderPosition(0);
     setExtension(0);
   }
@@ -195,7 +181,7 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
 
 
 
-    if (positionPID) m_pidController.setReference(target, CANSparkMax.ControlType.kPosition, 0);
+    m_pidController.setReference(target, CANSparkMax.ControlType.kPosition);
   }
 
   @Override

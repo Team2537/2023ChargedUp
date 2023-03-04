@@ -34,11 +34,13 @@ public class HomingCommand extends CommandBase{
          * and do the same thing with the pivot and pivot magnet sensor
          */
         if(!m_telescopeSubsystem.getMagnetClosed() && !retracted){
-            m_telescopeSubsystem.setRawSpeed(-0.25 - 0.1 * m_telescopeSubsystem.getPosition());
+            m_telescopeSubsystem.setRawSpeed(-0.3);
         } else if (!m_pivotSubsystem.getMagnetClosed() || !m_pivotSubsystem.isClose(HOME_ANGLE)){
             retracted = true;
-            m_telescopeSubsystem.setRawSpeed(0);
-            m_pivotSubsystem.syncEncoders();
+            m_telescopeSubsystem.setEncoderPosition(0);
+            m_telescopeSubsystem.reset();
+            
+            //m_pivotSubsystem.syncEncoders();
             m_pivotSubsystem.setAngle(HOME_ANGLE);
         }
     }
@@ -48,15 +50,16 @@ public class HomingCommand extends CommandBase{
     public void end(boolean interrupted) {
         retracted = false;
         // When the command ends, both subsystems are reset
-        m_telescopeSubsystem.reset();
+        //m_telescopeSubsystem.reset();
         //m_pivotSubsystem.reset();
+        m_pivotSubsystem.setEncoderPosition(HOME_ANGLE);
     }
   
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
         // Logic to return true when the command should be finished, when both magnet sensors return true
-        return m_pivotSubsystem.getMagnetClosed() && retracted && m_pivotSubsystem.isClose(HOME_ANGLE);
+        return m_pivotSubsystem.getMagnetClosed() && retracted && m_pivotSubsystem.isClose(HOME_ANGLE); //&& m_telescopeSubsystem.isClose(0);
     }
 
 }

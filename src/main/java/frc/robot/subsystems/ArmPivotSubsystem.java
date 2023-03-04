@@ -30,7 +30,7 @@ public class ArmPivotSubsystem extends SubsystemBase {
   private static BooleanLogEntry homedLog;
   private static DoubleLogEntry targetAngleLog;
   private static DoubleLogEntry currentAngleLog;
-  private static DoubleLogEntry absolutePositionLog;
+  //private static DoubleLogEntry absolutePositionLog;
   private static DoubleLogEntry angularPositionLog;
 
   private final CANSparkMax m_motor;
@@ -49,7 +49,7 @@ public class ArmPivotSubsystem extends SubsystemBase {
     homedLog = new BooleanLogEntry(DataLogManager.getLog(), "/ArmPivotSubsystem/Homing");
     targetAngleLog = new DoubleLogEntry(DataLogManager.getLog(), "/ArmPivotSubsystem/TargetAngle");
     currentAngleLog = new DoubleLogEntry(DataLogManager.getLog(), "/ArmPivotSubsystem/CurrentAngle");
-    absolutePositionLog = new DoubleLogEntry(DataLogManager.getLog(), "/ArmPivotSubsystem/AbsolutePosition");
+    //absolutePositionLog = new DoubleLogEntry(DataLogManager.getLog(), "/ArmPivotSubsystem/AbsolutePosition");
     angularPositionLog = new DoubleLogEntry(DataLogManager.getLog(), "/ArmPivotSubsystem/AngularPosition");
     
     /*m_shaftEncoder = new DutyCycleEncoder(ABSOLUTE_ENCODER);
@@ -97,7 +97,7 @@ public class ArmPivotSubsystem extends SubsystemBase {
     armPivotTab.addBoolean("Homed", () -> getMagnetClosed());
     armPivotTab.addNumber("Target Position", () -> target);
     armPivotTab.addNumber("Current Position", () -> getAngle());
-    armPivotTab.addNumber("Absolute Position", () -> m_shaftEncoder.get());
+    //armPivotTab.addNumber("Absolute Position", () -> m_shaftEncoder.get());
     armPivotTab.addNumber("Angular Velocity", () -> m_motorEncoder.getVelocity());
   }
 
@@ -127,6 +127,10 @@ public class ArmPivotSubsystem extends SubsystemBase {
    */
   public void setRawSpeed(double speed) {
     m_motor.set(speed);
+  }
+
+  public void setEncoderPosition(double pos) {
+    m_motorEncoder.setPosition(pos);
   }
 
   /**
@@ -165,7 +169,7 @@ public class ArmPivotSubsystem extends SubsystemBase {
     homedLog.append(getMagnetClosed());
     targetAngleLog.append(target);
     currentAngleLog.append(getAngle());
-    absolutePositionLog.append(m_shaftEncoder.get());
+    //absolutePositionLog.append(m_shaftEncoder.get());
     angularPositionLog.append(m_motorEncoder.getVelocity());
   }
 

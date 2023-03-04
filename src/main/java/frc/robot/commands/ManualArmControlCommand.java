@@ -15,11 +15,13 @@ public class ManualArmControlCommand extends CommandBase {
 
     private final DoubleSupplier m_pivotControl, m_telescopeControl;
 
-    private double angleRate = 0.05;
-    private double extendRate = 0.05;
+    private double angleRate = 0.25
+    
+                ;
+    private double extendRate = 0.1;
 
-    private double angleTarget = 0;
-    private double extendTarget = 0;
+    private double angleTarget;
+    private double extendTarget;
 
     public ManualArmControlCommand(ArmPivotSubsystem pivotSubsystem, ArmTelescopeSubsystem telescopeSubsystem, DoubleSupplier pivotControl, DoubleSupplier telescopeControl) {
         m_pivotSubsystem = pivotSubsystem;
@@ -42,7 +44,9 @@ public class ManualArmControlCommand extends CommandBase {
 
         m_telescopeSubsystem.setExtension(extendTarget += (extendRate * m_telescopeControl.getAsDouble()));
 
-        if (Math.abs(m_pivotControl.getAsDouble()) > 0 && m_pivotSubsystem.getAngle() <= 45 && m_pivotSubsystem.getAngle >= -45) {
+        if (m_pivotControl.getAsDouble() > 0 && m_pivotSubsystem.getAngle() <= 40) {
+            m_pivotSubsystem.setAngle(angleTarget += (angleRate * m_pivotControl.getAsDouble()));
+        } else if (m_pivotControl.getAsDouble() < 0 && m_pivotSubsystem.getAngle() >= -60) {
             m_pivotSubsystem.setAngle(angleTarget += (angleRate * m_pivotControl.getAsDouble()));
         }
     }

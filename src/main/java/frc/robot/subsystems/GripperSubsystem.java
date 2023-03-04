@@ -54,8 +54,8 @@ public class GripperSubsystem extends SubsystemBase {
     m_pwm = new DutyCycle(m_read);
     Shuffleboard.getTab("Gripper Subsystem").addBoolean("Gamepiece detected", () -> isTarget());
 
-    openGripper();
-    opened = true;
+    closeGripper();
+    opened = false;
   }
 
   private int m_count;

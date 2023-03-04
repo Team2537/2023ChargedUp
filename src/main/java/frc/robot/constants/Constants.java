@@ -21,13 +21,13 @@ public final class Constants {
     public static final double BOTTOM_ROW_ANGLE = -36.8;
     public static final double BOTTOM_ROW_EXTENSION = 35;
 
-    public static final double MIDDLE_ROW_ANGLE = 1.3;
-    public static final double MIDDLE_ROW_EXTENSION = 41;
+    public static final double MIDDLE_ROW_ANGLE = 23.2;
+    public static final double MIDDLE_ROW_EXTENSION = 1.98;
 
-    public static final double TOP_ROW_ANGLE = 25;
-    public static final double TOP_ROW_EXTENSION = 58;
+    public static final double TOP_ROW_ANGLE = 26;
+    public static final double TOP_ROW_EXTENSION = 7.3;
 
-    public static final double HOME_ANGLE = 55;
+    public static final double HOME_ANGLE = -55;
     public static final double PIVOT_OFFSET = 0;
 
     public static final double ARM_PIVOT_OFFSET = -72.549;

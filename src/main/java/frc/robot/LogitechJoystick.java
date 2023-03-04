@@ -35,6 +35,10 @@ public class LogitechJoystick {
         return m_joystick.getRawAxis(axis);
     }
 
+    public Trigger getThrottle() {
+        return new Trigger(() -> getAxis(3) < 0.5);
+    }
+
     /**
      * Get a button from the joystick as a {@link Trigger}
      * @param button the raw ID of the button
