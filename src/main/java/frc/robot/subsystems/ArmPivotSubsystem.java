@@ -113,9 +113,9 @@ public class ArmPivotSubsystem extends SubsystemBase {
     target = angleDeg;
   }
 
-  public void syncEncoders() {
+  /*public void syncEncoders() {
     m_motorEncoder.setPosition(m_shaftEncoder.get() * 360);
-  }
+  }*/
 
   public boolean isClose(double target){
     return Math.abs((target - m_motorEncoder.getPosition()) / target) <= 0.02;  
@@ -148,12 +148,12 @@ public class ArmPivotSubsystem extends SubsystemBase {
   /**
    * Resets the motor encoder to sync with the absolute encoder
    */
-  public void reset() {
+  /*public void reset() {
     setVelocity(0);
 
     syncEncoders();
     setAngle(m_motorEncoder.getPosition());
-  }
+  }*/
 
   // Runs once per scheduler run (every 20ms)
   @Override
