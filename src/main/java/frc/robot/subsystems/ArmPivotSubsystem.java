@@ -37,7 +37,7 @@ public class ArmPivotSubsystem extends SubsystemBase {
   private final RelativeEncoder m_motorEncoder;
   private final SparkMaxPIDController m_pidController;
   
-  private final DutyCycleEncoder m_shaftEncoder;
+  //private final DutyCycleEncoder m_shaftEncoder;
   //private final DigitalInput m_pivotMagnet = new DigitalInput(PIVOT_MAGNET_SENSOR);
 
   private final double kP, kI, kD;
