@@ -40,9 +40,6 @@ public class ArmPivotSubsystem extends SubsystemBase {
   private final DutyCycleEncoder m_shaftEncoder;
   //private final DigitalInput m_pivotMagnet = new DigitalInput(PIVOT_MAGNET_SENSOR);
 
-  // decides if the pid is targeting position or velocity, true for position, false for velocity
-  boolean m_positionPID = true;
-
   private final double kP, kI, kD;
 
   private double target;
@@ -113,7 +110,6 @@ public class ArmPivotSubsystem extends SubsystemBase {
    * @param angleDeg angle to set the target to in degrees
    */
   public void setAngle(double angleDeg) {
-    m_positionPID = true;
     target = angleDeg;
   }
 
@@ -130,7 +126,6 @@ public class ArmPivotSubsystem extends SubsystemBase {
    * @param speed the percent output (0-1) to set the motor to
    */
   public void setRawSpeed(double speed) {
-    m_positionPID = false;
     m_motor.set(speed);
   }
 
@@ -139,8 +134,6 @@ public class ArmPivotSubsystem extends SubsystemBase {
    * @param velocity the velocity to pivot at (degrees/s)
    */
   public void setVelocity(double velocity) {
-    // set to velocity mode
-    m_positionPID = false;
     m_pidController.setReference(velocity, ControlType.kVelocity, 1);
   }
 
