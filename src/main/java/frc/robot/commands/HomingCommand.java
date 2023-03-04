@@ -49,7 +49,7 @@ public class HomingCommand extends CommandBase{
         retracted = false;
         // When the command ends, both subsystems are reset
         m_telescopeSubsystem.reset();
-        m_pivotSubsystem.reset();
+        //m_pivotSubsystem.reset();
     }
   
     // Returns true when the command should end.
