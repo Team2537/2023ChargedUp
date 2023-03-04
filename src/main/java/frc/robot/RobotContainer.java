@@ -113,7 +113,7 @@ public class RobotContainer {
 // // 5. Add some init and wrap-up, and return everything
 // return new SequentialCommandGroup(new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())), swerveControllerCommand,  new InstantCommand(() -> swerveSubsystem.stopModules()));
 // 
-return new SetChassisStateCommand(swerveSubsystem, 0.0, 0.0, 90.0);
+return new SetChassisStateCommand(swerveSubsystem, 0.0, 0.0, -90.0);
 }
 
 }

@@ -57,7 +57,7 @@ public class SwerveTeleopCommand extends CommandBase {
         xSpeed = xLimiter.calculate(xSpeed) * DriveConstants.kTeleDriveMaxSpeedMps;
         ySpeed = yLimiter.calculate(ySpeed) * DriveConstants.kTeleDriveMaxSpeedMps;
         turningSpeed = turningLimiter.calculate(turningSpeed)
-                * DriveConstants.kTeleopMaxAngularSpeedRps;
+                * DriveConstants.kTeleAngularMaxSpeedRps;
 
         // 4. Construct desired chassis speeds
         ChassisSpeeds chassisSpeeds;

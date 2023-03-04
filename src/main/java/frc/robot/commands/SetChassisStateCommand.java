@@ -30,7 +30,7 @@ public class SetChassisStateCommand extends CommandBase {
   //private final double kp=0.01, ki=0.0, kd=0.0; //barely turns
   //private final double kp=0.05, ki=0.0, kd=0.0; //turn smoothly but oscillates at setpoint
   //private final double kp=0.05, ki=0.0, kd=0.01; //turn smoothly but oscillates at setpoint
-  private final double kp=0.05, ki=0.0, kd=0.0;
+  private final double kp=1.5, ki=0.1, kd=0.0;
 
   /**
    * Creates a new ExampleCommand.
@@ -43,7 +43,7 @@ public class SetChassisStateCommand extends CommandBase {
     this.ySpdFunction = ySpdFunction;
     this.heading = heading;
     pidController=new PIDController(kp, ki, kd);
-    pidController.enableContinuousInput(-360,360);
+    pidController.enableContinuousInput(0,360);
 
     ShuffleboardTab tab = Shuffleboard.getTab("Swerve State");
 
@@ -67,7 +67,7 @@ public class SetChassisStateCommand extends CommandBase {
     double xSpeed = xSpdFunction;
     double ySpeed = ySpdFunction;
     
-    turningSpeed = -pidController.calculate(mSwerveSubsystem.getHeading(), heading);
+    turningSpeed = pidController.calculate(mSwerveSubsystem.getHeading(), heading);
     //SmartDashboard.putNumber("Turning speed", turningSpeed);
 
     ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(

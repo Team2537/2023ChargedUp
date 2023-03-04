@@ -88,14 +88,15 @@ public final class Constants {
         // Distance between right and left wheels
         public static final double kTrackWidthMeters = 0.52705; //20.75 inches
         // Distance between front and back wheels
-        public static final double kPhysicalMaxSpeedMps = 3.6576; //meters per second
-        public static final double kPhysicalMaxAngularSpeedRps = 3.6576; //radians per second //TODO: Determine actual value
+        public static final double kPhysicalMaxSpeedMps = 3.29; //meters per second
+        public static final double kPhysicalMaxAngularSpeedRps = 32.38; //radians per second
+        public static final double kPhysicalMaxAccelerationMps = 2.0 ; //meters per second squared
+        public static final double kPhysicalMaxAngularAccelerationRps = 19.5; //radians per second squared
 
-
-        public static final double kTeleDriveMaxSpeedMps = kPhysicalMaxSpeedMps; // divided by 4 so that we don't drive too fast
-        public static final double kTeleopMaxAngularSpeedRps = kPhysicalMaxAngularSpeedRps;
-        public static final double kTeleDriveMaxAccelerationUnitsPerSecond = 3;
-        public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 3;
+        public static final double kTeleDriveMaxSpeedMps = kPhysicalMaxSpeedMps/2.0; // divided by 4 so that we don't drive too fast
+        public static final double kTeleAngularMaxSpeedRps = kPhysicalMaxAngularSpeedRps;
+        public static final double kTeleDriveMaxAccelerationUnitsPerSecond = kPhysicalMaxAccelerationMps;
+        public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = kPhysicalMaxAngularAccelerationRps;
         
         
         public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
@@ -116,8 +117,8 @@ public final class Constants {
 
     public static final class AutoConstants {
 
-        public static final double kMaxSpeedMps = 3.0; //TODO: decide actual
-        public static final double kMaxAccelerationMetersPerSecondSquared = 1.0; //TODO: decide actual
+        public static final double kMaxSpeedMps = DriveConstants.kPhysicalMaxSpeedMps/2.0; 
+        public static final double kMaxAccelerationMetersPerSecondSquared = DriveConstants.kPhysicalMaxAccelerationMps; //TODO: decide actual
         public static final double kPThetaController = 0;
         public static final Constraints kThetaControllerConstraints = null;
         public static final double kPYController = 0;
