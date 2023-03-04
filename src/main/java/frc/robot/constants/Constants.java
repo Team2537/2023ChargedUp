@@ -31,6 +31,7 @@ public final class Constants {
     public static final double PIVOT_OFFSET = 0;
 
     public static final double ARM_PIVOT_OFFSET = -72.549;
+    public static final double DEFAULT_ANGLE = -72.549;
 
     // Frame measurements (meters)
     public static final double WHEEL_BASE = 0.52613;
