@@ -15,10 +15,8 @@ public class ManualArmControlCommand extends CommandBase {
 
     private final DoubleSupplier m_pivotControl, m_telescopeControl;
 
-    private double angleRate = 0.25
-    
-                ;
-    private double extendRate = 0.1;
+    private double angleRate = 0.75;
+    private double extendRate = 0.35;
 
     private double angleTarget;
     private double extendTarget;

@@ -137,6 +137,9 @@ public final class Constants {
         public static final double TOP_ROW_ANGLE = 26;
         public static final double TOP_ROW_EXTENSION = 7.3;
 
+        public static final double GRAB_ANGLE = -59.5;
+        public static final double GRAB_EXTENSION = 0;
+
         public static final double HOME_ANGLE = -55;
         public static final double PIVOT_OFFSET = 0;
 
