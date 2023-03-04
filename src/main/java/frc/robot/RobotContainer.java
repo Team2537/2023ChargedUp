@@ -20,6 +20,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
 import static frc.robot.Constants.ArmConstants.*;
+import static frc.robot.Constants.ColorConstants.*;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -33,8 +34,6 @@ import frc.robot.subsystems.RGBSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
-import static frc.robot.constants.Constants.*;
-import static frc.robot.constants.Ports.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -56,8 +55,6 @@ public class RobotContainer {
   private final GripperSubsystem m_gripperSubsystem = new GripperSubsystem(0, 0, i -> {
   }, 10, 11);
 
-
-  XboxController m_controller = new XboxController(0);
 
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final RGBSubsystem m_RgbSubsystem = new RGBSubsystem(0, 0);

@@ -158,4 +158,12 @@ public final class Constants {
         public static final int PIVOT_MAGNET_SENSOR = 2;
     }
 
+    public static final class ColorConstants {
+        public static final int PURPLE = 1;
+        public static final int YELLOW = 2;
+        public static final int GREEN = 3;
+        public static final int RED = 4;
+        public static final int AWESOME = 7;
+    }
+
 }
