@@ -40,6 +40,7 @@ public class BalanceCommand extends CommandBase {
 
     @Override
     public void initialize() {
+        iAccumulator = 0;
     }
 
     @Override
