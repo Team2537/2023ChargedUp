@@ -19,8 +19,9 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
-import frc.robot.commands.SwerveTeleopCommand;
-import frc.robot.subsystems.SwerveSubsystem;
+import static frc.robot.Constants.ArmConstants.*;
+import frc.robot.commands.*;
+import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -33,20 +34,57 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+  private final XboxController m_controller = new XboxController(IOConstants.kXboxControllerPort);
+  private final LogitechJoystick m_gunnerJoystick = new LogitechJoystick(1);
+
   // The robot's subsystems and commands are defined here...
-  private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
-  private final XboxController controller = new XboxController(IOConstants.kXboxControllerPort);
+  private final SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
+  private final ArmPivotSubsystem m_armPivotSubsystem = new ArmPivotSubsystem();
+  private final ArmTelescopeSubsystem m_armTelescopeSubsystem = new ArmTelescopeSubsystem();
+  private final GripperSubsystem m_gripperSubsystem = new GripperSubsystem(0, 0, i -> {}, 10, 11);
+
+  private final FixedAngleCommand m_bottomRowAngle = new FixedAngleCommand(m_armPivotSubsystem, BOTTOM_ROW_ANGLE);
+  private final FixedExtensionCommand m_bottomRowExtension = new FixedExtensionCommand(m_armTelescopeSubsystem, BOTTOM_ROW_EXTENSION);
+  private final SetPositionCommand m_bottomRowPosition = new SetPositionCommand(m_bottomRowAngle, m_bottomRowExtension);
+
+  // Position for middle cone row when bumpers are against the community
+  private final FixedAngleCommand m_middleRowAngle = new FixedAngleCommand(m_armPivotSubsystem, MIDDLE_ROW_ANGLE);
+  private final FixedExtensionCommand m_middleRowExtension = new FixedExtensionCommand(m_armTelescopeSubsystem, MIDDLE_ROW_EXTENSION);
+  private final SetPositionCommand m_middleRowPosition = new SetPositionCommand(m_middleRowAngle, m_middleRowExtension);
+
+  // Position for top cone row when bumpers are against the community
+  private final FixedAngleCommand m_topRowAngle = new FixedAngleCommand(m_armPivotSubsystem, TOP_ROW_ANGLE);
+  private final FixedExtensionCommand m_topRowExtension = new FixedExtensionCommand(m_armTelescopeSubsystem, TOP_ROW_EXTENSION);
+  private final SetPositionCommand m_topRowPosition = new SetPositionCommand(m_topRowAngle, m_topRowExtension);
+
+  private final FixedExtensionCommand test = new FixedExtensionCommand(m_armTelescopeSubsystem, 5);
+  private final HomingCommand m_homingCommand = new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem);
+
+  private final FixedAngleCommand testAngle = new FixedAngleCommand(m_armPivotSubsystem, 35);
+  private final SetPositionCommand testPosition = new SetPositionCommand(testAngle, test);
+
+  private final OpenGripperCommand openGripper = new OpenGripperCommand(m_gripperSubsystem);
+  private final CloseGripperCommand closeGripper = new CloseGripperCommand(m_gripperSubsystem);
+  private final ToggleGripperCommand toggleGripper = new ToggleGripperCommand(m_gripperSubsystem);
+
+  private final FixedExtensionCommand m_returnExtension = new FixedExtensionCommand(m_armTelescopeSubsystem, 0);
+
+  private final ManualArmControlCommand m_manualControl = new ManualArmControlCommand(
+    m_armPivotSubsystem, 
+    m_armTelescopeSubsystem, 
+    () -> m_gunnerJoystick.getAxis(1), 
+    () -> 0.1 * m_gunnerJoystick.getHatSwitch());
 
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-     swerveSubsystem.setDefaultCommand(new SwerveTeleopCommand(
-                swerveSubsystem,
-                () -> -controller.getLeftY(), //xSpdFunction is for forward direction 
-                () -> -controller.getLeftX(), 
-                () -> -controller.getRightX(),
-                () -> !controller.getAButton()));
+     m_swerveSubsystem.setDefaultCommand(new SwerveTeleopCommand(
+                m_swerveSubsystem,
+                () -> -m_controller.getLeftY(), //xSpdFunction is for forward direction 
+                () -> -m_controller.getLeftX(), 
+                () -> -m_controller.getRightX(),
+                () -> !m_controller.getAButton()));
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -92,16 +130,16 @@ thetaController.enableContinuousInput(-Math.PI, Math.PI);
 // 4. Construct command to follow trajectory
 SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
       trajectory,
-      swerveSubsystem::getPose,
+      m_swerveSubsystem::getPose,
       DriveConstants.kDriveKinematics,
       xController,
       yController,
       thetaController,
-      swerveSubsystem::setModuleStates,
-      swerveSubsystem);
+      m_swerveSubsystem::setModuleStates,
+      m_swerveSubsystem);
 
 // 5. Add some init and wrap-up, and return everything
-return new SequentialCommandGroup(new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())), swerveControllerCommand,  new InstantCommand(() -> swerveSubsystem.stopModules()));
+return new SequentialCommandGroup(new InstantCommand(() -> m_swerveSubsystem.resetOdometry(trajectory.getInitialPose())), swerveControllerCommand,  new InstantCommand(() -> m_swerveSubsystem.stopModules()));
   }
 
 }

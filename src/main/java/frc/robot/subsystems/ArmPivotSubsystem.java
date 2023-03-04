@@ -19,8 +19,7 @@ import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxPIDController.AccelStrategy;
 
-import static frc.robot.constants.Ports.*;
-import static frc.robot.constants.Constants.*;
+import static frc.robot.Constants.ArmConstants.*;
 
 /**
  * The ArmPivotSubsystem class is the subsystem that controls the arm pivot motor.

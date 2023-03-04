@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ArmPivotSubsystem;
 import frc.robot.subsystems.ArmTelescopeSubsystem;
 
-import static frc.robot.constants.Constants.*;
+import static frc.robot.Constants.ArmConstants.*;
 
 /**
  * This command will reset the arm's position and angle to their origional positions, as well as make sure that the encoder values are correct
