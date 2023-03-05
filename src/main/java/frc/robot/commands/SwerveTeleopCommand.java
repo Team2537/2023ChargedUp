@@ -1,14 +1,23 @@
 package frc.robot.commands;
 
 import java.util.function.Supplier;
+
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
+
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.subsystems.SwerveSubsystem;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
 public class SwerveTeleopCommand extends CommandBase {
     @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
@@ -16,6 +25,9 @@ public class SwerveTeleopCommand extends CommandBase {
     private final Supplier<Double> xSpdFunction, ySpdFunction, turningSpdFunction;
     private final Supplier<Boolean> fieldOrientedFunction;
     private final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
+    private PathPlannerTrajectory trajectory;
+    private Timer timer;
+    private double xCurrent, yCurrent, xDesired, yDesired;
   
     /**
      * Creates a new ExampleCommand.
@@ -23,7 +35,7 @@ public class SwerveTeleopCommand extends CommandBase {
      * @param subsystem The subsystem used by this command.
      */
     public SwerveTeleopCommand(SwerveSubsystem swerveSubsystem,  Supplier<Double> xSpdFunction, Supplier<Double> ySpdFunction, Supplier<Double> turningSpdFunction,
-            Supplier<Boolean> fieldOrientedFunction) {
+            Supplier<Boolean> fieldOrientedFunction, PathPlannerTrajectory trajectory) {
         mSwerveSubsystem = swerveSubsystem;
         this.xSpdFunction = xSpdFunction;
         this.ySpdFunction = ySpdFunction;
@@ -32,7 +44,19 @@ public class SwerveTeleopCommand extends CommandBase {
         xLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
         yLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
         turningLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAngularAccelerationUnitsPerSecond);
-      // Use addRequirements() here to declare subsystem dependencies.
+        ShuffleboardTab tab = Shuffleboard.getTab("Swerve State");
+
+        tab.addNumber("xCurrent", () -> xCurrent);
+        tab.addNumber("yCurrent", () -> yCurrent);
+        tab.addNumber("xDesired", () -> xDesired);
+        tab.addNumber("yDesired", () -> yDesired);
+
+
+    // tab.addNumber("turning speed", () -> turningSpeed);
+    // tab.addNumber("desired heading", () -> heading.get());
+    // tab.addNumber("our heading", () -> swerveSubsystem.getHeading());
+
+        // Use addRequirements() here to declare subsystem dependencies.
       addRequirements(mSwerveSubsystem);
     }
   
@@ -44,9 +68,23 @@ public class SwerveTeleopCommand extends CommandBase {
     @Override
     public void execute() {
         // 1. Get real-time joystick inputs
+        
         double xSpeed = xSpdFunction.get();
         double ySpeed = ySpdFunction.get();
         double turningSpeed = turningSpdFunction.get();
+
+        double time = timer.get();
+        PathPlannerState desiredState = (PathPlannerState) trajectory.sample(time);
+        
+        Pose2d desiredPose = desiredState.poseMeters;
+        Rotation2d desiredHeading = desiredState.holonomicRotation;
+        Pose2d currentPose = mSwerveSubsystem.getPose();
+       
+        //SmartDashboard.putNumber("Turning speed", turningSpeed);
+        xCurrent = currentPose.getX();
+        xDesired = desiredPose.getX();
+        yCurrent = currentPose.getY();
+        yDesired = desiredPose.getY();
 
         // 2. Apply deadband
         xSpeed = Math.abs(xSpeed) > IOConstants.kDeadband ? xSpeed : 0.0;
