@@ -33,6 +33,7 @@ public class PathCommand extends CommandBase {
   private final PIDController pidController;
   private PathPlannerTrajectory trajectory;
   private Timer timer;
+  private PIDController xPosController, yPosController;
 
   //private final double kp=0.1, ki=0.0, kd=0.0; //turn smoothly but oscillates at setpoint
   //private final double kp=0.03, ki=0.1, kd=0.0; //turn smoothly but oscillates at setpoint
@@ -49,13 +50,18 @@ public class PathCommand extends CommandBase {
   public PathCommand(SwerveSubsystem swerveSubsystem, PathPlannerTrajectory trajectory) {
     mSwerveSubsystem = swerveSubsystem;
     pidController=new PIDController(kp, ki, kd);
+    xPosController = new PIDController(0.5, 0.0, 0.0);
+    yPosController = new PIDController(0.5, 0.0, 0.0);
     pidController.enableContinuousInput(0,360);
 
     ShuffleboardTab tab = Shuffleboard.getTab("Swerve State");
+    timer = new Timer();
+    timer.start();
+    this.trajectory = trajectory;
 
-    // tab.addNumber("turning speed", () -> turningSpeed);
-    // tab.addNumber("desired heading", () -> heading.get());
-    // tab.addNumber("our heading", () -> swerveSubsystem.getHeading());
+    tab.addNumber("turning speed", () -> turningSpeed);
+    //tab.addNumber("desired heading", () -> trajectory.getstat.get());
+    tab.addNumber("our heading", () -> swerveSubsystem.getHeading());
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(swerveSubsystem);
@@ -88,19 +94,26 @@ public class PathCommand extends CommandBase {
     double y = yDesired-yCurrent;
     double angleToDesired = Math.tan(y/x); //not sure on coordinate system
 
+    SmartDashboard.putNumber("xDesired", xDesired);
+    SmartDashboard.putNumber("xCurrent", xCurrent);
 
-    double xSpeed = desiredState.velocityMetersPerSecond*Math.cos(angleToDesired);
-    double ySpeed = desiredState.velocityMetersPerSecond*Math.sin(angleToDesired);
-    
+    // double xSpeed = desiredState.velocityMetersPerSecond*Math.cos(angleToDesired);
+    // double ySpeed = desiredState.velocityMetersPerSecond*Math.sin(angleToDesired);
+    double xSpeed = xPosController.calculate(xCurrent, xDesired);
+    double ySpeed = yPosController.calculate(yCurrent, yDesired);
+    SmartDashboard.putNumber("xSpeed", xSpeed);
+    SmartDashboard.putNumber("xSpeed", ySpeed);
 
     ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-      xSpeed, ySpeed, turningSpeed, mSwerveSubsystem.getRotation2d());
+      xSpeed, ySpeed, 0.0, mSwerveSubsystem.getRotation2d());
     
      // 5. Convert chassis speeds to individual module states
      SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
 
      // 6. Output each module states to wheels
      mSwerveSubsystem.setModuleStates(moduleStates);
+
+     
      
   }
 

@@ -43,38 +43,43 @@ public class SwerveTeleopCommand extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        // 1. Get real-time joystick inputs
-        double xSpeed = xSpdFunction.get();
-        double ySpeed = ySpdFunction.get();
-        double turningSpeed = turningSpdFunction.get();
+         // 1. Get real-time joystick inputs
+        
+         double xSpeed = xSpdFunction.get();
+         double ySpeed = ySpdFunction.get();
+         double turningSpeed = turningSpdFunction.get();
 
-        // 2. Apply deadband
-        xSpeed = Math.abs(xSpeed) > IOConstants.kDeadband ? xSpeed : 0.0;
-        ySpeed = Math.abs(ySpeed) > IOConstants.kDeadband ? ySpeed : 0.0;
-        turningSpeed = Math.abs(turningSpeed) > IOConstants.kDeadband ? turningSpeed : 0.0;
-
-        // 3. Make the driving smoother
-        xSpeed = xLimiter.calculate(xSpeed) * DriveConstants.kTeleDriveMaxSpeedMps;
-        ySpeed = yLimiter.calculate(ySpeed) * DriveConstants.kTeleDriveMaxSpeedMps;
-        turningSpeed = turningLimiter.calculate(turningSpeed)
-                * DriveConstants.kTeleAngularMaxSpeedRps;
-
-        // 4. Construct desired chassis speeds
-        ChassisSpeeds chassisSpeeds;
-        if (fieldOrientedFunction.get()) {
-            // Relative to field
-            chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                    xSpeed, ySpeed, turningSpeed, mSwerveSubsystem.getRotation2d());
-        } else {
-            // Relative to robot
-            chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
-        }
-
-        // 5. Convert chassis speeds to individual module states
-        SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
-
-        // 6. Output each module states to wheels
-        mSwerveSubsystem.setModuleStates(moduleStates);
+        
+         // 2. Apply deadband
+         xSpeed = Math.abs(xSpeed) > IOConstants.kDeadband ? xSpeed : 0.0;
+         ySpeed = Math.abs(ySpeed) > IOConstants.kDeadband ? ySpeed : 0.0;
+         turningSpeed = Math.abs(turningSpeed) > IOConstants.kDeadband ? turningSpeed : 0.0;
+ 
+         // 3. Make the driving smoother
+         // xSpeed = xLimiter.calculate(xSpeed) * DriveConstants.kTeleDriveMaxSpeedMps;
+         // ySpeed = yLimiter.calculate(ySpeed) * DriveConstants.kTeleDriveMaxSpeedMps;
+         // turningSpeed = turningLimiter.calculate(turningSpeed)
+         //         * DriveConstants.kTeleAngularMaxSpeedRps;
+         xSpeed = xLimiter.calculate(xSpeed * DriveConstants.kTeleDriveMaxSpeedMps);
+         ySpeed = yLimiter.calculate(ySpeed * DriveConstants.kTeleDriveMaxSpeedMps);
+         turningSpeed = turningLimiter.calculate(turningSpeed * DriveConstants.kTeleAngularMaxSpeedRps);
+ 
+         // 4. Construct desired chassis speeds
+         ChassisSpeeds chassisSpeeds;
+         if (fieldOrientedFunction.get()) {
+             // Relative to field
+             chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+                     xSpeed, ySpeed, turningSpeed, mSwerveSubsystem.getRotation2d());
+         } else {
+             // Relative to robot
+             chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
+         }
+ 
+         // 5. Convert chassis speeds to individual module states
+         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+ 
+         // 6. Output each module states to wheels
+         mSwerveSubsystem.setModuleStates(moduleStates);
     }
   
     // Called once the command ends or is interrupted.

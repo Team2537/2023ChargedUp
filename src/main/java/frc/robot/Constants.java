@@ -34,7 +34,7 @@ public final class Constants {
         public static final double kDSteer = 0.0; 
         public static final double kFFSteer = 0.0; 
 
-        public static final double kPDrive = 0.002*20.0; 
+        public static final double kPDrive = 0.8; 
         public static final double kIDrive = 0.000005*20.0; 
         public static final double kDDrive = 0.0; 
         public static final double kFFDrive = 0.0;
@@ -90,8 +90,8 @@ public final class Constants {
         // Distance between front and back wheels
         public static final double kPhysicalMaxSpeedMps = 3.29; //meters per second
         public static final double kPhysicalMaxAngularSpeedRps = 32.38; //radians per second
-        public static final double kPhysicalMaxAccelerationMps = 2.0 ; //meters per second squared
-        public static final double kPhysicalMaxAngularAccelerationRps = 19.5; //radians per second squared
+        public static final double kPhysicalMaxAccelerationMps = 10.0 ; //meters per second squared
+        public static final double kPhysicalMaxAngularAccelerationRps = 5.0; //radians per second squared
 
         public static final double kTeleDriveMaxSpeedMps = kPhysicalMaxSpeedMps/2.0; // divided by 4 so that we don't drive too fast
         public static final double kTeleAngularMaxSpeedRps = kPhysicalMaxAngularSpeedRps;
