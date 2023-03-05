@@ -15,6 +15,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
@@ -27,6 +28,10 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
+// import com.pathplanner.lib.PathConstraints;
+// import com.pathplanner.lib.PathPlanner;
+// import com.pathplanner.lib.PathPlannerTrajectory;
+// import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -37,7 +42,8 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
   private final XboxController controller = new XboxController(IOConstants.kXboxControllerPort);
-
+  private Timer timer;
+  // private PathPlannerTrajectory newPath;
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -77,6 +83,12 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    timer = new Timer();
+    timer.start();
+     // This will load the file "Example Path.path" and generate it with a max velocity of 4 m/s and a max acceleration of 3 m/s^2
+    newPath = PathPlanner.loadPath("New Path", new PathConstraints(AutoConstants.kMaxSpeedMps, AutoConstants.kMaxAccelerationMetersPerSecondSquared));
+   
+    
 //     // 1. Create trajectory settings
 //     TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
 //       AutoConstants.kMaxSpeedMps,
