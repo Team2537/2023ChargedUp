@@ -45,6 +45,9 @@ public class SwerveTeleopCommand extends CommandBase {
         yLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
         turningLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAngularAccelerationUnitsPerSecond);
         ShuffleboardTab tab = Shuffleboard.getTab("Swerve State");
+        timer = new Timer();
+        timer.start();
+        this.trajectory = trajectory;
 
         tab.addNumber("xCurrent", () -> xCurrent);
         tab.addNumber("yCurrent", () -> yCurrent);
@@ -92,10 +95,13 @@ public class SwerveTeleopCommand extends CommandBase {
         turningSpeed = Math.abs(turningSpeed) > IOConstants.kDeadband ? turningSpeed : 0.0;
 
         // 3. Make the driving smoother
-        xSpeed = xLimiter.calculate(xSpeed) * DriveConstants.kTeleDriveMaxSpeedMps;
-        ySpeed = yLimiter.calculate(ySpeed) * DriveConstants.kTeleDriveMaxSpeedMps;
-        turningSpeed = turningLimiter.calculate(turningSpeed)
-                * DriveConstants.kTeleAngularMaxSpeedRps;
+        // xSpeed = xLimiter.calculate(xSpeed) * DriveConstants.kTeleDriveMaxSpeedMps;
+        // ySpeed = yLimiter.calculate(ySpeed) * DriveConstants.kTeleDriveMaxSpeedMps;
+        // turningSpeed = turningLimiter.calculate(turningSpeed)
+        //         * DriveConstants.kTeleAngularMaxSpeedRps;
+        xSpeed = xLimiter.calculate(xSpeed * DriveConstants.kTeleDriveMaxSpeedMps);
+        ySpeed = yLimiter.calculate(ySpeed * DriveConstants.kTeleDriveMaxSpeedMps);
+        turningSpeed = turningLimiter.calculate(turningSpeed * DriveConstants.kTeleAngularMaxSpeedRps);
 
         // 4. Construct desired chassis speeds
         ChassisSpeeds chassisSpeeds;

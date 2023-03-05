@@ -21,6 +21,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.commands.SwerveTeleopCommand;
+import frc.robot.commands.PathCommand;
 import frc.robot.commands.SetChassisStateCommand;
 import frc.robot.subsystems.SwerveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -28,10 +29,10 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
-// import com.pathplanner.lib.PathConstraints;
-// import com.pathplanner.lib.PathPlanner;
-// import com.pathplanner.lib.PathPlannerTrajectory;
-// import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -43,28 +44,29 @@ public class RobotContainer {
   private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
   private final XboxController controller = new XboxController(IOConstants.kXboxControllerPort);
   private Timer timer;
-  // private PathPlannerTrajectory newPath;
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-     swerveSubsystem.setDefaultCommand(new SwerveTeleopCommand(
-                swerveSubsystem,
-                () -> -controller.getLeftY(), //xSpdFunction is for forward direction 
-                () -> -controller.getLeftX(), 
-                () -> -controller.getRightX(),
-                () -> !controller.getAButton()));
+    //  swerveSubsystem.setDefaultCommand(new SwerveTeleopCommand(
+    //             swerveSubsystem,
+    //             () -> -controller.getLeftY(), //xSpdFunction is for forward direction 
+    //             () -> -controller.getLeftX(), 
+    //             () -> -controller.getRightX(),
+    //             () -> !controller.getAButton()));
     // Configure the button bindings
     configureButtonBindings();
   }
 
   public Command getTeleopCommand() {
+    PathPlannerTrajectory trajectory = PathPlanner.loadPath("New Path", new PathConstraints(AutoConstants.kMaxSpeedMps, AutoConstants.kMaxAccelerationMetersPerSecondSquared));
       return new SwerveTeleopCommand(
         swerveSubsystem,
         () -> -controller.getLeftY(), //xSpdFunction is for forward direction 
         () -> -controller.getLeftX(), 
         () -> -controller.getRightX(),
-        () -> !controller.getAButton());
+        () -> !controller.getAButton(),
+        trajectory);
   }
 
   /**
@@ -83,11 +85,9 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    timer = new Timer();
-    timer.start();
-     // This will load the file "Example Path.path" and generate it with a max velocity of 4 m/s and a max acceleration of 3 m/s^2
-    newPath = PathPlanner.loadPath("New Path", new PathConstraints(AutoConstants.kMaxSpeedMps, AutoConstants.kMaxAccelerationMetersPerSecondSquared));
-   
+    PathPlannerTrajectory trajectory = PathPlanner.loadPath("New Path", new PathConstraints(AutoConstants.kMaxSpeedMps, AutoConstants.kMaxAccelerationMetersPerSecondSquared));
+  
+    return new PathCommand(swerveSubsystem, trajectory);
     
 //     // 1. Create trajectory settings
 //     TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
@@ -125,7 +125,7 @@ public class RobotContainer {
 // // 5. Add some init and wrap-up, and return everything
 // return new SequentialCommandGroup(new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())), swerveControllerCommand,  new InstantCommand(() -> swerveSubsystem.stopModules()));
 // 
-return new SetChassisStateCommand(swerveSubsystem, 0.0, 0.0, -90.0);
+
 }
 
 }
