@@ -14,9 +14,10 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.subsystems.SwerveSubsystem;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-
 
 public class SwerveTeleopCommand extends CommandBase {
     @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
@@ -44,16 +45,24 @@ public class SwerveTeleopCommand extends CommandBase {
         yLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
         turningLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAngularAccelerationUnitsPerSecond);
         ShuffleboardTab tab = Shuffleboard.getTab("Swerve State");
+        timer = new Timer();
+        timer.start();
+        this.trajectory = trajectory;
+
+        tab.addNumber("xCurrent", () -> xCurrent);
+        tab.addNumber("yCurrent", () -> yCurrent);
+        tab.addNumber("xDesired", () -> xDesired);
+        tab.addNumber("yDesired", () -> yDesired);
 
 
-      tab.addNumber("turning speed", () -> turningSpeed);
-      tab.addNumber("our heading", () -> swerveSubsystem.getHeading());
+    // tab.addNumber("turning speed", () -> turningSpeed);
+    // tab.addNumber("desired heading", () -> heading.get());
+    // tab.addNumber("our heading", () -> swerveSubsystem.getHeading());
 
         // Use addRequirements() here to declare subsystem dependencies.
       addRequirements(mSwerveSubsystem);
     }
-
-
+  
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {}
@@ -93,7 +102,7 @@ public class SwerveTeleopCommand extends CommandBase {
 
         // 5. Convert chassis speeds to individual module states
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
-   
+
         // 6. Output each module states to wheels
         mSwerveSubsystem.setModuleStates(moduleStates);
 
