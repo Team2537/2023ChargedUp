@@ -34,6 +34,7 @@ public class PathCommand extends CommandBase {
   private PathPlannerTrajectory trajectory;
   private Timer timer;
   private PIDController xPosController, yPosController;
+  private Pose2d startPose2d = new Pose2d();
 
   //private final double kp=0.1, ki=0.0, kd=0.0; //turn smoothly but oscillates at setpoint
   //private final double kp=0.03, ki=0.1, kd=0.0; //turn smoothly but oscillates at setpoint
@@ -47,13 +48,14 @@ public class PathCommand extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public PathCommand(SwerveSubsystem swerveSubsystem, PathPlannerTrajectory trajectory) {
+  public PathCommand(SwerveSubsystem swerveSubsystem, PathPlannerTrajectory trajectory, Pose2d startPose2d) {
     mSwerveSubsystem = swerveSubsystem;
     pidController=new PIDController(kp, ki, kd);
     xPosController = new PIDController(0.5, 0.0, 0.0);
     yPosController = new PIDController(0.5, 0.0, 0.0);
     pidController.enableContinuousInput(0,360);
-
+    this.startPose2d = startPose2d;
+    mSwerveSubsystem.resetOdometry(startPose2d);
     ShuffleboardTab tab = Shuffleboard.getTab("Swerve State");
     timer = new Timer();
     timer.start();

@@ -16,6 +16,7 @@ import frc.robot.Constants.IOConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class SwerveTeleopCommand extends CommandBase {
@@ -24,9 +25,7 @@ public class SwerveTeleopCommand extends CommandBase {
     private final Supplier<Double> xSpdFunction, ySpdFunction, turningSpdFunction;
     private final Supplier<Boolean> fieldOrientedFunction;
     private final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
-    private PathPlannerTrajectory trajectory;
-    private Timer timer;
-    private double xCurrent, yCurrent, xDesired, yDesired;
+
   
     /**
      * Creates a new ExampleCommand.
@@ -44,9 +43,6 @@ public class SwerveTeleopCommand extends CommandBase {
         yLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
         turningLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAngularAccelerationUnitsPerSecond);
         ShuffleboardTab tab = Shuffleboard.getTab("Swerve State");
-
-
-      tab.addNumber("turning speed", () -> turningSpeed);
       tab.addNumber("our heading", () -> swerveSubsystem.getHeading());
 
         // Use addRequirements() here to declare subsystem dependencies.
@@ -66,7 +62,7 @@ public class SwerveTeleopCommand extends CommandBase {
         
         double xSpeed = xSpdFunction.get();
         double ySpeed = ySpdFunction.get();
-        double turningSpeed = turningSpdFunction.get()
+        double turningSpeed = turningSpdFunction.get();
 
         // 2. Apply deadband
         xSpeed = Math.abs(xSpeed) > IOConstants.kDeadband ? xSpeed : 0.0;

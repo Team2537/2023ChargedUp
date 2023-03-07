@@ -19,7 +19,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 public final class Constants {
         public static final class ModuleConstants {
         public static final double kWheelDiameterMeters = 0.1016; //in meters //4 inches
-        public static final double kSteerEncoderGearRatio = (150/7f); //(150/7): one revolution of wheel equals 21 revolutions on steering motor
+        public static final double kSteerEncoderGearRatio = (150/7); //(150/7): one revolution of wheel equals 21 revolutions on steering motor
         public static final double kDriveEncoderGearRatio = (8.14); //8.14/2*pi: gear ratio*revolution to radians
         public static final double kDriveEncoderRotToMeters = Math.PI * kWheelDiameterMeters/kDriveEncoderGearRatio;
         public static final double kSteerEncoderRot2Rad = (2.0*Math.PI)/kSteerEncoderGearRatio;
@@ -82,8 +82,7 @@ public final class Constants {
         public static final double kFrontLeftAbsoluteEncoderOffsetRad = 1.948;
     public static final double kFrontRightAbsoluteEncoderOffsetRad = 0.387;
     public static final double kBackLeftAbsoluteEncoderOffsetRad = 0.681;
-    public static final double kBackRightAbsoluteEncoderOffsetRad = 3.3;
-
+    public static final double kBackRightAbsoluteEncoderOffsetRad = 3.281 ;
     
         public static final double kWheelBaseMeters = 0.52705; //20.75 inches
         // Distance between right and left wheels
@@ -93,7 +92,7 @@ public final class Constants {
         public static final double kPhysicalMaxAngularSpeedRps = 32.38; //radians per second
 
         public static final double kPhysicalMaxAccelerationMps = 5.0 ; //meters per second squared
-        public static final double kPhysicalMaxAngularAccelerationRps = 10.0; //radians per second squared
+        public static final double kPhysicalMaxAngularAccelerationRps = 5.0; //radians per second squared
 
         public static final double kTeleDriveMaxSpeedMps = kPhysicalMaxSpeedMps; // divided by 4 so that we don't drive too fast
         public static final double kTeleAngularMaxSpeedRps = kPhysicalMaxAngularSpeedRps;
@@ -106,7 +105,6 @@ public final class Constants {
                 new Translation2d(kWheelBaseMeters / 2, -kTrackWidthMeters / 2), //mFronRight
                 new Translation2d(-kWheelBaseMeters / 2, kTrackWidthMeters / 2), //mBackLeft
                 new Translation2d(-kWheelBaseMeters / 2, -kTrackWidthMeters / 2)); //mBackRight
-
 		
 		
                       

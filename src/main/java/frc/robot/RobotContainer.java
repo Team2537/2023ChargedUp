@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.IOConstants;
 import frc.robot.commands.LockCommand;
 import frc.robot.commands.SwerveTeleopCommand;
 import frc.robot.commands.PathCommand;
@@ -73,8 +74,7 @@ public class RobotContainer {
         () -> -controller.getLeftY(), //xSpdFunction is for forward direction 
         () -> -controller.getLeftX(), 
         () -> -controller.getRightX(),
-        () -> !controller.getAButton(),
-        trajectory);
+        () -> !controller.getAButton());
   }
 
 
@@ -99,9 +99,10 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     PathPlannerTrajectory trajectory = PathPlanner.loadPath("TwoStep", new PathConstraints(AutoConstants.kMaxSpeedMps, AutoConstants.kMaxAccelerationMetersPerSecondSquared));
- PathPlanning
+    Rotation2d autoStartRotation = new Rotation2d(0.0);
+    Pose2d autoStartPose = new Pose2d(0.0, 0.0, autoStartRotation);
   
-    return new PathCommand(swerveSubsystem, trajectory);
+    return new PathCommand(swerveSubsystem, trajectory, autoStartPose);
     
 //     // 1. Create trajectory settings
 //     TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
