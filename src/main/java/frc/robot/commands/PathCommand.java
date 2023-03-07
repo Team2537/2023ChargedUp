@@ -41,7 +41,7 @@ public class PathCommand extends CommandBase {
   //private final double kp=0.01, ki=0.0, kd=0.0; //barely turns
   //private final double kp=0.05, ki=0.0, kd=0.0; //turn smoothly but oscillates at setpoint
   //private final double kp=0.05, ki=0.0, kd=0.01; //turn smoothly but oscillates at setpoint
-  private final double kp=1.5, ki=0.1, kd=0.0;
+  private final double kp=1.5*Math.PI/180.0, ki=0.1*Math.PI/180.0, kd=0.0;
 
   /**
    * Creates a new ExampleCommand.
@@ -51,8 +51,8 @@ public class PathCommand extends CommandBase {
   public PathCommand(SwerveSubsystem swerveSubsystem, PathPlannerTrajectory trajectory, Pose2d startPose2d) {
     mSwerveSubsystem = swerveSubsystem;
     pidController=new PIDController(kp, ki, kd);
-    xPosController = new PIDController(0.5, 0.0, 0.0);
-    yPosController = new PIDController(0.5, 0.0, 0.0);
+    xPosController = new PIDController(2.0, 0.0, 0.0);
+    yPosController = new PIDController(2.0, 0.0, 0.0);
     pidController.enableContinuousInput(0,360);
     this.startPose2d = startPose2d;
     mSwerveSubsystem.resetOdometry(startPose2d);
@@ -61,7 +61,7 @@ public class PathCommand extends CommandBase {
     timer.start();
     this.trajectory = trajectory;
 
-    tab.addNumber("turning speed", () -> turningSpeed);
+    //tab.addNumber("turning speed", () -> turningSpeed);
     //tab.addNumber("desired heading", () -> trajectory.getstat.get());
     tab.addNumber("our heading", () -> swerveSubsystem.getHeading());
 
@@ -73,20 +73,29 @@ public class PathCommand extends CommandBase {
   @Override
   public void initialize() {}
 
-  double turningSpeed = 0;
+  //double turningSpeed = 0;
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     
     double time = timer.get();
+    double headingOffset = 0.0;
     PathPlannerState desiredState = (PathPlannerState) trajectory.sample(time);
     
     Pose2d desiredPose = desiredState.poseMeters;
     Rotation2d desiredHeading = desiredState.holonomicRotation;
     Pose2d currentPose = mSwerveSubsystem.getPose();
-    turningSpeed = pidController.calculate(mSwerveSubsystem.getHeading(), desiredHeading.getDegrees());
-    //SmartDashboard.putNumber("Turning speed", turningSpeed);
+    SmartDashboard.putNumber("our heading", mSwerveSubsystem.getHeading());
+    SmartDashboard.putNumber("Desired heading", desiredHeading.getDegrees());
+    if (mSwerveSubsystem.getHeading() - desiredHeading.getDegrees() > 180.0){
+      headingOffset = 180;
+    }
+    else if(mSwerveSubsystem.getHeading() - desiredHeading.getDegrees() < -180.0){
+      headingOffset = -180;
+    }
+    double turningSpeed = pidController.calculate(mSwerveSubsystem.getHeading()+headingOffset, desiredHeading.getDegrees());
+    SmartDashboard.putNumber("Turning speed", turningSpeed);
     double xCurrent = currentPose.getX();
     double xDesired = desiredPose.getX();
     double yCurrent = currentPose.getY();
@@ -107,7 +116,7 @@ public class PathCommand extends CommandBase {
     SmartDashboard.putNumber("xSpeed", ySpeed);
 
     ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-      xSpeed, ySpeed, 0.0, mSwerveSubsystem.getRotation2d());
+      xSpeed, ySpeed, turningSpeed, mSwerveSubsystem.getRotation2d());
     
      // 5. Convert chassis speeds to individual module states
      SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
