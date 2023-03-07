@@ -90,10 +90,11 @@ public final class Constants {
         // Distance between front and back wheels
         public static final double kPhysicalMaxSpeedMps = 3.29; //meters per second
         public static final double kPhysicalMaxAngularSpeedRps = 32.38; //radians per second
-        public static final double kPhysicalMaxAccelerationMps = 10.0 ; //meters per second squared
-        public static final double kPhysicalMaxAngularAccelerationRps = 5.0; //radians per second squared
 
-        public static final double kTeleDriveMaxSpeedMps = kPhysicalMaxSpeedMps/2.0; // divided by 4 so that we don't drive too fast
+        public static final double kPhysicalMaxAccelerationMps = 5.0 ; //meters per second squared
+        public static final double kPhysicalMaxAngularAccelerationRps = 10.0; //radians per second squared
+
+        public static final double kTeleDriveMaxSpeedMps = kPhysicalMaxSpeedMps; // divided by 4 so that we don't drive too fast
         public static final double kTeleAngularMaxSpeedRps = kPhysicalMaxAngularSpeedRps;
         public static final double kTeleDriveMaxAccelerationUnitsPerSecond = kPhysicalMaxAccelerationMps;
         public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = kPhysicalMaxAngularAccelerationRps;
@@ -117,8 +118,8 @@ public final class Constants {
 
     public static final class AutoConstants {
 
-        public static final double kMaxSpeedMps = DriveConstants.kPhysicalMaxSpeedMps/2.0; 
-        public static final double kMaxAccelerationMetersPerSecondSquared = DriveConstants.kPhysicalMaxAccelerationMps; //TODO: decide actual
+        public static final double kMaxSpeedMps = DriveConstants.kPhysicalMaxSpeedMps/3.0; 
+        public static final double kMaxAccelerationMetersPerSecondSquared = DriveConstants.kPhysicalMaxAccelerationMps/5; //TODO: decide actual
         public static final double kPThetaController = 0;
         public static final Constraints kThetaControllerConstraints = null;
         public static final double kPYController = 0;

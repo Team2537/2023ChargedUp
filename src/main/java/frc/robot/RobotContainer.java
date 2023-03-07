@@ -48,23 +48,25 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-     swerveSubsystem.setDefaultCommand(new SwerveTeleopCommand(
-                swerveSubsystem,
-                () -> -controller.getLeftY(), //xSpdFunction is for forward direction 
-                () -> -controller.getLeftX(), 
-                () -> -controller.getRightX(),
-                () -> !controller.getAButton()));
+    //  swerveSubsystem.setDefaultCommand(new SwerveTeleopCommand(
+    //             swerveSubsystem,
+    //             () -> -controller.getLeftY(), //xSpdFunction is for forward direction 
+    //             () -> -controller.getLeftX(), 
+    //             () -> -controller.getRightX(),
+    //             () -> !controller.getAButton()));
     // Configure the button bindings
     configureButtonBindings();
   }
 
   public Command getTeleopCommand() {
+    PathPlannerTrajectory trajectory = PathPlanner.loadPath("New Path", new PathConstraints(AutoConstants.kMaxSpeedMps, AutoConstants.kMaxAccelerationMetersPerSecondSquared));
       return new SwerveTeleopCommand(
         swerveSubsystem,
         () -> -controller.getLeftY(), //xSpdFunction is for forward direction 
         () -> -controller.getLeftX(), 
         () -> -controller.getRightX(),
-        () -> !controller.getAButton());
+        () -> !controller.getAButton(),
+        trajectory);
   }
 
   /**
@@ -84,6 +86,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     PathPlannerTrajectory trajectory = PathPlanner.loadPath("TwoStep", new PathConstraints(AutoConstants.kMaxSpeedMps, AutoConstants.kMaxAccelerationMetersPerSecondSquared));
+ PathPlanning
   
     return new PathCommand(swerveSubsystem, trajectory);
     
