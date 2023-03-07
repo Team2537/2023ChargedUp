@@ -134,12 +134,17 @@ public class SwerveModule {
         m_driveMotor.getPIDController().setReference(state.speedMetersPerSecond, ControlType.kVelocity);
 
         state = SwerveModuleState.optimize(state, getState().angle);
-        m_steerMotor.getPIDController().setReference(state.angle.getRadians(), ControlType.kPosition);
-        
+
+        mDriveMotor.set(state.speedMetersPerSecond / DriveConstants.kPhysicalMaxSpeedMps);
+        mDriveMotor.getPIDController().setReference(state.speedMetersPerSecond, CANSparkMax.ControlType.kVelocity);
+        mSteerMotor.getPIDController().setReference(state.angle.getRadians(), CANSparkMax.ControlType.kPosition);
+        SmartDashboard.putString("Swerve[" + mDriveMotor.getDeviceId() + "] state", state.toString());
+        SmartDashboard.putNumber("Swerve[" + mDriveMotor.getDeviceId() + "] Actual velocity", getDriveVelocity());
     }
 
     public void stop() {
-        m_driveMotor.set(0);
-        m_steerMotor.getPIDController().setReference(0.0, ControlType.kPosition);
+        mDriveMotor.set(0);
+        mSteerMotor.getPIDController().setReference(0.0, CANSparkMax.ControlType.kPosition);
+        
     }
 }

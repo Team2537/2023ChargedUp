@@ -91,7 +91,7 @@ public class SwerveSubsystem extends SubsystemBase{
     }
 
     public Rotation2d getRotation2d() {
-        return Rotation2d.fromDegrees(-getHeading());
+        return Rotation2d.fromDegrees(getHeading());
     }
 
     public Pose2d getPose() {
@@ -106,12 +106,14 @@ public class SwerveSubsystem extends SubsystemBase{
     @Override
     public void periodic() {
         odometer.update(getRotation2d(), getModulePositions());
-        SmartDashboard.putNumber("Robot Heading", getHeading());
-        SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
-        SmartDashboard.putNumber("Yaw", imu.getYaw());
-        SmartDashboard.putNumber("Pitch", imu.getPitch());
-        SmartDashboard.putNumber("Roll", imu.getRoll());
+        // SmartDashboard.putNumber("Robot Heading", getHeading());
 
+       
+        // SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
+        // SmartDashboard.putNumber("Pitch", imu.getPitch());
+        // SmartDashboard.putNumber("Roll", imu.getRoll());
+        SmartDashboard.putNumber("xPos", getPose().getX());
+        SmartDashboard.putNumber("yPos", getPose().getY());
     }
 
     public void stopModules() {

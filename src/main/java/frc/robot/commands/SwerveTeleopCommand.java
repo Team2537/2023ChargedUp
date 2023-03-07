@@ -1,13 +1,22 @@
 package frc.robot.commands;
 
 import java.util.function.Supplier;
+
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
+
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.subsystems.SwerveSubsystem;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+
 
 public class SwerveTeleopCommand extends CommandBase {
     @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
@@ -15,6 +24,9 @@ public class SwerveTeleopCommand extends CommandBase {
     private final Supplier<Double> xSpdFunction, ySpdFunction, turningSpdFunction;
     private final Supplier<Boolean> fieldOrientedFunction;
     private final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
+    private PathPlannerTrajectory trajectory;
+    private Timer timer;
+    private double xCurrent, yCurrent, xDesired, yDesired;
   
     /**
      * Creates a new ExampleCommand.
@@ -31,7 +43,13 @@ public class SwerveTeleopCommand extends CommandBase {
         xLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
         yLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
         turningLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAngularAccelerationUnitsPerSecond);
-      // Use addRequirements() here to declare subsystem dependencies.
+        ShuffleboardTab tab = Shuffleboard.getTab("Swerve State");
+
+
+      tab.addNumber("turning speed", () -> turningSpeed);
+      tab.addNumber("our heading", () -> swerveSubsystem.getHeading());
+
+        // Use addRequirements() here to declare subsystem dependencies.
       addRequirements(mSwerveSubsystem);
     }
 
@@ -43,10 +61,12 @@ public class SwerveTeleopCommand extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
+
         // 1. Get real-time joystick inputs
+        
         double xSpeed = xSpdFunction.get();
         double ySpeed = ySpdFunction.get();
-        double turningSpeed = turningSpdFunction.get();
+        double turningSpeed = turningSpdFunction.get()
 
         // 2. Apply deadband
         xSpeed = Math.abs(xSpeed) > IOConstants.kDeadband ? xSpeed : 0.0;
@@ -54,11 +74,12 @@ public class SwerveTeleopCommand extends CommandBase {
         turningSpeed = Math.abs(turningSpeed) > IOConstants.kDeadband ? turningSpeed : 0.0;
 
         // 3. Make the driving smoother
-        xSpeed = xLimiter.calculate(xSpeed) * DriveConstants.kTeleDriveMaxSpeedMps;
-        ySpeed = yLimiter.calculate(ySpeed) * DriveConstants.kTeleDriveMaxSpeedMps;
-        turningSpeed = turningLimiter.calculate(turningSpeed)
-                * DriveConstants.kTeleopMaxAngularSpeedRps;
+        xSpeed = xLimiter.calculate(xSpeed * DriveConstants.kTeleDriveMaxSpeedMps);
+        ySpeed = yLimiter.calculate(ySpeed * DriveConstants.kTeleDriveMaxSpeedMps);
+        turningSpeed = turningLimiter.calculate(turningSpeed * DriveConstants.kTeleAngularMaxSpeedRps);
 
+    SmartDashboard.putNumber("Turning speed", turningSpeed);
+    
         // 4. Construct desired chassis speeds
         ChassisSpeeds chassisSpeeds;
         if (fieldOrientedFunction.get()) {
@@ -75,6 +96,7 @@ public class SwerveTeleopCommand extends CommandBase {
    
         // 6. Output each module states to wheels
         mSwerveSubsystem.setModuleStates(moduleStates);
+
     }
   
     // Called once the command ends or is interrupted.
