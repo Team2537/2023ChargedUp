@@ -90,6 +90,7 @@ public final class Constants {
         // Distance between front and back wheels
         public static final double kPhysicalMaxSpeedMps = 3.29; //meters per second
         public static final double kPhysicalMaxAngularSpeedRps = 32.38; //radians per second
+
         public static final double kPhysicalMaxAccelerationMps = 5.0 ; //meters per second squared
         public static final double kPhysicalMaxAngularAccelerationRps = 10.0; //radians per second squared
 

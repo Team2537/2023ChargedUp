@@ -123,11 +123,11 @@ public class SwerveModule {
         mSteerMotor.getPIDController().setReference(state.angle.getRadians(), CANSparkMax.ControlType.kPosition);
         SmartDashboard.putString("Swerve[" + mDriveMotor.getDeviceId() + "] state", state.toString());
         SmartDashboard.putNumber("Swerve[" + mDriveMotor.getDeviceId() + "] Actual velocity", getDriveVelocity());
-
     }
 
     public void stop() {
         mDriveMotor.set(0);
         mSteerMotor.getPIDController().setReference(0.0, CANSparkMax.ControlType.kPosition);
+        
     }
 }

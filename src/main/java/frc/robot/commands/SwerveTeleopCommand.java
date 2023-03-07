@@ -35,7 +35,7 @@ public class SwerveTeleopCommand extends CommandBase {
      * @param subsystem The subsystem used by this command.
      */
     public SwerveTeleopCommand(SwerveSubsystem swerveSubsystem,  Supplier<Double> xSpdFunction, Supplier<Double> ySpdFunction, Supplier<Double> turningSpdFunction,
-            Supplier<Boolean> fieldOrientedFunction, PathPlannerTrajectory trajectory) {
+            Supplier<Boolean> fieldOrientedFunction) {
         mSwerveSubsystem = swerveSubsystem;
         this.xSpdFunction = xSpdFunction;
         this.ySpdFunction = ySpdFunction;
@@ -70,24 +70,12 @@ public class SwerveTeleopCommand extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
+
         // 1. Get real-time joystick inputs
         
         double xSpeed = xSpdFunction.get();
         double ySpeed = ySpdFunction.get();
-        double turningSpeed = turningSpdFunction.get();
-
-        double time = timer.get();
-        PathPlannerState desiredState = (PathPlannerState) trajectory.sample(time);
-        
-        Pose2d desiredPose = desiredState.poseMeters;
-        Rotation2d desiredHeading = desiredState.holonomicRotation;
-        Pose2d currentPose = mSwerveSubsystem.getPose();
-       
-        //SmartDashboard.putNumber("Turning speed", turningSpeed);
-        xCurrent = currentPose.getX();
-        xDesired = desiredPose.getX();
-        yCurrent = currentPose.getY();
-        yDesired = desiredPose.getY();
+        double turningSpeed = turningSpdFunction.get()
 
         // 2. Apply deadband
         xSpeed = Math.abs(xSpeed) > IOConstants.kDeadband ? xSpeed : 0.0;
@@ -95,14 +83,12 @@ public class SwerveTeleopCommand extends CommandBase {
         turningSpeed = Math.abs(turningSpeed) > IOConstants.kDeadband ? turningSpeed : 0.0;
 
         // 3. Make the driving smoother
-        // xSpeed = xLimiter.calculate(xSpeed) * DriveConstants.kTeleDriveMaxSpeedMps;
-        // ySpeed = yLimiter.calculate(ySpeed) * DriveConstants.kTeleDriveMaxSpeedMps;
-        // turningSpeed = turningLimiter.calculate(turningSpeed)
-        //         * DriveConstants.kTeleAngularMaxSpeedRps;
         xSpeed = xLimiter.calculate(xSpeed * DriveConstants.kTeleDriveMaxSpeedMps);
         ySpeed = yLimiter.calculate(ySpeed * DriveConstants.kTeleDriveMaxSpeedMps);
         turningSpeed = turningLimiter.calculate(turningSpeed * DriveConstants.kTeleAngularMaxSpeedRps);
 
+    SmartDashboard.putNumber("Turning speed", turningSpeed);
+    
         // 4. Construct desired chassis speeds
         ChassisSpeeds chassisSpeeds;
         if (fieldOrientedFunction.get()) {
@@ -119,6 +105,7 @@ public class SwerveTeleopCommand extends CommandBase {
 
         // 6. Output each module states to wheels
         mSwerveSubsystem.setModuleStates(moduleStates);
+
     }
   
     // Called once the command ends or is interrupted.
