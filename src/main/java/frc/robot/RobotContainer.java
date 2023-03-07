@@ -22,6 +22,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.commands.LockCommand;
 import frc.robot.commands.SwerveTeleopCommand;
+import frc.robot.commands.ZeroHeadingCommand;
 import frc.robot.commands.PathCommand;
 import frc.robot.commands.SetChassisStateCommand;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -49,8 +50,8 @@ public class RobotContainer {
   
   private final LockCommand lockCommand = new LockCommand(swerveSubsystem);
   private final XboxController controller = new XboxController(IOConstants.kXboxControllerPort);
-
-
+  
+  private final ZeroHeadingCommand m_zeroHeadingCommand = new ZeroHeadingCommand(swerveSubsystem);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -90,6 +91,9 @@ public class RobotContainer {
     //rightTrigger.onTrue(new LockCommand(swerveSubsystem));
 
     yButton.onTrue(lockCommand);
+    
+    Trigger bothTriggers = new Trigger(() -> (controller.getLeftTriggerAxis() > 0.75 && controller.getRightTriggerAxis() > 0.75));
+    bothTriggers.onTrue(m_zeroHeadingCommand);
   }
 
   /**
