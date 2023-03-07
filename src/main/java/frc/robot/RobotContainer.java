@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.IOConstants;
+import frc.robot.commands.LockCommand;
 import frc.robot.commands.SwerveTeleopCommand;
 import frc.robot.commands.PathCommand;
 import frc.robot.commands.SetChassisStateCommand;
@@ -28,6 +28,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+
+import static frc.robot.Constants.IOConstants.*;
 
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
@@ -42,21 +45,26 @@ import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
+  
+  private final LockCommand lockCommand = new LockCommand(swerveSubsystem);
   private final XboxController controller = new XboxController(IOConstants.kXboxControllerPort);
-  private Timer timer;
+
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
     //  swerveSubsystem.setDefaultCommand(new SwerveTeleopCommand(
     //             swerveSubsystem,
     //             () -> -controller.getLeftY(), //xSpdFunction is for forward direction 
     //             () -> -controller.getLeftX(), 
     //             () -> -controller.getRightX(),
     //             () -> !controller.getAButton()));
+
     // Configure the button bindings
     configureButtonBindings();
   }
+
 
   public Command getTeleopCommand() {
     PathPlannerTrajectory trajectory = PathPlanner.loadPath("New Path", new PathConstraints(AutoConstants.kMaxSpeedMps, AutoConstants.kMaxAccelerationMetersPerSecondSquared));
@@ -69,6 +77,7 @@ public class RobotContainer {
         trajectory);
   }
 
+
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
@@ -76,7 +85,11 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    Trigger yButton = new Trigger(() -> controller.getYButton()); 
+    //Trigger rightTrigger = new Trigger(() -> controller.getRightTriggerAxis() > 0.9);
+    //rightTrigger.onTrue(new LockCommand(swerveSubsystem));
 
+    yButton.onTrue(lockCommand);
   }
 
   /**

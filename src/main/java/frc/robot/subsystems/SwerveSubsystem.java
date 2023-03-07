@@ -1,8 +1,6 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.Pigeon2;
-import com.ctre.phoenix.sensors.Pigeon2Configuration;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -15,46 +13,51 @@ import frc.robot.Constants.DriveConstants;
 
 public class SwerveSubsystem extends SubsystemBase{
     //declare and instantiate all swerve modules
-    private final SwerveModule mFrontLeft = new SwerveModule(
+    private final SwerveModule m_frontLeft = new SwerveModule(
         DriveConstants.kFrontLeftDriveMotorPort,
         DriveConstants.kFrontLeftSteerMotorPort,
         DriveConstants.kFrontLeftDriveEncoderReversed,
         DriveConstants.kFrontLeftSteerEncoderReversed,
         DriveConstants.kFrontLeftAbsoluteEncoderPort,
         DriveConstants.kFrontLeftAbsoluteEncoderOffsetRad,
-        DriveConstants.kFrontLeftAbsoluteEncoderReversed);
+        DriveConstants.kFrontLeftAbsoluteEncoderReversed,
+        "Front Left");
 
-    private final SwerveModule mFrontRight = new SwerveModule(
+    private final SwerveModule m_frontRight = new SwerveModule(
         DriveConstants.kFrontRightDriveMotorPort,
         DriveConstants.kFrontRightSteerMotorPort,
         DriveConstants.kFrontRightDriveEncoderReversed,
         DriveConstants.kFrontRightSteerEncoderReversed,
         DriveConstants.kFrontRightAbsoluteEncoderPort,
         DriveConstants.kFrontRightAbsoluteEncoderOffsetRad,
-        DriveConstants.kFrontRightAbsoluteEncoderReversed);
+        DriveConstants.kFrontRightAbsoluteEncoderReversed,
+        "Front Right");
 
-    private final SwerveModule mBackLeft = new SwerveModule(
+    private final SwerveModule m_backLeft = new SwerveModule(
         DriveConstants.kBackLeftDriveMotorPort,
         DriveConstants.kBackLeftSteerMotorPort,
         DriveConstants.kBackLeftDriveEncoderReversed,
         DriveConstants.kBackLeftSteerEncoderReversed,
         DriveConstants.kBackLeftAbsoluteEncoderPort,
         DriveConstants.kBackLeftAbsoluteEncoderOffsetRad,
-        DriveConstants.kBackLeftAbsoluteEncoderReversed);
+        DriveConstants.kBackLeftAbsoluteEncoderReversed,
+        "Back Left");
 
-    private final SwerveModule mBackRight = new SwerveModule(
+    private final SwerveModule m_backRight = new SwerveModule(
         DriveConstants.kBackRightDriveMotorPort,
         DriveConstants.kBackRightSteerMotorPort,
         DriveConstants.kBackRightDriveEncoderReversed,
         DriveConstants.kBackRightSteerEncoderReversed,
         DriveConstants.kBackRightAbsoluteEncoderPort,
         DriveConstants.kBackRightAbsoluteEncoderOffsetRad,
-        DriveConstants.kBackRightAbsoluteEncoderReversed);
+        DriveConstants.kBackRightAbsoluteEncoderReversed,
+        "Back Right");
 
     //declare and instantiate Inertial Measurement Unit (Pigeon2)
     private Pigeon2 imu = new Pigeon2(DriveConstants.kPigeonPort); 
 
     private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(DriveConstants.kDriveKinematics, new Rotation2d(0), getModulePositions());
+    
     //SwerveSubsystem constructor
     public SwerveSubsystem() {
 
@@ -63,13 +66,9 @@ public class SwerveSubsystem extends SubsystemBase{
                 Thread.sleep(1000);
                 resetImu();
                 zeroHeading();
-            } catch(Exception e) {
-            }        
+            } catch(Exception ignored) {}        
         }).start();
     }
-
-
-
 
     public void resetImu() {
         /* 
@@ -84,7 +83,7 @@ public class SwerveSubsystem extends SubsystemBase{
     }
 
     public double getHeading() {
-        return Math.IEEEremainder(imu.getYaw(), 360); //Pigeon2 is continuous (yaw value will go past 360 degrees). this converts it to between -180 and 180
+        return Math.IEEEremainder(imu.getYaw(), 360); // Pigeon2 is continuous (yaw value will go past 360 degrees). this converts it to between -180 and 180
     }
 
     public void zeroHeading() {
@@ -117,29 +116,27 @@ public class SwerveSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("yPos", getPose().getY());
     }
 
-
-
     public void stopModules() {
-        mFrontLeft.stop();
-        mFrontRight.stop();
-        mBackLeft.stop();
-        mBackRight.stop();
+        m_frontLeft.stop();
+        m_frontRight.stop();
+        m_backLeft.stop();
+        m_backRight.stop();
     }
 
     public void setModuleStates(SwerveModuleState[] desiredStates) {
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.kPhysicalMaxSpeedMps);
-        mFrontLeft.setDesiredState(desiredStates[0]);
-        mFrontRight.setDesiredState(desiredStates[1]);
-        mBackLeft.setDesiredState(desiredStates[2]);
-        mBackRight.setDesiredState(desiredStates[3]);
+        m_frontLeft.setDesiredState(desiredStates[0]);
+        m_frontRight.setDesiredState(desiredStates[1]);
+        m_backLeft.setDesiredState(desiredStates[2]);
+        m_backRight.setDesiredState(desiredStates[3]);
     }
 
     public SwerveModulePosition[] getModulePositions() {
         SwerveModulePosition[] modulePositions = {
-            new SwerveModulePosition(mFrontLeft.getDrivePosition(), mFrontLeft.getState().angle),
-            new SwerveModulePosition(mFrontRight.getDrivePosition(), mFrontRight.getState().angle),
-            new SwerveModulePosition(mBackLeft.getDrivePosition(), mBackLeft.getState().angle),
-            new SwerveModulePosition(mBackRight.getDrivePosition(), mBackRight.getState().angle)
+            new SwerveModulePosition(m_frontLeft.getDrivePosition(), m_frontLeft.getState().angle),
+            new SwerveModulePosition(m_frontRight.getDrivePosition(), m_frontRight.getState().angle),
+            new SwerveModulePosition(m_backLeft.getDrivePosition(), m_backLeft.getState().angle),
+            new SwerveModulePosition(m_backRight.getDrivePosition(), m_backRight.getState().angle)
         };
 
         return modulePositions;
