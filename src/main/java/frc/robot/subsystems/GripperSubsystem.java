@@ -77,11 +77,7 @@ public class GripperSubsystem extends SubsystemBase {
   }
 
   public boolean isOpened(){
-    if(opened == true){
-      return true;
-    } else {
-      return false;
-    }
+    return opened;
   }
 
   @Override

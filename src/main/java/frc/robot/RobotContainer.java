@@ -54,6 +54,7 @@ public class RobotContainer {
   private final ArmTelescopeSubsystem m_armTelescopeSubsystem = new ArmTelescopeSubsystem();
   private final GripperSubsystem m_gripperSubsystem = new GripperSubsystem(0, 0, i -> {
   }, 10, 11);
+  private final CameraSubsystem m_cameraSubsystem = new CameraSubsystem();
 
 
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
@@ -83,11 +84,11 @@ public class RobotContainer {
   private final FixedExtensionCommand test = new FixedExtensionCommand(m_armTelescopeSubsystem, 5);
   private final HomingCommand m_homingCommand = new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem);
 
-  private final FixedAngleCommand testAngle = new FixedAngleCommand(m_armPivotSubsystem, 35);
-  private final SetPositionCommand testPosition = new SetPositionCommand(testAngle, test);
+  private final FixedAngleCommand m_zeroAngleCommand = new FixedAngleCommand(m_armPivotSubsystem, 0);
+  //private final SetPositionCommand testPosition = new SetPositionCommand(testAngle, test);
 
-  private final OpenGripperCommand openGripper = new OpenGripperCommand(m_gripperSubsystem);
-  private final CloseGripperCommand closeGripper = new CloseGripperCommand(m_gripperSubsystem);
+  //private final OpenGripperCommand openGripper = new OpenGripperCommand(m_gripperSubsystem);
+  //private final CloseGripperCommand closeGripper = new CloseGripperCommand(m_gripperSubsystem);
   private final ToggleGripperCommand toggleGripper = new ToggleGripperCommand(m_gripperSubsystem);
 
   private final FixedExtensionCommand m_returnExtension = new FixedExtensionCommand(m_armTelescopeSubsystem, 0);
@@ -128,17 +129,18 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    m_gunnerJoystick.getButton(11).onTrue(m_homingCommand);
-    m_gunnerJoystick.getButton(5).onTrue(openGripper);
-    m_gunnerJoystick.getButton(3).onTrue(closeGripper);
+    m_gunnerJoystick.getButton(8).onTrue(m_homingCommand);
+    m_gunnerJoystick.getButton(2).onTrue(toggleGripper);
     
     //m_gunnerJoystick.getButton(2).onTrue(m_bottomRowPosition);
-    m_gunnerJoystick.getButton(7).onTrue(m_middleRowPosition);
-    m_gunnerJoystick.getButton(9).onTrue(m_topRowPosition);
-    m_gunnerJoystick.getButton(10).onTrue(m_grabPosition);
+    m_gunnerJoystick.getButton(12).onTrue(m_zeroAngleCommand);
+    
+    m_gunnerJoystick.getButton(11).onTrue(m_bottomRowPosition);
+    m_gunnerJoystick.getButton(9).onTrue(m_middleRowPosition);
+    m_gunnerJoystick.getButton(7).onTrue(m_topRowPosition);
+    m_gunnerJoystick.getButton(4).onTrue(m_grabPosition);
 
-    m_gunnerJoystick.getButton(4).onTrue(m_returnExtension);
-
+    m_gunnerJoystick.getButton(6).onTrue(m_returnExtension);
     m_gunnerJoystick.getThrottle().whileTrue(m_manualControl);
   }
 
