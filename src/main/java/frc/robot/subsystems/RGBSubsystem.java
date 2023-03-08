@@ -16,7 +16,7 @@ public class RGBSubsystem extends SubsystemBase{
 
     private boolean updatePause = false;
 
-    public RGBSubsystem(int port, int control){
+    public RGBSubsystem(int port){
         lightLine = new PWM(port);
 
         pwmTab = Shuffleboard.getTab("RGB");
@@ -30,6 +30,7 @@ public class RGBSubsystem extends SubsystemBase{
      * 2: Yellow -> 40
      * 3: Green -> 60
      * 4: Red -> 80
+     * 5: Off -> 100
      * 7: Awesome -> 140
      */
     public void setCommand(int command) {

@@ -51,12 +51,12 @@ public class RobotContainer {
   private final SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
   private final ArmPivotSubsystem m_armPivotSubsystem = new ArmPivotSubsystem();
   private final ArmTelescopeSubsystem m_armTelescopeSubsystem = new ArmTelescopeSubsystem();
-  private final GripperSubsystem m_gripperSubsystem = new GripperSubsystem(0, 0, i -> {
+  private final GripperSubsystem m_gripperSubsystem = new GripperSubsystem(0, 0, i -> {}, 3, 2);
   private final CameraSubsystem m_cameraSubsystem = new CameraSubsystem();
 
 
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-  private final RGBSubsystem m_RgbSubsystem = new RGBSubsystem(0, 0);
+  private final RGBSubsystem m_RgbSubsystem = new RGBSubsystem(0);
 
   private final FixedAngleCommand m_bottomRowAngle = new FixedAngleCommand(m_armPivotSubsystem, BOTTOM_ROW_ANGLE);
   private final FixedExtensionCommand m_bottomRowExtension = new FixedExtensionCommand(m_armTelescopeSubsystem,
@@ -140,6 +140,9 @@ public class RobotContainer {
 
     m_gunnerJoystick.getButton(6).onTrue(m_returnExtension);
     m_gunnerJoystick.getThrottle().whileTrue(m_manualControl);
+
+    m_gunnerJoystick.getButton(5).toggleOnTrue(purpleColor);
+    m_gunnerJoystick.getButton(3).toggleOnTrue(yellowColor);
   }
 
   /**

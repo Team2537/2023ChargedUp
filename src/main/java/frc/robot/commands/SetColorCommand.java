@@ -16,8 +16,13 @@ public class SetColorCommand extends CommandBase{
     }
 
     @Override
+    public void end(boolean interrupted) {
+        m_subsystem.setCommand(5);
+    }
+
+    @Override
     public boolean isFinished(){
         m_subsystem.setCommand(m_color);
-        return true;
+        return false;
     }
 }
