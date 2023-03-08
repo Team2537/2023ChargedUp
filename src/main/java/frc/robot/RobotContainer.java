@@ -26,12 +26,20 @@ import frc.robot.commands.ZeroHeadingCommand;
 import frc.robot.commands.PathCommand;
 import frc.robot.commands.SetChassisStateCommand;
 import frc.robot.subsystems.SwerveSubsystem;
+import static frc.robot.Constants.ArmConstants.*;
+import static frc.robot.Constants.ColorConstants.*;
+import frc.robot.commands.*;
+import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
+import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.SetColorCommand;
+import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.RGBSubsystem;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import static frc.robot.Constants.IOConstants.*;
 
 import com.pathplanner.lib.PathConstraints;
@@ -39,30 +47,87 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in
+ * the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of
+ * the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+  private final XboxController m_controller = new XboxController(IOConstants.kXboxControllerPort);
+  private final LogitechJoystick m_gunnerJoystick = new LogitechJoystick(1);
+
   // The robot's subsystems and commands are defined here...
-  private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
-  
-  private final LockCommand lockCommand = new LockCommand(swerveSubsystem);
-  private final XboxController controller = new XboxController(IOConstants.kXboxControllerPort);
-  
-  private final ZeroHeadingCommand m_zeroHeadingCommand = new ZeroHeadingCommand(swerveSubsystem);
+  private final SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
+  private final ArmPivotSubsystem m_armPivotSubsystem = new ArmPivotSubsystem();
+  private final ArmTelescopeSubsystem m_armTelescopeSubsystem = new ArmTelescopeSubsystem();
+  private final GripperSubsystem m_gripperSubsystem = new GripperSubsystem(0, 0, i -> {}, 3, 2);
+  private final CameraSubsystem m_cameraSubsystem = new CameraSubsystem();
+
+  private final LockCommand lockCommand = new LockCommand(m_swerveSubsystem);
+  private final ZeroHeadingCommand m_zeroHeadingCommand = new ZeroHeadingCommand(m_swerveSubsystem);
+
+  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  private final RGBSubsystem m_RgbSubsystem = new RGBSubsystem(0);
+
+  private final FixedAngleCommand m_bottomRowAngle = new FixedAngleCommand(m_armPivotSubsystem, BOTTOM_ROW_ANGLE);
+  private final FixedExtensionCommand m_bottomRowExtension = new FixedExtensionCommand(m_armTelescopeSubsystem,
+      BOTTOM_ROW_EXTENSION);
+  private final SetPositionCommand m_bottomRowPosition = new SetPositionCommand(m_bottomRowAngle, m_bottomRowExtension);
+
+  // Position for middle cone row when bumpers are against the community
+  private final FixedAngleCommand m_middleRowAngle = new FixedAngleCommand(m_armPivotSubsystem, MIDDLE_ROW_ANGLE);
+  private final FixedExtensionCommand m_middleRowExtension = new FixedExtensionCommand(m_armTelescopeSubsystem,
+      MIDDLE_ROW_EXTENSION);
+  private final SetPositionCommand m_middleRowPosition = new SetPositionCommand(m_middleRowAngle, m_middleRowExtension);
+
+  // Position for top cone row when bumpers are against the community
+  private final FixedAngleCommand m_topRowAngle = new FixedAngleCommand(m_armPivotSubsystem, TOP_ROW_ANGLE);
+  private final FixedExtensionCommand m_topRowExtension = new FixedExtensionCommand(m_armTelescopeSubsystem,
+      TOP_ROW_EXTENSION);
+  private final SetPositionCommand m_topRowPosition = new SetPositionCommand(m_topRowAngle, m_topRowExtension);
+
+  private final FixedExtensionCommand m_grabExtension = new FixedExtensionCommand(m_armTelescopeSubsystem, GRAB_EXTENSION);
+  private final FixedAngleCommand m_grabAngle = new FixedAngleCommand(m_armPivotSubsystem, GRAB_ANGLE);
+  private final SetPositionCommand m_grabPosition = new SetPositionCommand(m_grabAngle, m_grabExtension);
+
+  private final FixedExtensionCommand test = new FixedExtensionCommand(m_armTelescopeSubsystem, 5);
+  private final HomingCommand m_homingCommand = new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem);
+
+  private final FixedAngleCommand m_zeroAngleCommand = new FixedAngleCommand(m_armPivotSubsystem, 0);
+  //private final SetPositionCommand testPosition = new SetPositionCommand(testAngle, test);
+
+  //private final OpenGripperCommand openGripper = new OpenGripperCommand(m_gripperSubsystem);
+  //private final CloseGripperCommand closeGripper = new CloseGripperCommand(m_gripperSubsystem);
+  private final ToggleGripperCommand toggleGripper = new ToggleGripperCommand(m_gripperSubsystem);
+
+  private final FixedExtensionCommand m_returnExtension = new FixedExtensionCommand(m_armTelescopeSubsystem, 0);
+
+  private final ManualArmControlCommand m_manualControl = new ManualArmControlCommand(
+      m_armPivotSubsystem,
+      m_armTelescopeSubsystem,
+      () -> m_gunnerJoystick.getAxis(1),
+      () -> 0.1 * m_gunnerJoystick.getHatSwitch());
+
+  /**
+   * The container for the robot. Contains subsystems, OI devices, and commands.
+   */
+  private final SetColorCommand redColor = new SetColorCommand(m_RgbSubsystem, RED);
+  private final SetColorCommand yellowColor = new SetColorCommand(m_RgbSubsystem, YELLOW);
+  private final SetColorCommand purpleColor = new SetColorCommand(m_RgbSubsystem, PURPLE);
+  private final SetColorCommand greenColor = new SetColorCommand(m_RgbSubsystem, GREEN);
+  private final SetColorCommand awesomeColor = new SetColorCommand(m_RgbSubsystem, AWESOME);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-
-    //  swerveSubsystem.setDefaultCommand(new SwerveTeleopCommand(
-    //             swerveSubsystem,
-    //             () -> -controller.getLeftY(), //xSpdFunction is for forward direction 
-    //             () -> -controller.getLeftX(), 
-    //             () -> -controller.getRightX(),
-    //             () -> !controller.getAButton()));
-
+    m_swerveSubsystem.setDefaultCommand(new SwerveTeleopCommand(
+        m_swerveSubsystem,
+        () -> -m_controller.getLeftY(), // xSpdFunction is for forward direction
+        () -> -m_controller.getLeftX(),
+        () -> -m_controller.getRightX(),
+        () -> !m_controller.getAButton()));
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -80,20 +145,38 @@ public class RobotContainer {
 
 
   /**
-   * Use this method to define your button->command mappings. Buttons can be created by
+   * Use this method to define your button->command mappings. Buttons can be
+   * created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
+   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
+   * it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    Trigger yButton = new Trigger(() -> controller.getYButton()); 
+    Trigger yButton = new Trigger(() -> m_controller.getYButton()); 
     //Trigger rightTrigger = new Trigger(() -> controller.getRightTriggerAxis() > 0.9);
     //rightTrigger.onTrue(new LockCommand(swerveSubsystem));
 
     yButton.onTrue(lockCommand);
     
-    Trigger bothTriggers = new Trigger(() -> (controller.getLeftTriggerAxis() > 0.75 && controller.getRightTriggerAxis() > 0.75));
+    Trigger bothTriggers = new Trigger(() -> (m_controller.getLeftTriggerAxis() > 0.75 && m_controller.getRightTriggerAxis() > 0.75));
     bothTriggers.onTrue(m_zeroHeadingCommand);
+    m_gunnerJoystick.getButton(8).onTrue(m_homingCommand);
+    m_gunnerJoystick.getButton(2).onTrue(toggleGripper);
+    
+    //m_gunnerJoystick.getButton(2).onTrue(m_bottomRowPosition);
+    m_gunnerJoystick.getButton(12).onTrue(m_zeroAngleCommand);
+    
+    m_gunnerJoystick.getButton(11).onTrue(m_bottomRowPosition);
+    m_gunnerJoystick.getButton(9).onTrue(m_middleRowPosition);
+    m_gunnerJoystick.getButton(7).onTrue(m_topRowPosition);
+    m_gunnerJoystick.getButton(4).onTrue(m_grabPosition);
+
+    m_gunnerJoystick.getButton(6).onTrue(m_returnExtension);
+    m_gunnerJoystick.getThrottle().whileTrue(m_manualControl);
+
+    m_gunnerJoystick.getButton(5).toggleOnTrue(purpleColor);
+    m_gunnerJoystick.getButton(3).toggleOnTrue(yellowColor);
   }
 
   /**
@@ -145,6 +228,6 @@ public class RobotContainer {
 // return new SequentialCommandGroup(new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())), swerveControllerCommand,  new InstantCommand(() -> swerveSubsystem.stopModules()));
 // 
 
-}
+    }
 
 }
