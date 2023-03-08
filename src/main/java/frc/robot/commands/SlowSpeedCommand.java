@@ -24,7 +24,7 @@ public class SlowSpeedCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (kSpeedMultiplier > 0.5) kSpeedMultiplier = 0.25;
+    if (kSpeedMultiplier > 0.5) DriveConstants.kSpeedMultiplier = 0.25;
     else kSpeedMultiplier = 1.0;
     return true;
   }
