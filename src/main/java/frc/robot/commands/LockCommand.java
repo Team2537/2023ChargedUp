@@ -7,12 +7,16 @@ package frc.robot.commands;
 import frc.robot.subsystems.SwerveSubsystem;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 /** An example command that uses an example subsystem. */
-public class LockCommand extends CommandBase {
+public class LockCommand extends InstantCommand {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final SwerveSubsystem m_subsystem;
+  private final SwerveSubsystem mSwerveSubsystem;
+  private Timer time;
 
   /**
    * Creates a new ExampleCommand.
@@ -20,7 +24,7 @@ public class LockCommand extends CommandBase {
    * @param subsystem The subsystem used by this command.
    */
   public LockCommand(SwerveSubsystem subsystem) {
-    m_subsystem = subsystem;
+    mSwerveSubsystem = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
@@ -28,18 +32,24 @@ public class LockCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-   
+   SmartDashboard.putString("ran", "ran");
+  time = new Timer(); //TODO: use a way based on if its at the positions rather than time
+  time.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     SwerveModuleState[] moduleStates = {
-      new SwerveModuleState(0, new Rotation2d(Math.PI/4)),
-      new SwerveModuleState(0, new Rotation2d(-Math.PI/4)),
-      new SwerveModuleState(0, new Rotation2d(-Math.PI/4)),
-      new SwerveModuleState(0, new Rotation2d(Math.PI/4)),
+      new SwerveModuleState(-0.2, new Rotation2d(Math.PI/4)),
+      new SwerveModuleState(-0.2, new Rotation2d(-Math.PI/4)),
+      new SwerveModuleState(0.2, new Rotation2d(-Math.PI/4)),
+      new SwerveModuleState(0.2, new Rotation2d(Math.PI/4)),
     };
+
+    
+
+    mSwerveSubsystem.setModuleStates(moduleStates);
 
   /*SwerveModuleState[] moduleStates = {
     new SwerveModuleState(0, new Rotation2d(0)),
@@ -49,7 +59,7 @@ public class LockCommand extends CommandBase {
   };*/
 
     // 6. Output each module states to wheels
-    m_subsystem.setModuleStates(moduleStates);
+    
   }
 
   // Called once the command ends or is interrupted.
@@ -59,6 +69,7 @@ public class LockCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    
+    return time.get()>0.1;
   }
 }

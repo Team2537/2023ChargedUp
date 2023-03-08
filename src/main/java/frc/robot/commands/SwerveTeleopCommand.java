@@ -23,7 +23,7 @@ public class SwerveTeleopCommand extends CommandBase {
     @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
     private final SwerveSubsystem mSwerveSubsystem;
     private final Supplier<Double> xSpdFunction, ySpdFunction, turningSpdFunction;
-    private final Supplier<Boolean> fieldOrientedFunction;
+    private final Supplier<Boolean> fieldOrientedFunction, slowSpeedFunction;
     private final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
 
   
@@ -33,18 +33,18 @@ public class SwerveTeleopCommand extends CommandBase {
      * @param subsystem The subsystem used by this command.
      */
     public SwerveTeleopCommand(SwerveSubsystem swerveSubsystem,  Supplier<Double> xSpdFunction, Supplier<Double> ySpdFunction, Supplier<Double> turningSpdFunction,
-            Supplier<Boolean> fieldOrientedFunction) {
+            Supplier<Boolean> fieldOrientedFunction, Supplier<Boolean> slowSpeedFunction) {
         mSwerveSubsystem = swerveSubsystem;
         this.xSpdFunction = xSpdFunction;
         this.ySpdFunction = ySpdFunction;
         this.turningSpdFunction = turningSpdFunction;
         this.fieldOrientedFunction = fieldOrientedFunction;
+        this.slowSpeedFunction = slowSpeedFunction;
         xLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
         yLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
         turningLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAngularAccelerationUnitsPerSecond);
         ShuffleboardTab tab = Shuffleboard.getTab("Swerve State");
-      tab.addNumber("our heading", () -> swerveSubsystem.getHeading());
-
+      
         // Use addRequirements() here to declare subsystem dependencies.
       addRequirements(mSwerveSubsystem);
     }
@@ -59,7 +59,8 @@ public class SwerveTeleopCommand extends CommandBase {
     public void execute() {
 
         // 1. Get real-time joystick inputs
-        
+        SmartDashboard.putBoolean("Field Orientation A Button", fieldOrientedFunction.get());
+        SmartDashboard.putBoolean("Slow Speed B Button", slowSpeedFunction.get());
         double xSpeed = xSpdFunction.get();
         double ySpeed = ySpdFunction.get();
         double turningSpeed = turningSpdFunction.get();
@@ -74,7 +75,15 @@ public class SwerveTeleopCommand extends CommandBase {
         ySpeed = yLimiter.calculate(ySpeed * DriveConstants.kTeleDriveMaxSpeedMps);
         turningSpeed = turningLimiter.calculate(turningSpeed * DriveConstants.kTeleAngularMaxSpeedRps);
 
+
+
     SmartDashboard.putNumber("Turning speed", turningSpeed);
+
+      if(slowSpeedFunction.get()) {
+        xSpeed*= DriveConstants.kSpeedMultiplier;
+        ySpeed*= DriveConstants.kSpeedMultiplier;
+        turningSpeed*= DriveConstants.kSpeedMultiplier;
+      }
     
         // 4. Construct desired chassis speeds
         ChassisSpeeds chassisSpeeds;

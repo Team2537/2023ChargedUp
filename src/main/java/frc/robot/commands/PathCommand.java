@@ -34,7 +34,7 @@ public class PathCommand extends CommandBase {
   private PathPlannerTrajectory trajectory;
   private Timer timer;
   private PIDController xPosController, yPosController;
-  private Pose2d startPose2d = new Pose2d();
+  private Pose2d startPose2d = new Pose2d(), endPose2d;
 
   //private final double kp=0.1, ki=0.0, kd=0.0; //turn smoothly but oscillates at setpoint
   //private final double kp=0.03, ki=0.1, kd=0.0; //turn smoothly but oscillates at setpoint
@@ -60,11 +60,11 @@ public class PathCommand extends CommandBase {
     timer = new Timer();
     timer.start();
     this.trajectory = trajectory;
+    endPose2d = trajectory.getEndState().poseMeters;
 
     //tab.addNumber("turning speed", () -> turningSpeed);
     //tab.addNumber("desired heading", () -> trajectory.getstat.get());
-    tab.addNumber("our heading", () -> swerveSubsystem.getHeading());
-
+    
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(swerveSubsystem);
   }
@@ -86,7 +86,7 @@ public class PathCommand extends CommandBase {
     Pose2d desiredPose = desiredState.poseMeters;
     Rotation2d desiredHeading = desiredState.holonomicRotation;
     Pose2d currentPose = mSwerveSubsystem.getPose();
-    SmartDashboard.putNumber("our heading", mSwerveSubsystem.getHeading());
+    
     SmartDashboard.putNumber("Desired heading", desiredHeading.getDegrees());
     if (mSwerveSubsystem.getHeading() - desiredHeading.getDegrees() > 180.0){
       headingOffset = 180;
@@ -135,6 +135,7 @@ public class PathCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+
     return false;
   }
 }
