@@ -53,7 +53,7 @@ public class RobotContainer {
   private final ArmPivotSubsystem m_armPivotSubsystem = new ArmPivotSubsystem();
   private final ArmTelescopeSubsystem m_armTelescopeSubsystem = new ArmTelescopeSubsystem();
   private final GripperSubsystem m_gripperSubsystem = new GripperSubsystem(0, 0, i -> {
-  }, 10, 11);
+  }, 3, 2);
 
 
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
