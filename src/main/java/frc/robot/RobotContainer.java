@@ -137,8 +137,8 @@ public class RobotContainer {
     PathPlannerTrajectory trajectory = PathPlanner.loadPath("New Path", new PathConstraints(AutoConstants.kMaxSpeedMps, AutoConstants.kMaxAccelerationMetersPerSecondSquared));
       return new SwerveTeleopCommand(
         swerveSubsystem,
-        () -> -controller.getLeftY(), //xSpdFunction is for forward direction 
-        () -> -controller.getLeftX(), 
+        () -> -controller.getLeftY(), //xSpdFunction is for forward direction
+        () -> -controller.getLeftX(),
         () -> -controller.getRightX(),
         () -> !controller.getAButton());
   }
@@ -153,20 +153,21 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    Trigger yButton = new Trigger(() -> m_controller.getYButton()); 
+    Trigger yButton = new Trigger(() -> m_controller.getYButton());
     //Trigger rightTrigger = new Trigger(() -> controller.getRightTriggerAxis() > 0.9);
     //rightTrigger.onTrue(new LockCommand(swerveSubsystem));
 
     yButton.onTrue(lockCommand);
-    
+
     Trigger bothTriggers = new Trigger(() -> (m_controller.getLeftTriggerAxis() > 0.75 && m_controller.getRightTriggerAxis() > 0.75));
+    
     bothTriggers.onTrue(m_zeroHeadingCommand);
     m_gunnerJoystick.getButton(8).onTrue(m_homingCommand);
     m_gunnerJoystick.getButton(2).onTrue(toggleGripper);
-    
+
     //m_gunnerJoystick.getButton(2).onTrue(m_bottomRowPosition);
     m_gunnerJoystick.getButton(12).onTrue(m_zeroAngleCommand);
-    
+
     m_gunnerJoystick.getButton(11).onTrue(m_bottomRowPosition);
     m_gunnerJoystick.getButton(9).onTrue(m_middleRowPosition);
     m_gunnerJoystick.getButton(7).onTrue(m_topRowPosition);
@@ -188,9 +189,9 @@ public class RobotContainer {
     PathPlannerTrajectory trajectory = PathPlanner.loadPath("TwoStep", new PathConstraints(AutoConstants.kMaxSpeedMps, AutoConstants.kMaxAccelerationMetersPerSecondSquared));
     Rotation2d autoStartRotation = new Rotation2d(0.0);
     Pose2d autoStartPose = new Pose2d(0.0, 0.0, autoStartRotation);
-  
+
     return new PathCommand(swerveSubsystem, trajectory, autoStartPose);
-    
+
 //     // 1. Create trajectory settings
 //     TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
 //       AutoConstants.kMaxSpeedMps,
@@ -226,7 +227,7 @@ public class RobotContainer {
 
 // // 5. Add some init and wrap-up, and return everything
 // return new SequentialCommandGroup(new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())), swerveControllerCommand,  new InstantCommand(() -> swerveSubsystem.stopModules()));
-// 
+//
 
     }
 
