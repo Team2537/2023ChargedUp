@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 
 public class GripperSubsystem extends SubsystemBase {
-  private static final double FILTERED_GAIN = 0;
+  private static final double FILTERED_GAIN = 0.2;
   private DigitalOutput m_trig;
   private double m_target_high;
   private double m_target_low;
@@ -53,6 +53,9 @@ public class GripperSubsystem extends SubsystemBase {
     m_read = new DigitalInput(lidar_read_port);
     m_pwm = new DutyCycle(m_read);
     Shuffleboard.getTab("Gripper Subsystem").addBoolean("Gamepiece detected", () -> isTarget());
+
+    Shuffleboard.getTab("Gripper Subsystem").addNumber("pulse_width_cm_filtered", () -> filtered_pulse_width);
+    Shuffleboard.getTab("Gripper Subsystem").addNumber("pulse_width_cm", () -> m_pwm.getHighTimeNanoseconds() * 10e-5);
 
     closeGripper();
     opened = false;
@@ -100,7 +103,8 @@ public class GripperSubsystem extends SubsystemBase {
 
   // return true if the target is in target bounds
   public boolean isTarget() {
-    double pulse_width = m_pwm.getHighTimeNanoseconds() * 10e-5;
+    double pulse_width = m_pwm.getHighTimeNanoseconds() * 10e-5; // should be in cm
+
     filtered_pulse_width = lowPass(pulse_width, filtered_pulse_width, FILTERED_GAIN);
     return filtered_pulse_width > m_target_low && filtered_pulse_width < m_target_high;
   }
