@@ -34,7 +34,15 @@ public class PathCommand extends CommandBase {
   private PathPlannerTrajectory trajectory;
   private Timer timer;
   private PIDController xPosController, yPosController;
-  private Pose2d startPose2d = new Pose2d();
+  private Pose2d startPose2d = new Pose2d(), endPose2d;
+  private double endTime;
+  private Rotation2d endHeading;
+  private boolean isTimeEnd = false;
+  private double distanceToEnd = 1000;
+  private double angleToEnd = 1000;
+  private PathPlannerState endState;
+
+ 
 
   //private final double kp=0.1, ki=0.0, kd=0.0; //turn smoothly but oscillates at setpoint
   //private final double kp=0.03, ki=0.1, kd=0.0; //turn smoothly but oscillates at setpoint
@@ -48,23 +56,29 @@ public class PathCommand extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public PathCommand(SwerveSubsystem swerveSubsystem, PathPlannerTrajectory trajectory, Pose2d startPose2d) {
+  public PathCommand(SwerveSubsystem swerveSubsystem, PathPlannerTrajectory trajectory) {
     mSwerveSubsystem = swerveSubsystem;
     pidController=new PIDController(kp, ki, kd);
     xPosController = new PIDController(2.0, 0.0, 0.0);
     yPosController = new PIDController(2.0, 0.0, 0.0);
     pidController.enableContinuousInput(0,360);
-    this.startPose2d = startPose2d;
-    mSwerveSubsystem.resetOdometry(startPose2d);
+    
     ShuffleboardTab tab = Shuffleboard.getTab("Swerve State");
     timer = new Timer();
     timer.start();
     this.trajectory = trajectory;
+    startPose2d = trajectory.getInitialPose();
+    mSwerveSubsystem.resetOdometry(startPose2d);
+
+    endState = trajectory.getEndState();
+    endHeading = endState.holonomicRotation;
+    endPose2d = endState.poseMeters;
+    endTime = endState.timeSeconds;
+    
 
     //tab.addNumber("turning speed", () -> turningSpeed);
     //tab.addNumber("desired heading", () -> trajectory.getstat.get());
-    tab.addNumber("our heading", () -> swerveSubsystem.getHeading());
-
+    
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(swerveSubsystem);
   }
@@ -73,20 +87,22 @@ public class PathCommand extends CommandBase {
   @Override
   public void initialize() {}
 
-  //double turningSpeed = 0;
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     
     double time = timer.get();
+    if(time>endTime) {
+      isTimeEnd=true;
+    } 
     double headingOffset = 0.0;
     PathPlannerState desiredState = (PathPlannerState) trajectory.sample(time);
     
     Pose2d desiredPose = desiredState.poseMeters;
     Rotation2d desiredHeading = desiredState.holonomicRotation;
     Pose2d currentPose = mSwerveSubsystem.getPose();
-    SmartDashboard.putNumber("our heading", mSwerveSubsystem.getHeading());
+    
     SmartDashboard.putNumber("Desired heading", desiredHeading.getDegrees());
     if (mSwerveSubsystem.getHeading() - desiredHeading.getDegrees() > 180.0){
       headingOffset = 180;
@@ -103,10 +119,15 @@ public class PathCommand extends CommandBase {
 
     double x = xDesired-xCurrent;
     double y = yDesired-yCurrent;
-    double angleToDesired = Math.tan(y/x); //not sure on coordinate system
+    double angleToDesired = Math.tan(y/x); //degrees
+
+    //Checking if we are close to the end of the path
+    angleToEnd = Math.abs(mSwerveSubsystem.getHeading()-endHeading.getDegrees());
+    distanceToEnd = Math.sqrt(Math.pow(xCurrent-endPose2d.getX(), 2)+Math.pow(yCurrent-endPose2d.getY(), 2));
 
     SmartDashboard.putNumber("xDesired", xDesired);
     SmartDashboard.putNumber("xCurrent", xCurrent);
+    SmartDashboard.putNumber("yCurrent", yCurrent);
 
     // double xSpeed = desiredState.velocityMetersPerSecond*Math.cos(angleToDesired);
     // double ySpeed = desiredState.velocityMetersPerSecond*Math.sin(angleToDesired);
@@ -135,6 +156,7 @@ public class PathCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+
+    return isTimeEnd && distanceToEnd<0.1 && angleToEnd<1;
   }
 }

@@ -20,11 +20,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
-import frc.robot.commands.LockCommand;
-import frc.robot.commands.SwerveTeleopCommand;
-import frc.robot.commands.ZeroHeadingCommand;
-import frc.robot.commands.PathCommand;
-import frc.robot.commands.SetChassisStateCommand;
 import frc.robot.subsystems.SwerveSubsystem;
 import static frc.robot.Constants.ArmConstants.*;
 import static frc.robot.Constants.ColorConstants.*;
@@ -35,8 +30,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.commands.SetColorCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.RGBSubsystem;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -46,6 +39,7 @@ import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
+
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a
@@ -56,178 +50,193 @@ import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  private final XboxController m_controller = new XboxController(IOConstants.kXboxControllerPort);
-  private final LogitechJoystick m_gunnerJoystick = new LogitechJoystick(1);
+    public final XboxController m_controller = new XboxController(IOConstants.kXboxControllerPort); //TODO: make private
+    private final LogitechJoystick m_gunnerJoystick = new LogitechJoystick(1);
 
-  // The robot's subsystems and commands are defined here...
-  private final SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
-  private final ArmPivotSubsystem m_armPivotSubsystem = new ArmPivotSubsystem();
-  private final ArmTelescopeSubsystem m_armTelescopeSubsystem = new ArmTelescopeSubsystem();
-  private final GripperSubsystem m_gripperSubsystem = new GripperSubsystem(0, 0, i -> {}, 3, 2);
-  private final CameraSubsystem m_cameraSubsystem = new CameraSubsystem();
+    // The robot's subsystems and commands are defined here...
+    private final SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
+    private final ArmPivotSubsystem m_armPivotSubsystem = new ArmPivotSubsystem();
+    private final ArmTelescopeSubsystem m_armTelescopeSubsystem = new ArmTelescopeSubsystem();
+    private final GripperSubsystem m_gripperSubsystem = new GripperSubsystem(5, 30, i -> {
+    }, 3, 2);
+    private final CameraSubsystem m_cameraSubsystem = new CameraSubsystem();
 
-  private final LockCommand lockCommand = new LockCommand(m_swerveSubsystem);
-  private final ZeroHeadingCommand m_zeroHeadingCommand = new ZeroHeadingCommand(m_swerveSubsystem);
+    private final LockCommand lockCommand = new LockCommand(m_swerveSubsystem);
+    private final ZeroHeadingCommand m_zeroHeadingCommand = new ZeroHeadingCommand(m_swerveSubsystem);
 
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-  private final RGBSubsystem m_RgbSubsystem = new RGBSubsystem(0);
+    private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+    private final RGBSubsystem m_RgbSubsystem = new RGBSubsystem(1);
 
-  private final FixedAngleCommand m_bottomRowAngle = new FixedAngleCommand(m_armPivotSubsystem, BOTTOM_ROW_ANGLE);
-  private final FixedExtensionCommand m_bottomRowExtension = new FixedExtensionCommand(m_armTelescopeSubsystem,
-      BOTTOM_ROW_EXTENSION);
-  private final SetPositionCommand m_bottomRowPosition = new SetPositionCommand(m_bottomRowAngle, m_bottomRowExtension);
+    private final FixedAngleCommand m_bottomRowAngle = new FixedAngleCommand(m_armPivotSubsystem, BOTTOM_ROW_ANGLE);
+    private final FixedExtensionCommand m_bottomRowExtension = new FixedExtensionCommand(m_armTelescopeSubsystem,
+            BOTTOM_ROW_EXTENSION);
+    private final SetPositionCommand m_bottomRowPosition = new SetPositionCommand(m_bottomRowAngle,
+            m_bottomRowExtension);
 
-  // Position for middle cone row when bumpers are against the community
-  private final FixedAngleCommand m_middleRowAngle = new FixedAngleCommand(m_armPivotSubsystem, MIDDLE_ROW_ANGLE);
-  private final FixedExtensionCommand m_middleRowExtension = new FixedExtensionCommand(m_armTelescopeSubsystem,
-      MIDDLE_ROW_EXTENSION);
-  private final SetPositionCommand m_middleRowPosition = new SetPositionCommand(m_middleRowAngle, m_middleRowExtension);
+    // Position for middle cone row when bumpers are against the community
+    private final FixedAngleCommand m_middleRowAngle = new FixedAngleCommand(m_armPivotSubsystem, MIDDLE_ROW_ANGLE);
+    private final FixedExtensionCommand m_middleRowExtension = new FixedExtensionCommand(m_armTelescopeSubsystem,
+            MIDDLE_ROW_EXTENSION);
+    private final SetPositionCommand m_middleRowPosition = new SetPositionCommand(m_middleRowAngle,
+            m_middleRowExtension);
 
-  // Position for top cone row when bumpers are against the community
-  private final FixedAngleCommand m_topRowAngle = new FixedAngleCommand(m_armPivotSubsystem, TOP_ROW_ANGLE);
-  private final FixedExtensionCommand m_topRowExtension = new FixedExtensionCommand(m_armTelescopeSubsystem,
-      TOP_ROW_EXTENSION);
-  private final SetPositionCommand m_topRowPosition = new SetPositionCommand(m_topRowAngle, m_topRowExtension);
+    // Position for top cone row when bumpers are against the community
+    private final FixedAngleCommand m_topRowAngle = new FixedAngleCommand(m_armPivotSubsystem, TOP_ROW_ANGLE);
+    private final FixedExtensionCommand m_topRowExtension = new FixedExtensionCommand(m_armTelescopeSubsystem,
+            TOP_ROW_EXTENSION);
+    private final SetPositionCommand m_topRowPosition = new SetPositionCommand(m_topRowAngle, m_topRowExtension);
 
-  private final FixedExtensionCommand m_grabExtension = new FixedExtensionCommand(m_armTelescopeSubsystem, GRAB_EXTENSION);
-  private final FixedAngleCommand m_grabAngle = new FixedAngleCommand(m_armPivotSubsystem, GRAB_ANGLE);
-  private final SetPositionCommand m_grabPosition = new SetPositionCommand(m_grabAngle, m_grabExtension);
+    private final FixedExtensionCommand m_grabExtension = new FixedExtensionCommand(m_armTelescopeSubsystem,
+            GRAB_EXTENSION);
+    private final FixedAngleCommand m_grabAngle = new FixedAngleCommand(m_armPivotSubsystem, GRAB_ANGLE);
+    private final SetPositionCommand m_grabPosition = new SetPositionCommand(m_grabAngle, m_grabExtension);
 
-  private final FixedExtensionCommand test = new FixedExtensionCommand(m_armTelescopeSubsystem, 5);
-  private final HomingCommand m_homingCommand = new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem);
+    private final FixedExtensionCommand test = new FixedExtensionCommand(m_armTelescopeSubsystem, 5);
+    private final HomingCommand m_homingCommand = new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem);
 
-  private final FixedAngleCommand m_zeroAngleCommand = new FixedAngleCommand(m_armPivotSubsystem, 0);
-  //private final SetPositionCommand testPosition = new SetPositionCommand(testAngle, test);
+    private final FixedAngleCommand m_zeroAngleCommand = new FixedAngleCommand(m_armPivotSubsystem, 0);
+    // private final SetPositionCommand testPosition = new
+    // SetPositionCommand(testAngle, test);
 
-  //private final OpenGripperCommand openGripper = new OpenGripperCommand(m_gripperSubsystem);
-  //private final CloseGripperCommand closeGripper = new CloseGripperCommand(m_gripperSubsystem);
-  private final ToggleGripperCommand toggleGripper = new ToggleGripperCommand(m_gripperSubsystem);
+    // private final OpenGripperCommand openGripper = new
+    // OpenGripperCommand(m_gripperSubsystem);
+    // private final CloseGripperCommand closeGripper = new
+    // CloseGripperCommand(m_gripperSubsystem);
+    private final ToggleGripperCommand toggleGripper = new ToggleGripperCommand(m_gripperSubsystem);
 
-  private final FixedExtensionCommand m_returnExtension = new FixedExtensionCommand(m_armTelescopeSubsystem, 0);
+    private final FixedExtensionCommand m_returnExtension = new FixedExtensionCommand(m_armTelescopeSubsystem, 0);
 
-  private final ManualArmControlCommand m_manualControl = new ManualArmControlCommand(
-      m_armPivotSubsystem,
-      m_armTelescopeSubsystem,
-      () -> m_gunnerJoystick.getAxis(1),
-      () -> 0.1 * m_gunnerJoystick.getHatSwitch());
+    private final ManualArmControlCommand m_manualControl = new ManualArmControlCommand(
+            m_armPivotSubsystem,
+            m_armTelescopeSubsystem,
+            () -> m_gunnerJoystick.getAxis(1),
+            () -> 0.1 * m_gunnerJoystick.getHatSwitch());
 
-  /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
-   */
-  private final SetColorCommand redColor = new SetColorCommand(m_RgbSubsystem, RED);
-  private final SetColorCommand yellowColor = new SetColorCommand(m_RgbSubsystem, YELLOW);
-  private final SetColorCommand purpleColor = new SetColorCommand(m_RgbSubsystem, PURPLE);
-  private final SetColorCommand greenColor = new SetColorCommand(m_RgbSubsystem, GREEN);
-  private final SetColorCommand awesomeColor = new SetColorCommand(m_RgbSubsystem, AWESOME);
+    /**
+     * The container for the robot. Contains subsystems, OI devices, and commands.
+     */
+    private final SetColorCommand redColor = new SetColorCommand(m_RgbSubsystem, RED);
+    private final SetColorCommand yellowColor = new SetColorCommand(m_RgbSubsystem, YELLOW);
+    private final SetColorCommand purpleColor = new SetColorCommand(m_RgbSubsystem, PURPLE);
+    private final SetColorCommand greenColor = new SetColorCommand(m_RgbSubsystem, GREEN);
+    private final SetColorCommand awesomeColor = new SetColorCommand(m_RgbSubsystem, AWESOME);
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
-  public RobotContainer() {
-    m_swerveSubsystem.setDefaultCommand(new SwerveTeleopCommand(
-        m_swerveSubsystem,
-        () -> -m_controller.getLeftY(), // xSpdFunction is for forward direction
-        () -> -m_controller.getLeftX(),
-        () -> -m_controller.getRightX(),
-        () -> !m_controller.getAButton()));
-    // Configure the button bindings
-    configureButtonBindings();
-  }
+    /**
+     * The container for the robot. Contains subsystems, OI devices, and commands.
+     */
+    public RobotContainer() {
 
+        m_swerveSubsystem.setDefaultCommand(new SwerveTeleopCommand(
+                m_swerveSubsystem,
+                () -> -m_controller.getLeftY(), // xSpdFunction is for forward direction
+                () -> -m_controller.getLeftX(),
+                () -> -m_controller.getRightX(),
+                () -> !m_controller.getAButtonPressed(),
+                () -> m_controller.getLeftBumper()));
 
-  public Command getTeleopCommand() {
-    PathPlannerTrajectory trajectory = PathPlanner.loadPath("New Path", new PathConstraints(AutoConstants.kMaxSpeedMps, AutoConstants.kMaxAccelerationMetersPerSecondSquared));
-      return new SwerveTeleopCommand(
-        swerveSubsystem,
-        () -> -controller.getLeftY(), //xSpdFunction is for forward direction
-        () -> -controller.getLeftX(),
-        () -> -controller.getRightX(),
-        () -> !controller.getAButton());
-  }
+        // Configure the button bindings
+        configureButtonBindings();
+    }
 
+    /**
+     * Use this method to define your button->command mappings. Buttons can be
+     * created by
+     * instantiating a {@link GenericHID} or one of its subclasses ({@link
+     * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
+     * it to a {@link
+     * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+     */
+    private void configureButtonBindings() {
+        Trigger yButton = new Trigger(() -> m_controller.getYButton());
+        // Trigger rightTrigger = new Trigger(() -> controller.getRightTriggerAxis() >
+        // 0.9);
+        // rightTrigger.onTrue(new LockCommand(swerveSubsystem));
 
-  /**
-   * Use this method to define your button->command mappings. Buttons can be
-   * created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
-   * it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-   */
-  private void configureButtonBindings() {
-    Trigger yButton = new Trigger(() -> m_controller.getYButton());
-    //Trigger rightTrigger = new Trigger(() -> controller.getRightTriggerAxis() > 0.9);
-    //rightTrigger.onTrue(new LockCommand(swerveSubsystem));
+        yButton.toggleOnTrue(lockCommand);
 
-    yButton.onTrue(lockCommand);
+        Trigger bothTriggers = new Trigger(
+                () -> (m_controller.getLeftTriggerAxis() > 0.75 && m_controller.getRightTriggerAxis() > 0.75));
 
-    Trigger bothTriggers = new Trigger(() -> (m_controller.getLeftTriggerAxis() > 0.75 && m_controller.getRightTriggerAxis() > 0.75));
-    
-    bothTriggers.onTrue(m_zeroHeadingCommand);
-    m_gunnerJoystick.getButton(8).onTrue(m_homingCommand);
-    m_gunnerJoystick.getButton(2).onTrue(toggleGripper);
+        bothTriggers.onTrue(m_zeroHeadingCommand);
+        m_gunnerJoystick.getButton(8).onTrue(m_homingCommand);
+        m_gunnerJoystick.getButton(2).onTrue(toggleGripper);
 
-    //m_gunnerJoystick.getButton(2).onTrue(m_bottomRowPosition);
-    m_gunnerJoystick.getButton(12).onTrue(m_zeroAngleCommand);
+        // m_gunnerJoystick.getButton(2).onTrue(m_bottomRowPosition);
+        m_gunnerJoystick.getButton(12).onTrue(m_zeroAngleCommand);
 
-    m_gunnerJoystick.getButton(11).onTrue(m_bottomRowPosition);
-    m_gunnerJoystick.getButton(9).onTrue(m_middleRowPosition);
-    m_gunnerJoystick.getButton(7).onTrue(m_topRowPosition);
-    m_gunnerJoystick.getButton(4).onTrue(m_grabPosition);
+        m_gunnerJoystick.getButton(11).onTrue(m_bottomRowPosition);
+        m_gunnerJoystick.getButton(9).onTrue(m_middleRowPosition);
+        m_gunnerJoystick.getButton(7).onTrue(m_topRowPosition);
+        m_gunnerJoystick.getButton(4).onTrue(m_grabPosition);
 
-    m_gunnerJoystick.getButton(6).onTrue(m_returnExtension);
-    m_gunnerJoystick.getThrottle().whileTrue(m_manualControl);
+        m_gunnerJoystick.getButton(6).onTrue(m_returnExtension);
+        m_gunnerJoystick.getThrottle().whileTrue(m_manualControl);
 
-    m_gunnerJoystick.getButton(5).toggleOnTrue(purpleColor);
-    m_gunnerJoystick.getButton(3).toggleOnTrue(yellowColor);
-  }
+        m_gunnerJoystick.getButton(5).toggleOnTrue(purpleColor);
+        m_gunnerJoystick.getButton(3).toggleOnTrue(yellowColor);
+    }
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    PathPlannerTrajectory trajectory = PathPlanner.loadPath("TwoStep", new PathConstraints(AutoConstants.kMaxSpeedMps, AutoConstants.kMaxAccelerationMetersPerSecondSquared));
-    Rotation2d autoStartRotation = new Rotation2d(0.0);
-    Pose2d autoStartPose = new Pose2d(0.0, 0.0, autoStartRotation);
+    /**
+     * Use this to pass the autonomous command to the main {@link Robot} class.
+     *
+     * @return the command to run in autonomous
+     */
+    public Command getAutonomousCommand() {
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath("CenterStart",
+                new PathConstraints(AutoConstants.kMaxSpeedMps, AutoConstants.kMaxAccelerationMetersPerSecondSquared));
+       
 
-    return new PathCommand(swerveSubsystem, trajectory, autoStartPose);
+        return new PathCommand(m_swerveSubsystem, trajectory);
 
-//     // 1. Create trajectory settings
-//     TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
-//       AutoConstants.kMaxSpeedMps,
-//       AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-//               .setKinematics(DriveConstants.kDriveKinematics);
+        // return new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).andThen(
+        //         new FixedAngleCommand(m_armPivotSubsystem, 15.66)).andThen(
+        //         new FixedExtensionCommand(m_armTelescopeSubsystem, 6.32)).andThen(
+        //         new OpenGripperCommand(m_gripperSubsystem)).andThen(
+        //         new FixedExtensionCommand(m_armTelescopeSubsystem, 0));
 
-// // 2. Generate trajectory
-// Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
-//       new Pose2d(0, 0, new Rotation2d(0)),
-//       List.of(
-//               new Translation2d(1, 0),
-//               new Translation2d(1, -1)),
-//       new Pose2d(2, -1, Rotation2d.fromDegrees(180)),
-//       trajectoryConfig);
+        // // 1. Create trajectory settings
+        // TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
+        // AutoConstants.kMaxSpeedMps,
+        // AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+        // .setKinematics(DriveConstants.kDriveKinematics);
 
-// // 3. Define PID controllers for tracking trajectory
-// PIDController xController = new PIDController(AutoConstants.kPXController, 0, 0);
-// PIDController yController = new PIDController(AutoConstants.kPYController, 0, 0);
-// ProfiledPIDController thetaController = new ProfiledPIDController(
-//       AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
-// thetaController.enableContinuousInput(-Math.PI, Math.PI);
+        // // 2. Generate trajectory
+        // Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
+        // new Pose2d(0, 0, new Rotation2d(0)),
+        // List.of(
+        // new Translation2d(1, 0),
+        // new Translation2d(1, -1)),
+        // new Pose2d(2, -1, Rotation2d.fromDegrees(180)),
+        // trajectoryConfig);
 
-// // 4. Construct command to follow trajectory
-// SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-//       trajectory,
-//       swerveSubsystem::getPose,
-//       DriveConstants.kDriveKinematics,
-//       xController,
-//       yController,
-//       thetaController,
-//       swerveSubsystem::setModuleStates,
-//       swerveSubsystem);
+        // // 3. Define PID controllers for tracking trajectory
+        // PIDController xController = new PIDController(AutoConstants.kPXController, 0,
+        // 0);
+        // PIDController yController = new PIDController(AutoConstants.kPYController, 0,
+        // 0);
+        // ProfiledPIDController thetaController = new ProfiledPIDController(
+        // AutoConstants.kPThetaController, 0, 0,
+        // AutoConstants.kThetaControllerConstraints);
+        // thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-// // 5. Add some init and wrap-up, and return everything
-// return new SequentialCommandGroup(new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())), swerveControllerCommand,  new InstantCommand(() -> swerveSubsystem.stopModules()));
-//
+        // // 4. Construct command to follow trajectory
+        // SwerveControllerCommand swerveControllerCommand = new
+        // SwerveControllerCommand(
+        // trajectory,
+        // swerveSubsystem::getPose,
+        // DriveConstants.kDriveKinematics,
+        // xController,
+        // yController,
+        // thetaController,
+        // swerveSubsystem::setModuleStates,
+        // swerveSubsystem);
+
+        // // 5. Add some init and wrap-up, and return everything
+        // return new SequentialCommandGroup(new InstantCommand(() ->
+        // swerveSubsystem.resetOdometry(trajectory.getInitialPose())),
+        // swerveControllerCommand, new InstantCommand(() ->
+        // swerveSubsystem.stopModules()));
+        //
 
     }
 

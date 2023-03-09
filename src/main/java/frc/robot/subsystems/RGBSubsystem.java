@@ -12,9 +12,9 @@ public class RGBSubsystem extends SubsystemBase{
     
     private ShuffleboardTab pwmTab;
 
-    private int targetValue;
+    private int targetValue = 140;
 
-    private boolean updatePause = false;
+    //private boolean updatePause = false;
 
     public RGBSubsystem(int port){
         lightLine = new PWM(port);
@@ -26,9 +26,9 @@ public class RGBSubsystem extends SubsystemBase{
 
     /*
      * NGUYEN-EDELEN Protocol 2023:
-     * 1: Purple -> 20
+     * 1: Green -> 20
      * 2: Yellow -> 40
-     * 3: Green -> 60
+     * 3: Purple -> 60
      * 4: Red -> 80
      * 5: Off -> 100
      * 7: Awesome -> 140
@@ -40,16 +40,12 @@ public class RGBSubsystem extends SubsystemBase{
         targetValue = command*20;
 
         // make sure to not send any commands for one pulse to avoid decoding errors on the arduino
-        updatePause = true;
+        //updatePause = true;
     }
 
     @Override
     public void periodic(){
-        if (!updatePause) {
-            lightLine.setRaw(targetValue);
-        } else {
-            updatePause = true;
-        }
+        lightLine.setRaw(targetValue);
     }
 
 

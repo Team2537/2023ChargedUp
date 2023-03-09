@@ -50,7 +50,7 @@ public class SetChassisStateCommand extends CommandBase {
 
     tab.addNumber("turning speed", () -> turningSpeed);
     tab.addNumber("desired heading", () -> heading.get());
-    tab.addNumber("our heading", () -> swerveSubsystem.getHeading());
+    
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(swerveSubsystem); //declares what subsystems that are being used for command
