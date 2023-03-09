@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -32,18 +33,19 @@ public final class Constants {
                                                                                            // //mps = meters per second
         public static final double kSteerEncoderRPM2RadPerSec = kSteerEncoderRot2Rad / 60.0;
 
-        public static final double kCANCoderCounts = 4096.0; // CANCoders have a resolution of 4096 counts per revolution
-        public static final double kAbsoluteEncoderCountsPerMin2Rad = 2.0*Math.PI/kCANCoderCounts; 
+        public static final double kCANCoderCounts = 4096.0; // CANCoders have a resolution of 4096 counts per
+                                                             // revolution
+        public static final double kAbsoluteEncoderCountsPerMin2Rad = 2.0 * Math.PI / kCANCoderCounts;
 
-        //PID values //TODO: possibly tune PID better
-        public static final double kPSteer = 0.6; 
-        public static final double kISteer = 0.0; 
-        public static final double kDSteer = 0.0; 
-        public static final double kFFSteer = 0.0; 
+        // PID values //TODO: possibly tune PID better
+        public static final double kPSteer = 0.6;
+        public static final double kISteer = 0.0;
+        public static final double kDSteer = 0.0;
+        public static final double kFFSteer = 0.0;
 
-        public static final double kPDrive = 0.8; 
-        public static final double kIDrive = 0.000005*20.0; 
-        public static final double kDDrive = 0.0; 
+        public static final double kPDrive = 0.8;
+        public static final double kIDrive = 0.000005 * 20.0;
+        public static final double kDDrive = 0.0;
 
         public static final double kFFDrive = 0.0;
 
@@ -84,31 +86,31 @@ public final class Constants {
         public static final boolean kBackLeftAbsoluteEncoderReversed = false;
         public static final boolean kBackRightAbsoluteEncoderReversed = false;
 
-        public static final double kFrontLeftAbsoluteEncoderOffsetRad = 1.948;
+        public static final double kFrontLeftAbsoluteEncoderOffsetRad = 1.934;
+        public static final double kFrontRightAbsoluteEncoderOffsetRad = 0.399;
+        public static final double kBackLeftAbsoluteEncoderOffsetRad = 0.635;
+        public static final double kBackRightAbsoluteEncoderOffsetRad = 3.290;
 
-    public static final double kFrontRightAbsoluteEncoderOffsetRad = 0.387;
-    public static final double kBackLeftAbsoluteEncoderOffsetRad = 0.681;
-    public static final double kBackRightAbsoluteEncoderOffsetRad = 3.281 ;
-    
-        public static final double kWheelBaseMeters = 0.52705; //20.75 inches
+        public static final double kWheelBaseMeters = 0.52705; // 20.75 inches
 
         // Distance between right and left wheels
         public static final double kTrackWidthMeters = 0.52705; // 20.75 inches
         // Distance between front and back wheels
 
-        public static final double kPhysicalMaxSpeedMps = 3.29; //meters per second
-        public static final double kPhysicalMaxAngularSpeedRps = 10.0; //radians per second
+        public static final double kPhysicalMaxSpeedMps = 3.29; // meters per second
+        public static final double kPhysicalMaxAngularSpeedRps = 10.0; // radians per second
 
-        public static final double kPhysicalMaxAccelerationMps = 5.0 ; //meters per second squared
-        public static final double kPhysicalMaxAngularAccelerationRps = 10.0; //radians per second squared
+        public static final double kPhysicalMaxAccelerationMps = 5.0; // meters per second squared
+        public static final double kPhysicalMaxAngularAccelerationRps = 10.0; // radians per second squared
 
-        public static final double kTeleDriveMaxSpeedMps = kPhysicalMaxSpeedMps; // divided by 4 so that we don't drive too fast
+        public static final double kTeleDriveMaxSpeedMps = kPhysicalMaxSpeedMps; // divided by 4 so that we don't drive
+                                                                                 // too fast
         public static final double kTeleAngularMaxSpeedRps = kPhysicalMaxAngularSpeedRps;
         public static final double kTeleDriveMaxAccelerationUnitsPerSecond = kPhysicalMaxAccelerationMps;
         public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = kPhysicalMaxAngularAccelerationRps;
-	
-	public static final double kSpeedMultiplier = 0.1;
-        
+
+        public static final double kSpeedMultiplier = 0.1;
+
         public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
                 new Translation2d(kWheelBaseMeters / 2, kTrackWidthMeters / 2), // mFrontLeft
                 new Translation2d(kWheelBaseMeters / 2, -kTrackWidthMeters / 2), // mFronRight
@@ -120,18 +122,20 @@ public final class Constants {
     public static final class IOConstants {
         public static final int kXboxControllerPort = 0;
 
-        public static final double kDeadband = 0.05;
+        public static final double kDeadband = 0.0;
     }
 
     public static final class AutoConstants {
 
-        public static final double kMaxSpeedMps = DriveConstants.kPhysicalMaxSpeedMps/3.0; 
-        public static final double kMaxAccelerationMetersPerSecondSquared = DriveConstants.kPhysicalMaxAccelerationMps/5; //TODO: decide actual
+        public static final double kMaxSpeedMps = DriveConstants.kPhysicalMaxSpeedMps / 3.0;
+        public static final double kMaxAccelerationMetersPerSecondSquared = DriveConstants.kPhysicalMaxAccelerationMps
+                / 5; // TODO: decide actual
 
         public static final double kPThetaController = 0;
         public static final Constraints kThetaControllerConstraints = null;
         public static final double kPYController = 0;
         public static final double kPXController = 0;
+        
 
     }
 
@@ -160,16 +164,16 @@ public final class Constants {
 
         // Absolute Encoder for pivoting arm
         public static final int ABSOLUTE_ENCODER = 1;
-        
+
         // DIO Ports for sensors
         public static final int TELESCOPE_MAGNET_SENSOR = 0;
         public static final int PIVOT_MAGNET_SENSOR = 2;
     }
 
     public static final class ColorConstants {
-        public static final int PURPLE = 1;
+        public static final int PURPLE = 3;
         public static final int YELLOW = 2;
-        public static final int GREEN = 3;
+        public static final int GREEN = 1;
         public static final int RED = 4;
         public static final int AWESOME = 7;
     }

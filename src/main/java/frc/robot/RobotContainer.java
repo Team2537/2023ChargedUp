@@ -57,7 +57,7 @@ public class RobotContainer {
     private final SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
     private final ArmPivotSubsystem m_armPivotSubsystem = new ArmPivotSubsystem();
     private final ArmTelescopeSubsystem m_armTelescopeSubsystem = new ArmTelescopeSubsystem();
-    private final GripperSubsystem m_gripperSubsystem = new GripperSubsystem(0, 0, i -> {
+    private final GripperSubsystem m_gripperSubsystem = new GripperSubsystem(5, 30, i -> {
     }, 3, 2);
     private final CameraSubsystem m_cameraSubsystem = new CameraSubsystem();
 
@@ -65,7 +65,7 @@ public class RobotContainer {
     private final ZeroHeadingCommand m_zeroHeadingCommand = new ZeroHeadingCommand(m_swerveSubsystem);
 
     private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-    private final RGBSubsystem m_RgbSubsystem = new RGBSubsystem(0);
+    private final RGBSubsystem m_RgbSubsystem = new RGBSubsystem(1);
 
     private final FixedAngleCommand m_bottomRowAngle = new FixedAngleCommand(m_armPivotSubsystem, BOTTOM_ROW_ANGLE);
     private final FixedExtensionCommand m_bottomRowExtension = new FixedExtensionCommand(m_armTelescopeSubsystem,
@@ -182,18 +182,17 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        /*PathPlannerTrajectory trajectory = PathPlanner.loadPath("CenterStart",
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath("CenterStart",
                 new PathConstraints(AutoConstants.kMaxSpeedMps, AutoConstants.kMaxAccelerationMetersPerSecondSquared));
-        Rotation2d autoStartRotation = new Rotation2d(0.0);
-        Pose2d autoStartPose = new Pose2d(0.0, 0.0, autoStartRotation);
+       
 
-        return new PathCommand(m_swerveSubsystem, trajectory, autoStartPose);*/
+        return new PathCommand(m_swerveSubsystem, trajectory);
 
-        return new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).andThen(
-                new FixedAngleCommand(m_armPivotSubsystem, 15.66)).andThen(
-                new FixedExtensionCommand(m_armTelescopeSubsystem, 6.32)).andThen(
-                new OpenGripperCommand(m_gripperSubsystem)).andThen(
-                new FixedExtensionCommand(m_armTelescopeSubsystem, 0));
+        // return new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).andThen(
+        //         new FixedAngleCommand(m_armPivotSubsystem, 15.66)).andThen(
+        //         new FixedExtensionCommand(m_armTelescopeSubsystem, 6.32)).andThen(
+        //         new OpenGripperCommand(m_gripperSubsystem)).andThen(
+        //         new FixedExtensionCommand(m_armTelescopeSubsystem, 0));
 
         // // 1. Create trajectory settings
         // TrajectoryConfig trajectoryConfig = new TrajectoryConfig(

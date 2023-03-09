@@ -56,18 +56,20 @@ public class PathCommand extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public PathCommand(SwerveSubsystem swerveSubsystem, PathPlannerTrajectory trajectory, Pose2d startPose2d) {
+  public PathCommand(SwerveSubsystem swerveSubsystem, PathPlannerTrajectory trajectory) {
     mSwerveSubsystem = swerveSubsystem;
     pidController=new PIDController(kp, ki, kd);
     xPosController = new PIDController(2.0, 0.0, 0.0);
     yPosController = new PIDController(2.0, 0.0, 0.0);
     pidController.enableContinuousInput(0,360);
-    this.startPose2d = startPose2d;
-    mSwerveSubsystem.resetOdometry(startPose2d);
+    
     ShuffleboardTab tab = Shuffleboard.getTab("Swerve State");
     timer = new Timer();
     timer.start();
     this.trajectory = trajectory;
+    startPose2d = trajectory.getInitialPose();
+    mSwerveSubsystem.resetOdometry(startPose2d);
+
     endState = trajectory.getEndState();
     endHeading = endState.holonomicRotation;
     endPose2d = endState.poseMeters;
@@ -125,6 +127,7 @@ public class PathCommand extends CommandBase {
 
     SmartDashboard.putNumber("xDesired", xDesired);
     SmartDashboard.putNumber("xCurrent", xCurrent);
+    SmartDashboard.putNumber("yCurrent", yCurrent);
 
     // double xSpeed = desiredState.velocityMetersPerSecond*Math.cos(angleToDesired);
     // double ySpeed = desiredState.velocityMetersPerSecond*Math.sin(angleToDesired);
