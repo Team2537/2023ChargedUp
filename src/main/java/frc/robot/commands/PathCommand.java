@@ -40,7 +40,7 @@ public class PathCommand extends CommandBase {
   private boolean isTimeEnd = false;
   private double distanceToEnd = 1000;
   private double angleToEnd = 1000;
-  private PathPlannerState endState;
+  private PathPlannerState startState, endState;
 
  
 
@@ -49,7 +49,7 @@ public class PathCommand extends CommandBase {
   //private final double kp=0.01, ki=0.0, kd=0.0; //barely turns
   //private final double kp=0.05, ki=0.0, kd=0.0; //turn smoothly but oscillates at setpoint
   //private final double kp=0.05, ki=0.0, kd=0.01; //turn smoothly but oscillates at setpoint
-  private final double kp=1.5*Math.PI/180.0, ki=0.1*Math.PI/180.0, kd=0.0;
+  private final static double kp=0.01, ki=0.1*Math.PI/180.0, kd=0.0;
 
   /**
    * Creates a new ExampleCommand.
@@ -67,14 +67,16 @@ public class PathCommand extends CommandBase {
     timer = new Timer();
     timer.start();
     this.trajectory = trajectory;
-    startPose2d = trajectory.getInitialPose();
+    startState = trajectory.getInitialState();
+    startPose2d = startState.poseMeters;
     mSwerveSubsystem.resetOdometry(startPose2d);
+    mSwerveSubsystem.setHeading(startState.holonomicRotation.getDegrees());
 
     endState = trajectory.getEndState();
     endHeading = endState.holonomicRotation;
     endPose2d = endState.poseMeters;
     endTime = endState.timeSeconds;
-    
+  
 
     //tab.addNumber("turning speed", () -> turningSpeed);
     //tab.addNumber("desired heading", () -> trajectory.getstat.get());
@@ -125,7 +127,7 @@ public class PathCommand extends CommandBase {
     angleToEnd = Math.abs(mSwerveSubsystem.getHeading()-endHeading.getDegrees());
     distanceToEnd = Math.sqrt(Math.pow(xCurrent-endPose2d.getX(), 2)+Math.pow(yCurrent-endPose2d.getY(), 2));
 
-    SmartDashboard.putNumber("xDesired", xDesired);
+    // SmartDashboard.putNumber("xDesired", xDesired);
     SmartDashboard.putNumber("xCurrent", xCurrent);
     SmartDashboard.putNumber("yCurrent", yCurrent);
 
@@ -156,7 +158,20 @@ public class PathCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    if(isTimeEnd && distanceToEnd<0.1 && angleToEnd<1) {
+      ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+        0.0, 0.0, 0.0, mSwerveSubsystem.getRotation2d());
+      
+       // 5. Convert chassis speeds to individual module states
+       SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+  
+       // 6. Output each module states to wheels
+       mSwerveSubsystem.setModuleStates(moduleStates);
+       return true;
+    }
 
-    return isTimeEnd && distanceToEnd<0.1 && angleToEnd<1;
+    return false;
+
+    // return isTimeEnd && distanceToEnd<0.1 && angleToEnd<1;
   }
 }
