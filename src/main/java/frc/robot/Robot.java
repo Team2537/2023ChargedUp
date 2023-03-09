@@ -64,7 +64,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     // schedule the autonomous command (example)
-
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -93,8 +93,8 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    SmartDashboard.putBoolean("Y Button", m_robotContainer.controller.getYButton());
-    SmartDashboard.putBoolean("B Button", m_robotContainer.controller.getBButton());
+    SmartDashboard.putBoolean("Y Button", m_robotContainer.m_controller.getYButton());
+    SmartDashboard.putBoolean("B Button", m_robotContainer.m_controller.getBButton());
   }
 
   @Override

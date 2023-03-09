@@ -97,17 +97,17 @@ public final class Constants {
         // Distance between front and back wheels
 
         public static final double kPhysicalMaxSpeedMps = 3.29; //meters per second
-        public static final double kPhysicalMaxAngularSpeedRps = 32.38; //radians per second
+        public static final double kPhysicalMaxAngularSpeedRps = 10.0; //radians per second
 
         public static final double kPhysicalMaxAccelerationMps = 5.0 ; //meters per second squared
-        public static final double kPhysicalMaxAngularAccelerationRps = 5.0; //radians per second squared
+        public static final double kPhysicalMaxAngularAccelerationRps = 10.0; //radians per second squared
 
         public static final double kTeleDriveMaxSpeedMps = kPhysicalMaxSpeedMps; // divided by 4 so that we don't drive too fast
         public static final double kTeleAngularMaxSpeedRps = kPhysicalMaxAngularSpeedRps;
         public static final double kTeleDriveMaxAccelerationUnitsPerSecond = kPhysicalMaxAccelerationMps;
         public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = kPhysicalMaxAngularAccelerationRps;
 	
-	public static final double kSpeedMultiplier = 0.01;
+	public static final double kSpeedMultiplier = 0.1;
         
         public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
                 new Translation2d(kWheelBaseMeters / 2, kTrackWidthMeters / 2), // mFrontLeft

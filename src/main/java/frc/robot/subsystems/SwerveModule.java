@@ -108,10 +108,10 @@ public class SwerveModule {
         // if statement allows us to ignore commands that don't have substantial driving
         // velocity
         
-         if(Math.abs(state.speedMetersPerSecond) <0.001) {
-         stop();
-         return;
-         }
+        //  if(Math.abs(state.speedMetersPerSecond) <0.001) {
+        //  stop();
+        //  return;
+        //  }
          
         // by taking in the desired state and the current angle the wheels are at,
         // change desired state so that the difference between current and desired angle

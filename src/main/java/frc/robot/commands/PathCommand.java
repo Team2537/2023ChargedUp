@@ -35,6 +35,14 @@ public class PathCommand extends CommandBase {
   private Timer timer;
   private PIDController xPosController, yPosController;
   private Pose2d startPose2d = new Pose2d(), endPose2d;
+  private double endTime;
+  private Rotation2d endHeading;
+  private boolean isTimeEnd = false;
+  private double distanceToEnd = 1000;
+  private double angleToEnd = 1000;
+  private PathPlannerState endState;
+
+ 
 
   //private final double kp=0.1, ki=0.0, kd=0.0; //turn smoothly but oscillates at setpoint
   //private final double kp=0.03, ki=0.1, kd=0.0; //turn smoothly but oscillates at setpoint
@@ -60,7 +68,11 @@ public class PathCommand extends CommandBase {
     timer = new Timer();
     timer.start();
     this.trajectory = trajectory;
-    endPose2d = trajectory.getEndState().poseMeters;
+    endState = trajectory.getEndState();
+    endHeading = endState.holonomicRotation;
+    endPose2d = endState.poseMeters;
+    endTime = endState.timeSeconds;
+    
 
     //tab.addNumber("turning speed", () -> turningSpeed);
     //tab.addNumber("desired heading", () -> trajectory.getstat.get());
@@ -73,13 +85,15 @@ public class PathCommand extends CommandBase {
   @Override
   public void initialize() {}
 
-  //double turningSpeed = 0;
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     
     double time = timer.get();
+    if(time>endTime) {
+      isTimeEnd=true;
+    } 
     double headingOffset = 0.0;
     PathPlannerState desiredState = (PathPlannerState) trajectory.sample(time);
     
@@ -103,7 +117,11 @@ public class PathCommand extends CommandBase {
 
     double x = xDesired-xCurrent;
     double y = yDesired-yCurrent;
-    double angleToDesired = Math.tan(y/x); //not sure on coordinate system
+    double angleToDesired = Math.tan(y/x); //degrees
+
+    //Checking if we are close to the end of the path
+    angleToEnd = Math.abs(mSwerveSubsystem.getHeading()-endHeading.getDegrees());
+    distanceToEnd = Math.sqrt(Math.pow(xCurrent-endPose2d.getX(), 2)+Math.pow(yCurrent-endPose2d.getY(), 2));
 
     SmartDashboard.putNumber("xDesired", xDesired);
     SmartDashboard.putNumber("xCurrent", xCurrent);
@@ -136,6 +154,6 @@ public class PathCommand extends CommandBase {
   @Override
   public boolean isFinished() {
 
-    return false;
+    return isTimeEnd && distanceToEnd<0.1 && angleToEnd<1;
   }
 }
