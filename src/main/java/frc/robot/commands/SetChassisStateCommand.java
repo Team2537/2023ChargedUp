@@ -70,8 +70,7 @@ public class SetChassisStateCommand extends CommandBase {
     double heading = headingFunction.get();
     
     turningSpeed = pidController.calculate(mSwerveSubsystem.getHeading(), heading); 
-    //SmartDashboard.putNumber("Turning speed", turningSpeed);
-
+    
     ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds( 
       xSpeed, ySpeed, turningSpeed, mSwerveSubsystem.getRotation2d());
     

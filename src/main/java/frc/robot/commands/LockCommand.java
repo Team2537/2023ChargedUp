@@ -32,7 +32,6 @@ public class LockCommand extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    SmartDashboard.putString("ran", "ran");
 
     SwerveModuleState[] moduleStates = {
         new SwerveModuleState(0.0, new Rotation2d(Math.PI / 4)),

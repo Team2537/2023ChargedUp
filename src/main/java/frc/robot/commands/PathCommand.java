@@ -127,9 +127,8 @@ public class PathCommand extends CommandBase {
     angleToEnd = Math.abs(mSwerveSubsystem.getHeading()-endHeading.getDegrees());
     distanceToEnd = Math.sqrt(Math.pow(xCurrent-endPose2d.getX(), 2)+Math.pow(yCurrent-endPose2d.getY(), 2));
 
-    // SmartDashboard.putNumber("xDesired", xDesired);
-    SmartDashboard.putNumber("xCurrent", xCurrent);
-    SmartDashboard.putNumber("yCurrent", yCurrent);
+    SmartDashboard.putNumber("xDesired", xDesired);
+    SmartDashboard.putNumber("yDesired", yDesired);
 
     // double xSpeed = desiredState.velocityMetersPerSecond*Math.cos(angleToDesired);
     // double ySpeed = desiredState.velocityMetersPerSecond*Math.sin(angleToDesired);

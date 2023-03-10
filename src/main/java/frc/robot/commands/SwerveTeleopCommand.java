@@ -59,8 +59,7 @@ public class SwerveTeleopCommand extends CommandBase {
     public void execute() {
 
         // 1. Get real-time joystick inputs
-        SmartDashboard.putBoolean("Field Orientation A Button", fieldOrientedFunction.get());
-        SmartDashboard.putBoolean("Slow Speed B Button", slowSpeedFunction.get());
+       
         double xSpeed = xSpdFunction.get();
         double ySpeed = ySpdFunction.get();
         double turningSpeed = turningSpdFunction.get();
@@ -77,7 +76,7 @@ public class SwerveTeleopCommand extends CommandBase {
 
 
 
-    SmartDashboard.putNumber("Turning speed", turningSpeed);
+    //SmartDashboard.putNumber("Turning speed", turningSpeed);
 
       if(slowSpeedFunction.get()) {
         xSpeed*= DriveConstants.kSpeedMultiplier;
