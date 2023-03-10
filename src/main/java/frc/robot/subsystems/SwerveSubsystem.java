@@ -82,10 +82,10 @@ public class SwerveSubsystem extends SubsystemBase{
         HeadingLog = new DoubleLogEntry(DataLogManager.getLog(), "/SwerveSubsystem/Heading");
         PitchLog = new DoubleLogEntry(DataLogManager.getLog(), "/SwerveSubsystem/Pitch");
         RollLog = new DoubleLogEntry(DataLogManager.getLog(), "/SwerveSubsystem/Roll");
-        FLDriveLog = new DoubleLogEntry(DataLogManager.getLog(), "/SwerveSubsystem/Front Left Drive Speed");
-        FRDriveLog = new DoubleLogEntry(DataLogManager.getLog(), "/SwerveSubsystem/Front Right Drive Speed");
-        BLDriveLog = new DoubleLogEntry(DataLogManager.getLog(), "/SwerveSubsystem/Back Left Drive Speed");
-        BRDriveLog = new DoubleLogEntry(DataLogManager.getLog(), "/SwerveSubsystem/Back Right Drive Speed");
+        FLDriveLog = new DoubleLogEntry(DataLogManager.getLog(), "/SwerveSubsystem/Front Left Drive Velocity");
+        FRDriveLog = new DoubleLogEntry(DataLogManager.getLog(), "/SwerveSubsystem/Front Right Drive Velocity");
+        BLDriveLog = new DoubleLogEntry(DataLogManager.getLog(), "/SwerveSubsystem/Back Left Drive Velocity");
+        BRDriveLog = new DoubleLogEntry(DataLogManager.getLog(), "/SwerveSubsystem/Back Right Drive Velocity");
         FLSteerLog = new DoubleLogEntry(DataLogManager.getLog(), "/SwerveSubsystem/Front Left Steering Position");
         FRSteerLog = new DoubleLogEntry(DataLogManager.getLog(), "/SwerveSubsystem/Front Right Steering Position");
         BLSteerLog = new DoubleLogEntry(DataLogManager.getLog(), "/SwerveSubsystem/Back Left Steering Position");
@@ -152,14 +152,14 @@ public class SwerveSubsystem extends SubsystemBase{
         HeadingLog.append(getHeading());
         PitchLog.append(imu.getPitch());
         RollLog.append(imu.getRoll());
-        FLDriveLog.append(mFrontLeft.getDrivePosition());
-        FRDriveLog.append(mFrontRight.getDrivePosition());
-        BLDriveLog.append(mBackLeft.getDrivePosition());
-        BRDriveLog.append(mBackRight.getDrivePosition());
-        FLSteerLog.append(mFrontLeft.getState().);
-        FRSteerLog.append(mFrontRight.getState().);
-        BLSteerLog.append(mBackLeft.getState().);
-        BRSteerLog.append(mBackRight.getState().);
+        FLDriveLog.append(mFrontLeft.getDriveVelocity());
+        FRDriveLog.append(mFrontRight.getDriveVelocity());
+        BLDriveLog.append(mBackLeft.getDriveVelocity());
+        BRDriveLog.append(mBackRight.getDriveVelocity());
+        FLSteerLog.append(mFrontLeft.getSteerPosition());
+        FRSteerLog.append(mFrontRight.getSteerPosition());
+        BLSteerLog.append(mBackLeft.getSteerPosition());
+        BRSteerLog.append(mBackRight.getSteerPosition());
 
         odometer.update(getRotation2d(), getModulePositions());
          SmartDashboard.putNumber("Robot Heading", getHeading());
