@@ -3,6 +3,9 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.sensors.Pigeon2;
 import com.ctre.phoenix.sensors.Pigeon2Configuration;
 
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -14,6 +17,23 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 
 public class SwerveSubsystem extends SubsystemBase{
+
+// sets the logs up, naming them and creating the log entries
+    private final DoubleLogEntry HeadingLog;
+    private final DoubleLogEntry PitchLog;
+    private final DoubleLogEntry RollLog;
+    private final DoubleLogEntry FLDriveLog;
+    private final DoubleLogEntry FRDriveLog;
+    private final DoubleLogEntry BLDriveLog;
+    private final DoubleLogEntry BRDriveLog;
+    private final DoubleLogEntry FLSteerLog;
+    private final DoubleLogEntry FRSteerLog;
+    private final DoubleLogEntry BLSteerLog;
+    private final DoubleLogEntry BRSteerLog;
+
+
+
+
     //declare and instantiate all swerve modules
     private final SwerveModule mFrontLeft = new SwerveModule(
         DriveConstants.kFrontLeftDriveMotorPort,
@@ -57,6 +77,19 @@ public class SwerveSubsystem extends SubsystemBase{
     private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(DriveConstants.kDriveKinematics, new Rotation2d(0), getModulePositions());
     //SwerveSubsystem constructor
     public SwerveSubsystem() {
+
+// adds the log values to the log
+        HeadingLog = new DoubleLogEntry(DataLogManager.getLog(), "/SwerveSubsystem/Heading");
+        PitchLog = new DoubleLogEntry(DataLogManager.getLog(), "/SwerveSubsystem/Pitch");
+        RollLog = new DoubleLogEntry(DataLogManager.getLog(), "/SwerveSubsystem/Roll");
+        FLDriveLog = new DoubleLogEntry(DataLogManager.getLog(), "/SwerveSubsystem/Front Left Drive Speed");
+        FRDriveLog = new DoubleLogEntry(DataLogManager.getLog(), "/SwerveSubsystem/Front Right Drive Speed");
+        BLDriveLog = new DoubleLogEntry(DataLogManager.getLog(), "/SwerveSubsystem/Back Left Drive Speed");
+        BRDriveLog = new DoubleLogEntry(DataLogManager.getLog(), "/SwerveSubsystem/Back Right Drive Speed");
+        FLSteerLog = new DoubleLogEntry(DataLogManager.getLog(), "/SwerveSubsystem/Front Left Steering Position");
+        FRSteerLog = new DoubleLogEntry(DataLogManager.getLog(), "/SwerveSubsystem/Front Right Steering Position");
+        BLSteerLog = new DoubleLogEntry(DataLogManager.getLog(), "/SwerveSubsystem/Back Left Steering Position");
+        BRSteerLog = new DoubleLogEntry(DataLogManager.getLog(), "/SwerveSubsystem/Back Right Steering Position");
 
         new Thread(() -> {
             try {
@@ -114,6 +147,20 @@ public class SwerveSubsystem extends SubsystemBase{
 
     @Override
     public void periodic() {
+
+// appends the values to the logs, I couldnt find the steer values, so they dont work for now... Please comment this subsystem.
+        HeadingLog.append(getHeading());
+        PitchLog.append(imu.getPitch());
+        RollLog.append(imu.getRoll());
+        FLDriveLog.append(mFrontLeft.getDrivePosition());
+        FRDriveLog.append(mFrontRight.getDrivePosition());
+        BLDriveLog.append(mBackLeft.getDrivePosition());
+        BRDriveLog.append(mBackRight.getDrivePosition());
+        FLSteerLog.append(mFrontLeft.getState().);
+        FRSteerLog.append(mFrontRight.getState().);
+        BLSteerLog.append(mBackLeft.getState().);
+        BRSteerLog.append(mBackRight.getState().);
+
         odometer.update(getRotation2d(), getModulePositions());
          SmartDashboard.putNumber("Robot Heading", getHeading());
 
