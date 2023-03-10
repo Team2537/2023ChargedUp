@@ -190,7 +190,7 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        PathPlannerTrajectory trajectory = PathPlanner.loadPath("RightStart",
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath("New Path",
                 new PathConstraints(AutoConstants.kMaxSpeedMps, AutoConstants.kMaxAccelerationMetersPerSecondSquared));
        
 
