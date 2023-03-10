@@ -10,6 +10,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -68,7 +69,7 @@ public class SwerveModule {
         mSteerEncoder.setPositionConversionFactor(ModuleConstants.kSteerEncoderRot2Rad);
         mSteerEncoder.setVelocityConversionFactor(ModuleConstants.kSteerEncoderRPM2RadPerSec);
 
-
+        Shuffleboard.getTab("Swerve Absolute Encoders").addNumber("" + absoluteEncoderId, () -> mAbsoluteEncoder.getAbsolutePosition());
     }
 
     public double getDrivePosition() {
