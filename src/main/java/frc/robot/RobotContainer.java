@@ -59,7 +59,7 @@ public class RobotContainer {
     private final ArmPivotSubsystem m_armPivotSubsystem = new ArmPivotSubsystem();
     private final ArmTelescopeSubsystem m_armTelescopeSubsystem = new ArmTelescopeSubsystem();
     private final GripperSubsystem m_gripperSubsystem = new GripperSubsystem(5, 30, i -> {
-    }, 3, 2);
+    }, 2, 3);
     private final CameraSubsystem m_cameraSubsystem = new CameraSubsystem();
 
     private final LockCommand lockCommand = new LockCommand(m_swerveSubsystem);
@@ -91,6 +91,10 @@ public class RobotContainer {
             GRAB_EXTENSION);
     private final FixedAngleCommand m_grabAngle = new FixedAngleCommand(m_armPivotSubsystem, GRAB_ANGLE);
     private final SetPositionCommand m_grabPosition = new SetPositionCommand(m_grabAngle, m_grabExtension);
+
+    private final FixedExtensionCommand m_shelfExtension = new FixedExtensionCommand(m_armTelescopeSubsystem, SHELF_EXTENSION);
+    private final FixedAngleCommand m_shelfAngle = new FixedAngleCommand(m_armPivotSubsystem, SHELF_ANGLE);
+    private final SetPositionCommand m_shelfPosition = new SetPositionCommand(m_shelfAngle, m_shelfExtension);
 
     private final FixedExtensionCommand test = new FixedExtensionCommand(m_armTelescopeSubsystem, 5);
     private final HomingCommand m_homingCommand = new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem);
@@ -133,7 +137,7 @@ public class RobotContainer {
                 () -> -m_controller.getLeftX(),
                 () -> -m_controller.getRightX(),
                 () -> !m_controller.getAButtonPressed(),
-                () -> m_controller.getLeftBumper()));
+                () -> (m_controller.getLeftTriggerAxis() > 0.75 && !(m_controller.getRightTriggerAxis() > 0.75))));
 
         // Configure the button bindings
         configureButtonBindings();
@@ -158,7 +162,9 @@ public class RobotContainer {
         Trigger bothTriggers = new Trigger(
                 () -> (m_controller.getLeftTriggerAxis() > 0.75 && m_controller.getRightTriggerAxis() > 0.75));
 
+     
         bothTriggers.onTrue(m_zeroHeadingCommand);
+
         m_gunnerJoystick.getButton(8).onTrue(m_homingCommand);
         m_gunnerJoystick.getButton(2).onTrue(toggleGripper);
 
@@ -169,6 +175,7 @@ public class RobotContainer {
         m_gunnerJoystick.getButton(9).onTrue(m_middleRowPosition);
         m_gunnerJoystick.getButton(7).onTrue(m_topRowPosition);
         m_gunnerJoystick.getButton(4).onTrue(m_grabPosition);
+        m_gunnerJoystick.getButton(10).onTrue(m_shelfPosition);
 
         m_gunnerJoystick.getButton(6).onTrue(m_returnExtension);
         m_gunnerJoystick.getThrottle().whileTrue(m_manualControl);

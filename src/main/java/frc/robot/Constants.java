@@ -109,7 +109,7 @@ public final class Constants {
         public static final double kTeleDriveMaxAccelerationUnitsPerSecond = kPhysicalMaxAccelerationMps;
         public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = kPhysicalMaxAngularAccelerationRps;
 
-        public static final double kSpeedMultiplier = 0.1;
+        public static final double kSpeedMultiplier = 0.17;
 
         public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
                 new Translation2d(kWheelBaseMeters / 2, kTrackWidthMeters / 2), // mFrontLeft
@@ -150,6 +150,9 @@ public final class Constants {
 
         public static final double GRAB_ANGLE = -57.5;
         public static final double GRAB_EXTENSION = 0.1;
+
+        public static final double SHELF_ANGLE = 20.5;
+        public static final double SHELF_EXTENSION = 2.62;
 
         public static final double HOME_ANGLE = -55;
         public static final double PIVOT_OFFSET = 0;
