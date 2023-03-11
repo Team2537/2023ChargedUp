@@ -12,7 +12,7 @@ public class RGBSubsystem extends SubsystemBase{
     
     private ShuffleboardTab pwmTab;
 
-    private int targetValue = 140;
+    private int targetValue = 0;
 
     //private boolean updatePause = false;
 

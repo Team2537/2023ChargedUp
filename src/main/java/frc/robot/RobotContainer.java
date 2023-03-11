@@ -201,7 +201,7 @@ public class RobotContainer {
                 new FixedExtensionCommand(m_armTelescopeSubsystem, 6.4)).andThen(
                 new OpenGripperCommand(m_gripperSubsystem)).andThen(
                 new WaitCommand(0.5)).andThen(
-                new FixedExtensionCommand(m_armTelescopeSubsystem, 0).alongWith(
+                new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).alongWith(
                         new PathCommand(m_swerveSubsystem, trajectory)));
 
         // // 1. Create trajectory settings
