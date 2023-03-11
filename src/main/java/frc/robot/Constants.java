@@ -86,10 +86,10 @@ public final class Constants {
         public static final boolean kBackLeftAbsoluteEncoderReversed = false;
         public static final boolean kBackRightAbsoluteEncoderReversed = false;
 
-        public static final double kFrontLeftAbsoluteEncoderOffsetRad = 1.930;
-        public static final double kFrontRightAbsoluteEncoderOffsetRad = 0.407;
-        public static final double kBackLeftAbsoluteEncoderOffsetRad = 0.707;
-        public static final double kBackRightAbsoluteEncoderOffsetRad = 3.289;
+        public static final double kFrontLeftAbsoluteEncoderOffsetRad = 1.933;
+        public static final double kFrontRightAbsoluteEncoderOffsetRad = 0.377;
+        public static final double kBackLeftAbsoluteEncoderOffsetRad = 0.683;
+        public static final double kBackRightAbsoluteEncoderOffsetRad = 3.301;
 
         public static final double kWheelBaseMeters = 0.52705; // 20.75 inches
 

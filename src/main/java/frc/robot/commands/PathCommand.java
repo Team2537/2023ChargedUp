@@ -135,10 +135,10 @@ public class PathCommand extends CommandBase {
     double xSpeed = xPosController.calculate(xCurrent, xDesired);
     double ySpeed = yPosController.calculate(yCurrent, yDesired);
     SmartDashboard.putNumber("xSpeed", xSpeed);
-    SmartDashboard.putNumber("xSpeed", ySpeed);
+    SmartDashboard.putNumber("ySpeed", ySpeed);
 
     ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-      xSpeed, ySpeed, turningSpeed, mSwerveSubsystem.getRotation2d());
+      xSpeed, 0.0, 0.0, mSwerveSubsystem.getRotation2d());
     
      // 5. Convert chassis speeds to individual module states
      SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);

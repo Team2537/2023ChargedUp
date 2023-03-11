@@ -194,7 +194,7 @@ public class RobotContainer {
                 new PathConstraints(AutoConstants.kMaxSpeedMps, AutoConstants.kMaxAccelerationMetersPerSecondSquared));
        
 
-        //return new PathCommand(m_swerveSubsystem, trajectory);
+        // return new PathCommand(m_swerveSubsystem, trajectory);
 
         return new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).andThen(
                 new FixedAngleCommand(m_armPivotSubsystem, 15.66)).andThen(

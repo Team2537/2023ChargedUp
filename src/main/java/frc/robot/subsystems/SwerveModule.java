@@ -17,6 +17,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SwerveModule {
+    
 
     private final CANSparkMax mDriveMotor;
     private final CANSparkMax mSteerMotor;
