@@ -127,7 +127,7 @@ public final class Constants {
 
     public static final class AutoConstants {
 
-        public static final double kMaxSpeedMps = 1.0; //DriveConstants.kPhysicalMaxSpeedMps / 3.0
+        public static final double kMaxSpeedMps = 0.5; //DriveConstants.kPhysicalMaxSpeedMps / 3.0
         public static final double kMaxAccelerationMetersPerSecondSquared = 1.0; // DriveConstants.kPhysicalMaxAccelerationMps/ 5
 
         public static final double kPThetaController = 0;
