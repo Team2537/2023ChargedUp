@@ -72,7 +72,7 @@ public class SetChassisStateCommand extends CommandBase {
     turningSpeed = pidController.calculate(mSwerveSubsystem.getHeading(), heading); 
     
     ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds( 
-      xSpeed, ySpeed, turningSpeed, mSwerveSubsystem.getRotation2d());
+      xSpeed, ySpeed, turningSpeed, mSwerveSubsystem.getHeadingRotation2d());
     
      // 5. Convert chassis speeds to individual module states
      SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);

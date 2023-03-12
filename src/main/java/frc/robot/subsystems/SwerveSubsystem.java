@@ -133,8 +133,12 @@ public class SwerveSubsystem extends SubsystemBase{
         setHeading(0.0);
     }
 
-    public Rotation2d getRotation2d() {
+    public Rotation2d getHeadingRotation2d() {
         return Rotation2d.fromDegrees(getHeading());
+    }
+
+    public Rotation2d getPitchRotation2d() {
+        return Rotation2d.fromDegrees((imu.getPitch()));
     }
 
     public Pose2d getPose() {
@@ -143,7 +147,7 @@ public class SwerveSubsystem extends SubsystemBase{
 
     //TODO: module positions
     public void resetOdometry(Pose2d pose) {
-        odometer.resetPosition(getRotation2d(),getModulePositions(), pose);
+        odometer.resetPosition(getHeadingRotation2d(),getModulePositions(), pose);
     }
 /* 
     public void setOdometer(Pose2d pose) {
@@ -152,7 +156,7 @@ public class SwerveSubsystem extends SubsystemBase{
 
     @Override
     public void periodic() {
-        odometer.update(getRotation2d(), getModulePositions());
+        odometer.update(getHeadingRotation2d(), getModulePositions());
          SmartDashboard.putNumber("Robot Heading", getHeading());
 
          //Puts every value into the log
@@ -175,7 +179,7 @@ public class SwerveSubsystem extends SubsystemBase{
 
        
         // SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
-        // SmartDashboard.putNumber("Pitch", imu.getPitch());
+        SmartDashboard.putNumber("Pitch", imu.getPitch());
         // SmartDashboard.putNumber("Roll", imu.getRoll());
         SmartDashboard.putNumber("current xPos", getPose().getX());
         SmartDashboard.putNumber("current yPos", getPose().getY());

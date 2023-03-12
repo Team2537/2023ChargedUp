@@ -91,7 +91,7 @@ public class SwerveTeleopCommand extends CommandBase {
             // Relative to field
             // 
             chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                    xSpeed, ySpeed, turningSpeed, mSwerveSubsystem.getRotation2d());
+                    xSpeed, ySpeed, turningSpeed, mSwerveSubsystem.getHeadingRotation2d());
         } else {
             // Relative to robot
             chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);

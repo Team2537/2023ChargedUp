@@ -138,7 +138,7 @@ public class PathCommand extends CommandBase {
     SmartDashboard.putNumber("ySpeed", ySpeed);
 
     ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-      xSpeed, 0.0, 0.0, mSwerveSubsystem.getRotation2d());
+      xSpeed, 0.0, 0.0, mSwerveSubsystem.getHeadingRotation2d());
     
      // 5. Convert chassis speeds to individual module states
      SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
@@ -159,7 +159,7 @@ public class PathCommand extends CommandBase {
   public boolean isFinished() {
     if(isTimeEnd && distanceToEnd<0.1 && angleToEnd<1) {
       ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-        0.0, 0.0, 0.0, mSwerveSubsystem.getRotation2d());
+        0.0, 0.0, 0.0, mSwerveSubsystem.getHeadingRotation2d());
       
        // 5. Convert chassis speeds to individual module states
        SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
