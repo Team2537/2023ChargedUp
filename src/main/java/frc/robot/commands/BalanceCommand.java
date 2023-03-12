@@ -14,7 +14,7 @@ import frc.robot.subsystems.SwerveSubsystem;
 
 public class BalanceCommand extends CommandBase {
     double target = 0;
-    double kP = 0.02;
+    double kP = 0.06;
     double kI = 0;
     double kD = 0;
     double e = 0;
@@ -64,7 +64,7 @@ public class BalanceCommand extends CommandBase {
 
         ePrev = e;
 
-        double xSpeed = p + i + d;
+        double xSpeed = -(p + i + d);
 
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
             xSpeed, 0.0, 0.0, mSwerveSubsystem.getHeadingRotation2d());

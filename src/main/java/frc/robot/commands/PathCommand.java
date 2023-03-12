@@ -65,7 +65,9 @@ public class PathCommand extends CommandBase {
     
     ShuffleboardTab tab = Shuffleboard.getTab("Swerve State");
     timer = new Timer();
-    timer.start();
+    timer.stop();
+    timer.reset();
+    
     this.trajectory = trajectory;
     startState = trajectory.getInitialState();
     startPose2d = startState.poseMeters;
@@ -87,7 +89,9 @@ public class PathCommand extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    timer.start();
+  }
 
 
   // Called every time the scheduler runs while the command is scheduled.

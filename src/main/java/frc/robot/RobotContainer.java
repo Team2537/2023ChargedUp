@@ -194,7 +194,7 @@ public class RobotContainer {
                 new PathConstraints(AutoConstants.kMaxSpeedMps, AutoConstants.kMaxAccelerationMetersPerSecondSquared));
        
 
-        // return new PathCommand(m_swerveSubsystem, trajectory).andThen(
+        // return new PathCommand2(m_swerveSubsystem, trajectory).andThen(
         //         new LockCommand(m_swerveSubsystem));
         
         //         return new PathCommand(m_swerveSubsystem, trajectory).andThen(
