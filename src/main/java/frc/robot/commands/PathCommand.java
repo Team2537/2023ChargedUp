@@ -130,6 +130,8 @@ public class PathCommand extends CommandBase {
     //Checking if we are close to the end of the path
     angleToEnd = Math.abs(mSwerveSubsystem.getHeading()-endHeading.getDegrees());
     distanceToEnd = Math.sqrt(Math.pow(xCurrent-endPose2d.getX(), 2)+Math.pow(yCurrent-endPose2d.getY(), 2));
+    //for future reference do the following
+    // endPose2d.getTranslation().getDistance(currentPose.getTranslation());
 
     SmartDashboard.putNumber("xDesired", xDesired);
     SmartDashboard.putNumber("yDesired", yDesired);
@@ -170,11 +172,13 @@ public class PathCommand extends CommandBase {
   
        // 6. Output each module states to wheels
        mSwerveSubsystem.setModuleStates(moduleStates);
+       System.out.println("");
        return true;
     }
 
     return false;
 
     // return isTimeEnd && distanceToEnd<0.1 && angleToEnd<1;
+    
   }
 }

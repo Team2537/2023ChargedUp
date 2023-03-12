@@ -197,19 +197,19 @@ public class RobotContainer {
         // return new PathCommand2(m_swerveSubsystem, trajectory).andThen(
         //         new LockCommand(m_swerveSubsystem));
         
-        //         return new PathCommand(m_swerveSubsystem, trajectory).andThen(
-        //        new BalanceCommand(m_swerveSubsystem)).andThen(
-        //         new LockCommand(m_swerveSubsystem));
+                return new PathCommand(m_swerveSubsystem, trajectory).andThen(
+               new BalanceCommand(m_swerveSubsystem)).andThen(
+                new LockCommand(m_swerveSubsystem));
 
-        return new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).andThen(
-                new FixedAngleCommand(m_armPivotSubsystem, 15.66)).andThen(
-                new FixedExtensionCommand(m_armTelescopeSubsystem, 6.4)).andThen(
-                new OpenGripperCommand(m_gripperSubsystem)).andThen(
-                new WaitCommand(0.5)).andThen(
-                new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).alongWith(
-                new PathCommand(m_swerveSubsystem, trajectory)).andThen(
-                new BalanceCommand(m_swerveSubsystem)).andThen(
-                new LockCommand(m_swerveSubsystem))) ;
+        // return new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).andThen(
+        //         new FixedAngleCommand(m_armPivotSubsystem, 15.66)).andThen(
+        //         new FixedExtensionCommand(m_armTelescopeSubsystem, 6.4)).andThen(
+        //         new OpenGripperCommand(m_gripperSubsystem)).andThen(
+        //         new WaitCommand(0.5)).andThen(
+        //         new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).alongWith(
+        //         new PathCommand(m_swerveSubsystem, trajectory)).andThen(
+        //         new BalanceCommand(m_swerveSubsystem)).andThen(
+        //         new LockCommand(m_swerveSubsystem))) ;
 
                 // return new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).andThen(
                 //         new FixedAngleCommand(m_armPivotSubsystem, 15.66)).andThen(
