@@ -27,7 +27,7 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 
 /** An example command that uses an example subsystem. */
-public class PathCommand extends CommandBase {
+public class PathCommand2 extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final SwerveSubsystem mSwerveSubsystem;
   private final PIDController pidController;
@@ -56,7 +56,7 @@ public class PathCommand extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public PathCommand(SwerveSubsystem swerveSubsystem, PathPlannerTrajectory trajectory) {
+  public PathCommand2(SwerveSubsystem swerveSubsystem, PathPlannerTrajectory trajectory) {
     mSwerveSubsystem = swerveSubsystem;
     pidController=new PIDController(kp, ki, kd);
     xPosController = new PIDController(2.0, 0.0, 0.0);
@@ -65,9 +65,7 @@ public class PathCommand extends CommandBase {
     
     ShuffleboardTab tab = Shuffleboard.getTab("Swerve State");
     timer = new Timer();
-    timer.stop();
-    timer.reset();
-    
+    timer.start();
     this.trajectory = trajectory;
     startState = trajectory.getInitialState();
     startPose2d = startState.poseMeters;
@@ -89,9 +87,7 @@ public class PathCommand extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    timer.start();
-  }
+  public void initialize() {}
 
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -161,7 +157,7 @@ public class PathCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(isTimeEnd && distanceToEnd<0.5 && angleToEnd<1) {
+    if(isTimeEnd && distanceToEnd<0.3 && angleToEnd<1) {
       ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
         0.0, 0.0, 0.0, mSwerveSubsystem.getHeadingRotation2d());
       
