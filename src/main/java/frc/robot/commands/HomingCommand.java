@@ -33,11 +33,14 @@ public class HomingCommand extends CommandBase{
          * if it isn't set the speed to -0.75, if it is then set telescope to 0
          * and do the same thing with the pivot and pivot magnet sensor
          */
-        if(!m_telescopeSubsystem.getMagnetClosed() && !retracted){
-            m_telescopeSubsystem.setRawSpeed(-0.3);
-        } else if (!m_pivotSubsystem.getMagnetClosed() || !m_pivotSubsystem.isClose(HOME_ANGLE)){
-            retracted = true;
-            m_telescopeSubsystem.setEncoderPosition(0);
+        if (!retracted) {
+            if (m_telescopeSubsystem.getMagnetClosed()) {
+                retracted = true;
+                m_telescopeSubsystem.reset();
+            } else {
+                m_telescopeSubsystem.setExtension(m_telescopeSubsystem.getPosition() - 1.5);
+            }
+        } else if (!m_pivotSubsystem.isClose(HOME_ANGLE)) {
             m_telescopeSubsystem.reset();
             
             //m_pivotSubsystem.syncEncoders();

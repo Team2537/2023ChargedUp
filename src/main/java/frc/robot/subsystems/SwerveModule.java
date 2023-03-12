@@ -104,6 +104,9 @@ public class SwerveModule {
         return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getSteerPosition()));
     }
 
+    public double getDriveVoltage(){
+        return mDriveMotor.getBusVoltage();
+    }
 
 
     public void setDesiredState(SwerveModuleState state) {

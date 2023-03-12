@@ -28,6 +28,12 @@ public class SwerveSubsystem extends SubsystemBase{
     // private static DoubleLogEntry frontRightSteerLog;
     // private static DoubleLogEntry backLeftSteerLog;
     // private static DoubleLogEntry backRightSteerLog;
+    private static DoubleLogEntry frontLeftVoltageLog;
+    private static DoubleLogEntry frontRightVoltageLog;
+    private static DoubleLogEntry backLeftVoltageLog;
+    private static DoubleLogEntry backRightVoltageLog;
+
+
     //declare and instantiate all swerve modules
     private final SwerveModule mFrontLeft = new SwerveModule(
         DriveConstants.kFrontLeftDriveMotorPort,
@@ -83,6 +89,12 @@ public class SwerveSubsystem extends SubsystemBase{
         // frontRightSteerLog = new DoubleLogEntry(DataLogManager.getLog(), "/SwerveSubsystem/Front Right Steering Position");
         // backLeftSteerLog = new DoubleLogEntry(DataLogManager.getLog(), "/SwerveSubsystem/Back Left Steering Position");
         // backRightSteerLog = new DoubleLogEntry(DataLogManager.getLog(), "/SwerveSubsystem/Back Right Steering Position");
+
+        frontLeftVoltageLog = new DoubleLogEntry(DataLogManager.getLog(), "/SwerveSubsystem/Front Left Drive Voltage");
+        frontRightVoltageLog = new DoubleLogEntry(DataLogManager.getLog(), "/SwerveSubsystem/Front Right Drive Voltage");
+        backLeftVoltageLog = new DoubleLogEntry(DataLogManager.getLog(), "/SwerveSubsystem/Back Left Drive Voltage");
+        backRightVoltageLog = new DoubleLogEntry(DataLogManager.getLog(), "/SwerveSubsystem/Back Right Drive Voltage");
+
 
         new Thread(() -> {
             try {
@@ -155,6 +167,11 @@ public class SwerveSubsystem extends SubsystemBase{
         //  frontRightSteerLog.append(mFrontRight.getSteerPosition());
         //  backLeftSteerLog.append(mBackLeft.getSteerPosition());
         //  backRightSteerLog.append(mBackRight.getSteerPosition());
+
+        frontLeftVoltageLog.append(mFrontLeft.getDriveVoltage());
+        frontRightVoltageLog.append(mFrontRight.getDriveVoltage());
+        backLeftVoltageLog.append(mBackLeft.getDriveVoltage());
+        backRightVoltageLog.append(mBackRight.getDriveVoltage());
 
        
         // SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());

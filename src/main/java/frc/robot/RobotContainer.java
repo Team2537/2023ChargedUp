@@ -136,7 +136,7 @@ public class RobotContainer {
                 () -> -m_controller.getLeftY(), // xSpdFunction is for forward direction
                 () -> -m_controller.getLeftX(),
                 () -> -m_controller.getRightX(),
-                () -> !m_controller.getAButtonPressed(),
+                () -> !m_controller.getRightBumper(),
                 () -> (m_controller.getLeftTriggerAxis() > 0.75 && !(m_controller.getRightTriggerAxis() > 0.75))));
 
         // Configure the button bindings
@@ -202,7 +202,7 @@ public class RobotContainer {
                 new OpenGripperCommand(m_gripperSubsystem)).andThen(
                 new WaitCommand(0.5)).andThen(
                 new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).alongWith(
-                        new PathCommand(m_swerveSubsystem, trajectory)));
+                new PathCommand(m_swerveSubsystem, trajectory)));
 
         // // 1. Create trajectory settings
         // TrajectoryConfig trajectoryConfig = new TrajectoryConfig(

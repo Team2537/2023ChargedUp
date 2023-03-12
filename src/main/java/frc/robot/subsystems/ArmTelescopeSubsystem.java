@@ -69,7 +69,7 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
 
     // PID coefficients
     kPPosition = 0.5;
-    kIPosition = 0;
+    kIPosition = 0; 
     kDPosition = 0;
     kIzPosition = 0;
     kFFPosition = 0.000015;
@@ -141,6 +141,10 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
    */ 
   public double getPosition() {
     return m_encoder.getPosition();
+  }
+
+  public double getTarget(){
+    return target;
   }
 
   /**
