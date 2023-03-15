@@ -24,7 +24,7 @@ public class SwerveTeleopCommand extends CommandBase {
   private final Supplier<Double> xSpdFunction, ySpdFunction, turningSpdFunction;
   private final Supplier<Boolean> fieldOrientedFunction, slowSpeedFunction;
   private final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
-  private final double joystickAccel = 0.001;
+  private final double joystickAccel = 0.0000001;
   private ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
 
   /**
@@ -71,9 +71,9 @@ public class SwerveTeleopCommand extends CommandBase {
     turningSpeed = Math.abs(turningSpeed) > IOConstants.kDeadband ? turningSpeed : 0.0;
 
     // 3. Make the driving smoother
-    xSpeed = xLimiter.calculate(xSpeed * DriveConstants.kTeleDriveMaxSpeedMps);
-    ySpeed = yLimiter.calculate(ySpeed * DriveConstants.kTeleDriveMaxSpeedMps);
-    turningSpeed = turningLimiter.calculate(turningSpeed * DriveConstants.kTeleAngularMaxSpeedRps);
+    // xSpeed = xLimiter.calculate(xSpeed * DriveConstants.kTeleDriveMaxSpeedMps);
+    // ySpeed = yLimiter.calculate(ySpeed * DriveConstants.kTeleDriveMaxSpeedMps);
+    // turningSpeed = turningLimiter.calculate(turningSpeed * DriveConstants.kTeleAngularMaxSpeedRps);
 
     // SmartDashboard.putNumber("Turning speed", turningSpeed);
 
@@ -83,8 +83,18 @@ public class SwerveTeleopCommand extends CommandBase {
       turningSpeed *= DriveConstants.kSpeedMultiplier;
     }
 
-    //xSpeed += joystickAccel * Math.signum(xSpeed - chassisSpeeds.vxMetersPerSecond);
-    //ySpeed += joystickAccel * Math.signum(ySpeed - chassisSpeeds.vyMetersPerSecond);
+    if (Math.abs(xSpeed - chassisSpeeds.vxMetersPerSecond) > joystickAccel){
+      xSpeed += joystickAccel * Math.signum(xSpeed - chassisSpeeds.vxMetersPerSecond);
+    }
+    else{
+      xSpeed = chassisSpeeds.vxMetersPerSecond;
+    }
+    if (Math.abs(ySpeed - chassisSpeeds.vyMetersPerSecond) > joystickAccel){
+      ySpeed += joystickAccel * Math.signum(ySpeed - chassisSpeeds.vyMetersPerSecond);
+    }
+    else{
+      ySpeed = chassisSpeeds.vyMetersPerSecond;
+    }
 
     
     // 4. Construct desired chassis speeds

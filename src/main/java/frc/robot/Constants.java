@@ -43,8 +43,8 @@ public final class Constants {
         public static final double kDSteer = 0.0;
         public static final double kFFSteer = 0.0;
 
-        public static final double kPDrive = 0.8;
-        public static final double kIDrive = 0.000005 * 20.0;
+        public static final double kPDrive = 0.008;
+        public static final double kIDrive = 0.0; //0.000005 * 20.0;
         public static final double kDDrive = 0.0;
 
         public static final double kFFDrive = 0.0;
@@ -97,7 +97,7 @@ public final class Constants {
         public static final double kTrackWidthMeters = 0.52705; // 20.75 inches
         // Distance between front and back wheels
 
-        public static final double kPhysicalMaxSpeedMps = 3.29; // meters per second
+        public static final double kPhysicalMaxSpeedMps = 3.0; // meters per second
         public static final double kPhysicalMaxAngularSpeedRps = 10.0; // radians per second
 
         public static final double kPhysicalMaxAccelerationMps = 5.0; // meters per second squared

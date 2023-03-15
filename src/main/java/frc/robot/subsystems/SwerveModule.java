@@ -70,6 +70,12 @@ public class SwerveModule {
         mSteerEncoder.setPositionConversionFactor(ModuleConstants.kSteerEncoderRot2Rad);
         mSteerEncoder.setVelocityConversionFactor(ModuleConstants.kSteerEncoderRPM2RadPerSec);
 
+        mDriveMotor.setSmartCurrentLimit(10, 10);
+        mSteerMotor.setSmartCurrentLimit(10, 10);
+
+        mDriveMotor.burnFlash();
+        mSteerMotor.burnFlash();
+
         Shuffleboard.getTab("Swerve Absolute Encoders").addNumber("" + absoluteEncoderId, () -> mAbsoluteEncoder.getAbsolutePosition());
     }
 
@@ -123,7 +129,7 @@ public class SwerveModule {
         // is minimized
         // set motors to desired state
         state = SwerveModuleState.optimize(state, getState().angle);
-        mDriveMotor.set(state.speedMetersPerSecond / DriveConstants.kPhysicalMaxSpeedMps);
+        mDriveMotor.set(Math.signum(state.speedMetersPerSecond) * Math.min(Math.abs(state.speedMetersPerSecond), DriveConstants.kPhysicalMaxSpeedMps));
         mDriveMotor.getPIDController().setReference(state.speedMetersPerSecond, CANSparkMax.ControlType.kVelocity);
         mSteerMotor.getPIDController().setReference(state.angle.getRadians(), CANSparkMax.ControlType.kPosition);
         SmartDashboard.putString("Swerve[" + mDriveMotor.getDeviceId() + "] state", state.toString());

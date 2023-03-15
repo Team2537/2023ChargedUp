@@ -95,6 +95,8 @@ public class SwerveSubsystem extends SubsystemBase{
         backLeftVoltageLog = new DoubleLogEntry(DataLogManager.getLog(), "/SwerveSubsystem/Back Left Drive Voltage");
         backRightVoltageLog = new DoubleLogEntry(DataLogManager.getLog(), "/SwerveSubsystem/Back Right Drive Voltage");
 
+        
+
 
         new Thread(() -> {
             try {
@@ -104,6 +106,22 @@ public class SwerveSubsystem extends SubsystemBase{
             } catch(Exception e) {
             }        
         }).start();
+    }
+
+    public SwerveModule getFrontLeftModule() {
+        return mFrontLeft;
+    }
+
+    public SwerveModule getFrontRightModule() {
+        return mFrontRight;
+    }
+
+    public SwerveModule getBackLeftModule() {
+        return mBackLeft;
+    }
+
+    public SwerveModule getBackRightModule() {
+        return mBackRight;
     }
 
 

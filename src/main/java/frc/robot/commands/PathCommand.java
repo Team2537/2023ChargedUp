@@ -49,7 +49,7 @@ public class PathCommand extends CommandBase {
   //private final double kp=0.01, ki=0.0, kd=0.0; //barely turns
   //private final double kp=0.05, ki=0.0, kd=0.0; //turn smoothly but oscillates at setpoint
   //private final double kp=0.05, ki=0.0, kd=0.01; //turn smoothly but oscillates at setpoint
-  private final static double kp=0.01, ki=0.1*Math.PI/180.0, kd=0.0;
+  private final static double kp=0.01, ki=0.0, kd=0.0;
 
   /**
    * Creates a new ExampleCommand.
@@ -59,8 +59,8 @@ public class PathCommand extends CommandBase {
   public PathCommand(SwerveSubsystem swerveSubsystem, PathPlannerTrajectory trajectory) {
     mSwerveSubsystem = swerveSubsystem;
     pidController=new PIDController(kp, ki, kd);
-    xPosController = new PIDController(2.0, 0.0, 0.0);
-    yPosController = new PIDController(2.0, 0.0, 0.0);
+    xPosController = new PIDController(6.0, 0.1, 0.0);
+    yPosController = new PIDController(6.0, 0.1, 0.0);
     pidController.enableContinuousInput(0,360);
     
     ShuffleboardTab tab = Shuffleboard.getTab("Swerve State");
@@ -111,10 +111,10 @@ public class PathCommand extends CommandBase {
     
     SmartDashboard.putNumber("Desired heading", desiredHeading.getDegrees());
     if (mSwerveSubsystem.getHeading() - desiredHeading.getDegrees() > 180.0){
-      headingOffset = 180;
+      headingOffset = -180;
     }
     else if(mSwerveSubsystem.getHeading() - desiredHeading.getDegrees() < -180.0){
-      headingOffset = -180;
+      headingOffset = 180;
     }
     double turningSpeed = pidController.calculate(mSwerveSubsystem.getHeading()+headingOffset, desiredHeading.getDegrees());
     SmartDashboard.putNumber("Turning speed", turningSpeed);
@@ -144,7 +144,7 @@ public class PathCommand extends CommandBase {
     SmartDashboard.putNumber("ySpeed", ySpeed);
 
     ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-      xSpeed, 0.0, 0.0, mSwerveSubsystem.getHeadingRotation2d());
+      xSpeed, ySpeed, turningSpeed, mSwerveSubsystem.getHeadingRotation2d());
     
      // 5. Convert chassis speeds to individual module states
      SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
