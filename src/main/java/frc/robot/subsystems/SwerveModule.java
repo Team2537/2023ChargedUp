@@ -70,8 +70,8 @@ public class SwerveModule {
         mSteerEncoder.setPositionConversionFactor(ModuleConstants.kSteerEncoderRot2Rad);
         mSteerEncoder.setVelocityConversionFactor(ModuleConstants.kSteerEncoderRPM2RadPerSec);
 
-        mDriveMotor.setSmartCurrentLimit(10, 10);
-        mSteerMotor.setSmartCurrentLimit(10, 10);
+        mDriveMotor.setSmartCurrentLimit(10, 40);
+        mSteerMotor.setSmartCurrentLimit(10, 40);
 
         mDriveMotor.burnFlash();
         mSteerMotor.burnFlash();
