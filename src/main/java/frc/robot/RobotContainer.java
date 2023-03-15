@@ -109,6 +109,8 @@ public class RobotContainer {
     // CloseGripperCommand(m_gripperSubsystem);
     private final ToggleGripperCommand toggleGripper = new ToggleGripperCommand(m_gripperSubsystem);
 
+    private final AutoGrabCommand m_autoGrabCommand = new AutoGrabCommand(m_gripperSubsystem);
+
     private final FixedExtensionCommand m_returnExtension = new FixedExtensionCommand(m_armTelescopeSubsystem, 0);
 
     private final ManualArmControlCommand m_manualControl = new ManualArmControlCommand(
@@ -182,6 +184,8 @@ public class RobotContainer {
 
         m_gunnerJoystick.getButton(5).toggleOnTrue(purpleColor);
         m_gunnerJoystick.getButton(3).toggleOnTrue(yellowColor);
+
+        m_gunnerJoystick.getButton(1).whileTrue(m_autoGrabCommand);
     }
 
     /**
