@@ -15,10 +15,8 @@ public class AutoGrabCommand extends CommandBase {
 
     @Override
     public void execute() {
-        if (m_subsystem.isTarget()) {
+        if (m_subsystem.isTarget() && m_subsystem.isOpened()) {
             m_subsystem.closeGripper();
-        } else {
-            m_subsystem.openGripper();
         }
     }
     
