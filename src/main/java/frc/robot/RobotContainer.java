@@ -71,30 +71,32 @@ public class RobotContainer {
     private final FixedAngleCommand m_bottomRowAngle = new FixedAngleCommand(m_armPivotSubsystem, BOTTOM_ROW_ANGLE);
     private final FixedExtensionCommand m_bottomRowExtension = new FixedExtensionCommand(m_armTelescopeSubsystem,
             BOTTOM_ROW_EXTENSION);
-    private final SetPositionCommand m_bottomRowPosition = new SetPositionCommand(m_bottomRowAngle,
+    private final SetPositionCommandGroup m_bottomRowPosition = new SetPositionCommandGroup(m_bottomRowAngle,
             m_bottomRowExtension);
 
     // Position for middle cone row when bumpers are against the community
     private final FixedAngleCommand m_middleRowAngle = new FixedAngleCommand(m_armPivotSubsystem, MIDDLE_ROW_ANGLE);
     private final FixedExtensionCommand m_middleRowExtension = new FixedExtensionCommand(m_armTelescopeSubsystem,
             MIDDLE_ROW_EXTENSION);
-    private final SetPositionCommand m_middleRowPosition = new SetPositionCommand(m_middleRowAngle,
+    private final SetPositionCommandGroup m_middleRowPosition = new SetPositionCommandGroup(m_middleRowAngle,
             m_middleRowExtension);
 
     // Position for top cone row when bumpers are against the community
     private final FixedAngleCommand m_topRowAngle = new FixedAngleCommand(m_armPivotSubsystem, TOP_ROW_ANGLE);
     private final FixedExtensionCommand m_topRowExtension = new FixedExtensionCommand(m_armTelescopeSubsystem,
             TOP_ROW_EXTENSION);
-    private final SetPositionCommand m_topRowPosition = new SetPositionCommand(m_topRowAngle, m_topRowExtension);
+    private final SetPositionCommandGroup m_topRowPosition = new SetPositionCommandGroup(m_topRowAngle, m_topRowExtension);
 
+
+    //positions for picking up from ground
     private final FixedExtensionCommand m_grabExtension = new FixedExtensionCommand(m_armTelescopeSubsystem,
             GRAB_EXTENSION);
     private final FixedAngleCommand m_grabAngle = new FixedAngleCommand(m_armPivotSubsystem, GRAB_ANGLE);
-    private final SetPositionCommand m_grabPosition = new SetPositionCommand(m_grabAngle, m_grabExtension);
+    private final SetPositionCommandGroup m_grabPosition = new SetPositionCommandGroup(m_grabAngle, m_grabExtension);
 
     private final FixedExtensionCommand m_shelfExtension = new FixedExtensionCommand(m_armTelescopeSubsystem, SHELF_EXTENSION);
     private final FixedAngleCommand m_shelfAngle = new FixedAngleCommand(m_armPivotSubsystem, SHELF_ANGLE);
-    private final SetPositionCommand m_shelfPosition = new SetPositionCommand(m_shelfAngle, m_shelfExtension);
+    private final SetPositionCommandGroup m_shelfPosition = new SetPositionCommandGroup(m_shelfAngle, m_shelfExtension);
 
     private final FixedExtensionCommand test = new FixedExtensionCommand(m_armTelescopeSubsystem, 5);
     private final HomingCommand m_homingCommand = new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem);

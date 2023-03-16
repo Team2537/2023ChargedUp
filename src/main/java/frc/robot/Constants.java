@@ -148,8 +148,8 @@ public final class Constants {
         public static final double TOP_ROW_ANGLE = 26;
         public static final double TOP_ROW_EXTENSION = 7.3;
 
-        public static final double GRAB_ANGLE = -55.5;
-        public static final double GRAB_EXTENSION = 1.24;
+        public static final double GRAB_ANGLE = -55.5; //from ground
+        public static final double GRAB_EXTENSION = 1.24; //from ground
 
         public static final double SHELF_ANGLE = 20.5;
         public static final double SHELF_EXTENSION = 2.62;

@@ -27,6 +27,6 @@ public class AutoGrabCommand extends CommandBase {
     
     @Override
     public boolean isFinished() {
-        return false; // This command runs indefinitely until a button is released
+        return !m_subsystem.isOpened(); // This command runs indefinitely until a button is released
     }
 }
