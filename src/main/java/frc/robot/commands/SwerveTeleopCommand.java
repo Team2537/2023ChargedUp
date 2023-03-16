@@ -66,7 +66,7 @@ public class SwerveTeleopCommand extends CommandBase {
     double ySpeed = Math.pow(ySpdFunction.get(), 3);
     double turningSpeed = turningSpdFunction.get();
 
-    activeAccel = Math.min(joystickAccel / Math.pow(Math.sqrt(Math.pow(xSpeed, 2) + Math.pow(ySpeed, 2)), 0.5), 0.5);
+    activeAccel = Math.min(joystickAccel / Math.pow(Math.sqrt(Math.pow(xSpeed, 2) + Math.pow(ySpeed, 2)), 0.4), 0.5);
 
     // 2. Apply deadband
     xSpeed = Math.abs(xSpeed) > IOConstants.kDeadband ? xSpeed : 0.0;
