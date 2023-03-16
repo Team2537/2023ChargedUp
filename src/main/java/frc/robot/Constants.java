@@ -132,6 +132,7 @@ public final class Constants {
         public static final double kMaxSpeedMps = 1.0; //DriveConstants.kPhysicalMaxSpeedMps / 3.0
         public static final double kMaxAccelerationMetersPerSecondSquared = 1.0; // DriveConstants.kPhysicalMaxAccelerationMps/ 5
 
+        //TODO: decide whether or not to delete
         public static final double kPThetaController = 0;
         public static final Constraints kThetaControllerConstraints = null;
         public static final double kPYController = 0;
@@ -172,6 +173,14 @@ public final class Constants {
         // DIO Ports for sensors
         public static final int TELESCOPE_MAGNET_SENSOR = 0;
         public static final int PIVOT_MAGNET_SENSOR = 2;
+    }
+
+    public static final class LidarConstants {
+        public static final double kTargetLow = 3.0;
+        public static final double kTargetHigh = 25.0;
+        public static final int kLidarReadPort = 2;
+        public static final int kLidarTriggerPort = 3;
+
     }
 
     public static final class ColorConstants {

@@ -20,6 +20,8 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
+import frc.robot.Constants.LidarConstants;
+import frc.robot.commandGroups.SetPositionCommandGroup;
 import frc.robot.subsystems.SwerveSubsystem;
 import static frc.robot.Constants.ArmConstants.*;
 import static frc.robot.Constants.ColorConstants.*;
@@ -58,8 +60,8 @@ public class RobotContainer {
     private final SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
     private final ArmPivotSubsystem m_armPivotSubsystem = new ArmPivotSubsystem();
     private final ArmTelescopeSubsystem m_armTelescopeSubsystem = new ArmTelescopeSubsystem();
-    private final GripperSubsystem m_gripperSubsystem = new GripperSubsystem(5, 30, i -> {
-    }, 2, 3);
+    private final GripperSubsystem m_gripperSubsystem = new GripperSubsystem(LidarConstants.kTargetLow,LidarConstants.kTargetHigh, i -> {
+    }, LidarConstants.kLidarReadPort, LidarConstants.kLidarTriggerPort);
     private final CameraSubsystem m_cameraSubsystem = new CameraSubsystem();
 
     private final LockCommand lockCommand = new LockCommand(m_swerveSubsystem);
