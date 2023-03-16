@@ -95,6 +95,10 @@ public class SwerveSubsystem extends SubsystemBase{
         backLeftVoltageLog = new DoubleLogEntry(DataLogManager.getLog(), "/SwerveSubsystem/Back Left Drive Voltage");
         backRightVoltageLog = new DoubleLogEntry(DataLogManager.getLog(), "/SwerveSubsystem/Back Right Drive Voltage");
 
+        mFrontLeft.resetEncoders();
+        mFrontRight.resetEncoders();
+        mBackLeft.resetEncoders();
+        mBackRight.resetEncoders();
         
 
 
@@ -190,17 +194,30 @@ public class SwerveSubsystem extends SubsystemBase{
         //  backLeftSteerLog.append(mBackLeft.getSteerPosition());
         //  backRightSteerLog.append(mBackRight.getSteerPosition());
 
-        frontLeftVoltageLog.append(mFrontLeft.getDriveVoltage());
-        frontRightVoltageLog.append(mFrontRight.getDriveVoltage());
-        backLeftVoltageLog.append(mBackLeft.getDriveVoltage());
-        backRightVoltageLog.append(mBackRight.getDriveVoltage());
+        // frontLeftVoltageLog.append(mFrontLeft.getDriveVoltage());
+        // frontRightVoltageLog.append(mFrontRight.getDriveVoltage());
+        // backLeftVoltageLog.append(mBackLeft.getDriveVoltage());
+        // backRightVoltageLog.append(mBackRight.getDriveVoltage());
 
        
-        // SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
-        SmartDashboard.putNumber("Pitch", imu.getPitch());
-        // SmartDashboard.putNumber("Roll", imu.getRoll());
+        // // SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
+        // SmartDashboard.putNumber("Pitch", imu.getPitch());
+        // // SmartDashboard.putNumber("Roll", imu.getRoll());
         SmartDashboard.putNumber("current xPos", getPose().getX());
         SmartDashboard.putNumber("current yPos", getPose().getY());
+
+        //Uncomment if you want to check if absolute and steer encoders are functioning properly
+        /* 
+        SmartDashboard.putNumber("Front Left Steer Encoder", mFrontLeft.getSteerPosition());
+        SmartDashboard.putNumber("Front Right Steer Encoder", mFrontRight.getSteerPosition());
+        SmartDashboard.putNumber("Back Left Steer Encoder", mBackLeft.getSteerPosition());
+        SmartDashboard.putNumber("Back Right Steer Encoder", mBackRight.getSteerPosition());
+
+        SmartDashboard.putNumber("Front Left Absolute Encoder", mFrontLeft.getAbsoluteEncoder());
+        SmartDashboard.putNumber("Front Right Absolute Encoder", mFrontRight.getAbsoluteEncoder());
+        SmartDashboard.putNumber("Back Left Absolute Encoder", mBackLeft.getAbsoluteEncoder());
+        SmartDashboard.putNumber("Back Right Absolute Encoder", mBackRight.getAbsoluteEncoder());
+        */
     }
 
 
