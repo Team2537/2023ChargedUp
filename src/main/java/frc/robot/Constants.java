@@ -38,7 +38,7 @@ public final class Constants {
         public static final double kAbsoluteEncoderCountsPerMin2Rad = 2.0 * Math.PI / kCANCoderCounts;
 
         // PID values //TODO: possibly tune PID better
-        public static final double kPSteer = 0.6;
+        public static final double kPSteer = 0.06;
         public static final double kISteer = 0.0;
         public static final double kDSteer = 0.0;
         public static final double kFFSteer = 0.0;

@@ -24,7 +24,8 @@ public class SwerveTeleopCommand extends CommandBase {
   private final Supplier<Double> xSpdFunction, ySpdFunction, turningSpdFunction;
   private final Supplier<Boolean> fieldOrientedFunction, slowSpeedFunction;
   private final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
-  private final double joystickAccel = 0.0000001;
+  private final double joystickAccel = 10 * 0.02;
+  private double activeAccel = joystickAccel;
   private ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
 
   /**
@@ -65,6 +66,8 @@ public class SwerveTeleopCommand extends CommandBase {
     double ySpeed = Math.pow(ySpdFunction.get(), 3);
     double turningSpeed = turningSpdFunction.get();
 
+    activeAccel = Math.min(joystickAccel / Math.pow(Math.sqrt(Math.pow(xSpeed, 2) + Math.pow(ySpeed, 2)), 0.5), 0.5);
+
     // 2. Apply deadband
     xSpeed = Math.abs(xSpeed) > IOConstants.kDeadband ? xSpeed : 0.0;
     ySpeed = Math.abs(ySpeed) > IOConstants.kDeadband ? ySpeed : 0.0;
@@ -83,17 +86,11 @@ public class SwerveTeleopCommand extends CommandBase {
       turningSpeed *= DriveConstants.kSpeedMultiplier;
     }
 
-    if (Math.abs(xSpeed - chassisSpeeds.vxMetersPerSecond) > joystickAccel){
-      xSpeed += joystickAccel * Math.signum(xSpeed - chassisSpeeds.vxMetersPerSecond);
+    if (Math.abs(xSpeed - chassisSpeeds.vxMetersPerSecond) > activeAccel){
+      xSpeed = chassisSpeeds.vxMetersPerSecond + (activeAccel * Math.signum(xSpeed - chassisSpeeds.vxMetersPerSecond));
     }
-    else{
-      xSpeed = chassisSpeeds.vxMetersPerSecond;
-    }
-    if (Math.abs(ySpeed - chassisSpeeds.vyMetersPerSecond) > joystickAccel){
-      ySpeed += joystickAccel * Math.signum(ySpeed - chassisSpeeds.vyMetersPerSecond);
-    }
-    else{
-      ySpeed = chassisSpeeds.vyMetersPerSecond;
+    if (Math.abs(ySpeed - chassisSpeeds.vyMetersPerSecond) > activeAccel){
+      ySpeed = chassisSpeeds.vyMetersPerSecond + (activeAccel * Math.signum(ySpeed - chassisSpeeds.vyMetersPerSecond));
     }
 
     
