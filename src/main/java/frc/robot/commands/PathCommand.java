@@ -94,6 +94,16 @@ public class PathCommand extends CommandBase {
   }
 
 
+  public static Rotation2d optimize(Rotation2d currentAngle, Rotation2d desiredAngle) {
+    Rotation2d delta = desiredAngle.minus(currentAngle);
+    
+    if (Math.abs(delta.getDegrees()) > 180.0) {
+      return delta.rotateBy(Rotation2d.fromDegrees(-360.0));
+    } else {
+      return delta;
+    }
+  }
+
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
@@ -102,21 +112,23 @@ public class PathCommand extends CommandBase {
     if(time>endTime) {
       isTimeEnd=true;
     } 
-    double headingOffset = 0.0;
+    // double headingOffset = 0.0;
     PathPlannerState desiredState = (PathPlannerState) trajectory.sample(time);
     
     Pose2d desiredPose = desiredState.poseMeters;
     Rotation2d desiredHeading = desiredState.holonomicRotation;
     Pose2d currentPose = mSwerveSubsystem.getPose();
+
+    Rotation2d angleToDesired2d = optimize(currentPose.getRotation(), desiredHeading);
     
-    SmartDashboard.putNumber("Desired heading", desiredHeading.getDegrees());
-    if (mSwerveSubsystem.getHeading() - desiredHeading.getDegrees() > 180.0){
-      headingOffset = -180;
-    }
-    else if(mSwerveSubsystem.getHeading() - desiredHeading.getDegrees() < -180.0){
-      headingOffset = 180;
-    }
-    double turningSpeed = pidController.calculate(mSwerveSubsystem.getHeading()+headingOffset, desiredHeading.getDegrees());
+    // SmartDashboard.putNumber("Desired heading", desiredHeading.getDegrees());
+    // if (mSwerveSubsystem.getHeading() - desiredHeading.getDegrees() > 180.0){
+    //   headingOffset = -180;
+    // }
+    // else if(mSwerveSubsystem.getHeading() - desiredHeading.getDegrees() < -180.0){
+    //   headingOffset = 180;
+    // }
+    double turningSpeed = pidController.calculate(angleToDesired2d.getDegrees(), 0.0);
     SmartDashboard.putNumber("Turning speed", turningSpeed);
     double xCurrent = currentPose.getX();
     double xDesired = desiredPose.getX();
