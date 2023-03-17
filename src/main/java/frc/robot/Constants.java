@@ -176,10 +176,10 @@ public final class Constants {
     }
 
     public static final class LidarConstants {
-        public static final double kTargetLow = 3.0;
-        public static final double kTargetHigh = 25.0;
-        public static final int kLidarReadPort = 2;
-        public static final int kLidarTriggerPort = 3;
+        public static final double kTargetLow = 0.0;
+        public static final double kTargetHigh = 7.0;
+        public static final int kLidarReadPort = 5;
+        public static final int kLidarTriggerPort = 4;
 
     }
 
