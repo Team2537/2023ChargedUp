@@ -17,6 +17,8 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
@@ -198,21 +200,22 @@ public class RobotContainer {
                 m_gunnerJoystick.getButton(1).whileTrue(m_autoGrabCommand);
         }
 
-        /**
-         * Use this to pass the autonomous command to the main {@link Robot} class.
-         *
-         * @return the command to run in autonomous
-         */
-        public Command getAutonomousCommand() {
-                PathPlannerTrajectory trajectory = PathPlanner.loadPath("CenterBalance",
-                                new PathConstraints(AutoConstants.kMaxSpeedMps,
-                                                AutoConstants.kMaxAccelerationMetersPerSecondSquared));
+     
+    /**
+     * Use this to pass the autonomous command to the main {@link Robot} class.
+     *
+     * @return the command to run in autonomous
+     */
+    public Command getAutonomousCommand() {
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath("CenterBalance",
+                new PathConstraints(AutoConstants.kMaxSpeedMps, AutoConstants.kMaxAccelerationMetersPerSecondSquared));
+       
 
-                // return new PathCommand2(m_swerveSubsystem, trajectory).andThen(
-                // new LockCommand(m_swerveSubsystem));
-
-                return new SequentialCommandGroup(new PathCommand(m_swerveSubsystem, trajectory),
-                                new BalanceCommand(m_swerveSubsystem), new LockCommand(m_swerveSubsystem));
+         return new PathCommand(m_swerveSubsystem, trajectory);
+        
+        //         return new PathCommand(m_swerveSubsystem, trajectory).andThen(
+        //        new BalanceCommand(m_swerveSubsystem)).andThen(
+        //         new LockCommand(m_swerveSubsystem));
 
                 // return new HomingCommand(m_armPivotSubsystem, m_armTe
                 // lescopeSubsystem).andThen(
