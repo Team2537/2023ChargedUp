@@ -17,6 +17,8 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
@@ -147,6 +149,12 @@ public class RobotContainer {
 
         // Configure the button bindings
         configureButtonBindings();
+
+        ShuffleboardTab controllerTab = Shuffleboard.getTab("Controller");
+        controllerTab.addNumber("Left X", () -> m_controller.getLeftX());
+        controllerTab.addNumber("Left Y", () -> m_controller.getLeftY());
+        controllerTab.addNumber("Right X", () -> m_controller.getRightX());
+        controllerTab.addNumber("Right Y", () -> m_controller.getRightY());
     }
 
     /**
@@ -198,16 +206,15 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        PathPlannerTrajectory trajectory = PathPlanner.loadPath("CenterBalance Copy",
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath("CenterBalance",
                 new PathConstraints(AutoConstants.kMaxSpeedMps, AutoConstants.kMaxAccelerationMetersPerSecondSquared));
        
 
-        // return new PathCommand2(m_swerveSubsystem, trajectory).andThen(
-        //         new LockCommand(m_swerveSubsystem));
+         return new PathCommand(m_swerveSubsystem, trajectory);
         
-                return new PathCommand(m_swerveSubsystem, trajectory).andThen(
-               new BalanceCommand(m_swerveSubsystem)).andThen(
-                new LockCommand(m_swerveSubsystem));
+        //         return new PathCommand(m_swerveSubsystem, trajectory).andThen(
+        //        new BalanceCommand(m_swerveSubsystem)).andThen(
+        //         new LockCommand(m_swerveSubsystem));
 
         // return new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).andThen(
         //         new FixedAngleCommand(m_armPivotSubsystem, 15.66)).andThen(

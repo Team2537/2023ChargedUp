@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 
 public class GripperSubsystem extends SubsystemBase {
-  private static final double FILTERED_GAIN = 0.2;
+  private static final double FILTERED_GAIN = 0.02;
   private DigitalOutput m_trig;
   private double m_target_high;
   private double m_target_low;

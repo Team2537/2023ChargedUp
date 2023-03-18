@@ -38,14 +38,14 @@ public final class Constants {
         public static final double kAbsoluteEncoderCountsPerMin2Rad = 2.0 * Math.PI / kCANCoderCounts;
 
         // PID values //TODO: possibly tune PID better
-        public static final double kPSteer = 0.06;
+        public static final double kPSteer = 0.6;
         public static final double kISteer = 0.0;
         public static final double kDSteer = 0.0;
         public static final double kFFSteer = 0.0;
 
-        public static final double kPDrive = 0.08;
+        public static final double kPDrive = 0.6;
         public static final double kIDrive = 0.0; //0.000005 * 20.0;
-        public static final double kDDrive = 0.0;
+        public static final double kDDrive = 1e-5; // Working at 0
 
         public static final double kFFDrive = 0.0;
 
@@ -86,10 +86,10 @@ public final class Constants {
         public static final boolean kBackLeftAbsoluteEncoderReversed = false;
         public static final boolean kBackRightAbsoluteEncoderReversed = false;
 
-        public static final double kFrontLeftAbsoluteEncoderOffsetRad = 1.937;
-        public static final double kFrontRightAbsoluteEncoderOffsetRad = 0.405;
-        public static final double kBackLeftAbsoluteEncoderOffsetRad = 0.667;
-        public static final double kBackRightAbsoluteEncoderOffsetRad = 3.290;
+        public static final double kFrontLeftAbsoluteEncoderOffsetRad = 1.967;
+        public static final double kFrontRightAbsoluteEncoderOffsetRad = 0.385;
+        public static final double kBackLeftAbsoluteEncoderOffsetRad = 0.687;
+        public static final double kBackRightAbsoluteEncoderOffsetRad = 3.335;
 
         
 
@@ -177,7 +177,7 @@ public final class Constants {
 
     public static final class LidarConstants {
         public static final double kTargetLow = 0.0;
-        public static final double kTargetHigh = 7.0;
+        public static final double kTargetHigh = 18.0;
         public static final int kLidarReadPort = 5;
         public static final int kLidarTriggerPort = 4;
 
