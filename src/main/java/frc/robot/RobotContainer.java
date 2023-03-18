@@ -198,7 +198,7 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        PathPlannerTrajectory trajectory = PathPlanner.loadPath("CenterBalance Copy",
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath("CenterBalance",
                 new PathConstraints(AutoConstants.kMaxSpeedMps, AutoConstants.kMaxAccelerationMetersPerSecondSquared));
        
 
