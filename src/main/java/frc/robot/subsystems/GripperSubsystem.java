@@ -98,7 +98,7 @@ public class GripperSubsystem extends SubsystemBase {
 
   // implement a low pass filter
   private double lowPass(double raw, double filtered, double alpha) {
-    return (1 - alpha) * filtered + alpha * (raw - filtered);
+    return (1 - alpha) * filtered + alpha * (raw);
   }
 
   // return true if the target is in target bounds
