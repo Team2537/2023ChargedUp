@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 
 public class GripperSubsystem extends SubsystemBase {
-  private static final double FILTERED_GAIN = 0.2;
+  private static final double FILTERED_GAIN = 0.07;
   private DigitalOutput m_trig;
   private double m_target_high;
   private double m_target_low;
@@ -98,7 +98,7 @@ public class GripperSubsystem extends SubsystemBase {
 
   // implement a low pass filter
   private double lowPass(double raw, double filtered, double alpha) {
-    return (1 - alpha) * filtered + alpha * (raw - filtered);
+    return (1 - alpha) * filtered + alpha * (raw);
   }
 
   // return true if the target is in target bounds
