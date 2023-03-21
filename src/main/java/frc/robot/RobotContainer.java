@@ -206,11 +206,13 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
+        
         PathPlannerTrajectory trajectory = PathPlanner.loadPath("CenterBalance",
                 new PathConstraints(AutoConstants.kMaxSpeedMps, AutoConstants.kMaxAccelerationMetersPerSecondSquared));
        
 
-         return new PathCommand(m_swerveSubsystem, trajectory);
+         return new SwerveHomingCommand(m_swerveSubsystem).andThen(new PathCommand(m_swerveSubsystem, trajectory).andThen(
+                new BalanceCommand(m_swerveSubsystem).andThen(new LockCommand(m_swerveSubsystem))));
         
         //         return new PathCommand(m_swerveSubsystem, trajectory).andThen(
         //        new BalanceCommand(m_swerveSubsystem)).andThen(

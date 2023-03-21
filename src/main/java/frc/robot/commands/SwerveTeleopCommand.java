@@ -46,6 +46,10 @@ public class SwerveTeleopCommand extends CommandBase {
     yLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
     turningLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAngularAccelerationUnitsPerSecond);
     ShuffleboardTab tab = Shuffleboard.getTab("Swerve State");
+    tab.addBoolean("Slow Mode", () -> this.slowSpeedFunction.get());
+
+    tab.addNumber("X Speed", () -> xSpeed);
+    tab.addNumber("Y Speed", () -> ySpeed);
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(mSwerveSubsystem);
@@ -56,17 +60,19 @@ public class SwerveTeleopCommand extends CommandBase {
   public void initialize() {
   }
 
+  double xSpeed, ySpeed;
+
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
     // 1. Get real-time joystick inputs
 
-    double xSpeed = Math.pow(xSpdFunction.get(), 3);
-    double ySpeed = Math.pow(ySpdFunction.get(), 3);
+    xSpeed = Math.pow(xSpdFunction.get(), 3);
+    ySpeed = Math.pow(ySpdFunction.get(), 3);
     double turningSpeed = turningSpdFunction.get();
 
-    activeAccel = Math.min(joystickAccel / Math.pow(Math.sqrt(Math.pow(xSpeed, 2) + Math.pow(ySpeed, 2)), 0.4), 0.5);
+    activeAccel = Math.min(joystickAccel / Math.pow(Math.sqrt(Math.pow(xSpeed, 2) + Math.pow(ySpeed, 2)), 0.4), 0.35);
 
     // 2. Apply deadband
     xSpeed = Math.abs(xSpeed) > IOConstants.kDeadband ? xSpeed : 0.0;
@@ -86,12 +92,12 @@ public class SwerveTeleopCommand extends CommandBase {
       turningSpeed *= DriveConstants.kSpeedMultiplier;
     }
 
-    if (Math.abs(xSpeed - chassisSpeeds.vxMetersPerSecond) > activeAccel){
-      xSpeed = chassisSpeeds.vxMetersPerSecond + (activeAccel * Math.signum(xSpeed - chassisSpeeds.vxMetersPerSecond));
-    }
-    if (Math.abs(ySpeed - chassisSpeeds.vyMetersPerSecond) > activeAccel){
-      ySpeed = chassisSpeeds.vyMetersPerSecond + (activeAccel * Math.signum(ySpeed - chassisSpeeds.vyMetersPerSecond));
-    }
+    // if (Math.abs(xSpeed - chassisSpeeds.vxMetersPerSecond) > activeAccel){
+    //   xSpeed = chassisSpeeds.vxMetersPerSecond + (activeAccel * Math.signum(xSpeed - chassisSpeeds.vxMetersPerSecond));
+    // }
+    // if (Math.abs(ySpeed - chassisSpeeds.vyMetersPerSecond) > activeAccel){
+    //   ySpeed = chassisSpeeds.vyMetersPerSecond + (activeAccel * Math.signum(ySpeed - chassisSpeeds.vyMetersPerSecond));
+    // }
 
     
     // 4. Construct desired chassis speeds

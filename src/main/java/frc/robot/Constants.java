@@ -99,7 +99,7 @@ public final class Constants {
         public static final double kTrackWidthMeters = 0.52705; // 20.75 inches
         // Distance between front and back wheels
 
-        public static final double kPhysicalMaxSpeedMps = 3.0; // meters per second
+        public static final double kPhysicalMaxSpeedMps = 1; // meters per second
         public static final double kPhysicalMaxAngularSpeedRps = 10.0; // radians per second
 
         public static final double kPhysicalMaxAccelerationMps = 5.0; // meters per second squared
@@ -130,7 +130,7 @@ public final class Constants {
     public static final class AutoConstants {
 
         public static final double kMaxSpeedMps = 1.0; //DriveConstants.kPhysicalMaxSpeedMps / 3.0
-        public static final double kMaxAccelerationMetersPerSecondSquared = 1.0; // DriveConstants.kPhysicalMaxAccelerationMps/ 5
+        public static final double kMaxAccelerationMetersPerSecondSquared = 2.0; // DriveConstants.kPhysicalMaxAccelerationMps/ 5
 
         //TODO: decide whether or not to delete
         public static final double kPThetaController = 0;
@@ -145,19 +145,19 @@ public final class Constants {
         public static final double BOTTOM_ROW_ANGLE = -49.0;
         public static final double BOTTOM_ROW_EXTENSION = 0;
 
-        public static final double MIDDLE_ROW_ANGLE = 23.2;
-        public static final double MIDDLE_ROW_EXTENSION = 1.98;
+        public static final double MIDDLE_ROW_ANGLE = 6.3;
+        public static final double MIDDLE_ROW_EXTENSION = 3.2;
 
-        public static final double TOP_ROW_ANGLE = 26;
-        public static final double TOP_ROW_EXTENSION = 7.3;
+        public static final double TOP_ROW_ANGLE = 26.9;
+        public static final double TOP_ROW_EXTENSION = 8.9;
 
-        public static final double GRAB_ANGLE = -55.5; //from ground
-        public static final double GRAB_EXTENSION = 1.24; //from ground
+        public static final double GRAB_ANGLE = -53.2; //from ground
+        public static final double GRAB_EXTENSION = 2.45; //from ground
 
-        public static final double SHELF_ANGLE = 20.5;
-        public static final double SHELF_EXTENSION = 2.62;
+        public static final double SHELF_ANGLE = 13.1;
+        public static final double SHELF_EXTENSION = 0.0;
 
-        public static final double HOME_ANGLE = -55;
+        public static final double HOME_ANGLE = -67;
         public static final double PIVOT_OFFSET = 0;
 
         public static final double ARM_PIVOT_OFFSET = -72.549;

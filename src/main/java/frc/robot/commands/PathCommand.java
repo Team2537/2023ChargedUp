@@ -59,14 +59,14 @@ public class PathCommand extends CommandBase {
   public PathCommand(SwerveSubsystem swerveSubsystem, PathPlannerTrajectory trajectory) {
     mSwerveSubsystem = swerveSubsystem;
     pidController=new PIDController(kp, ki, kd);
-    xPosController = new PIDController(2.0, 0.1, 0.0);
-    yPosController = new PIDController(2.0, 0.1, 0.0);
+    xPosController = new PIDController(4.0, 0.1, 0.0);
+    yPosController = new PIDController(4.0, 0.1, 0.0);
     pidController.enableContinuousInput(0,360);
     
     ShuffleboardTab tab = Shuffleboard.getTab("Swerve State");
     timer = new Timer();
     timer.stop();
-    timer.restart();
+    timer.reset();
     
     this.trajectory = trajectory;
     startState = trajectory.getInitialState();
@@ -90,6 +90,9 @@ public class PathCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    
+    timer.stop();
+    timer.reset();
     timer.start();
   }
 
@@ -108,7 +111,7 @@ public class PathCommand extends CommandBase {
   @Override
   public void execute() {
     
-    double time = timer.get();
+    double time = timer.get()+0.2;
     if(time>endTime) {
       isTimeEnd=true;
     } 
@@ -172,31 +175,36 @@ public class PathCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     timer.stop();
-    timer.restart();
+    timer.reset();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(isTimeEnd && distanceToEnd<0.5 && angleToEnd<1) {
+    // if(isTimeEnd && distanceToEnd<0.5 && angleToEnd<2) {
       
-      ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-        0.0, 0.0, 0.0, mSwerveSubsystem.getHeadingRotation2d());
+    //   ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+    //     0.0, 0.0, 0.0, mSwerveSubsystem.getHeadingRotation2d());
       
-       // 5. Convert chassis speeds to individual module states
-       SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+    //    // 5. Convert chassis speeds to individual module states
+    //    SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
   
-       // 6. Output each module states to wheels
-       mSwerveSubsystem.setModuleStates(moduleStates);
-       System.out.println("Path End");
-       timer.stop();
-      timer.restart();
-       return true;
+    //    // 6. Output each module states to wheels
+    //    mSwerveSubsystem.setModuleStates(moduleStates);
+    //    System.out.println("Path End");
+    //    timer.stop();
+    //   timer.reset();
+    //   System.out.println("Path Command End");
+    //    return true;
+    // }
+
+    // 
+
+    if(isTimeEnd && angleToEnd<1) {
+      System.out.println("A: Path Commmand End");
+      return true;
     }
 
     return false;
-
-    // return isTimeEnd && distanceToEnd<0.1 && angleToEnd<1;
-    
   }
 }
