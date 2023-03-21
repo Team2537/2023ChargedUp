@@ -1,7 +1,5 @@
 package frc.robot.commandGroups;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.FixedAngleCommand;
 import frc.robot.commands.FixedExtensionCommand;

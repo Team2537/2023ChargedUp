@@ -4,23 +4,9 @@
 
 package frc.robot;
 
-import java.util.List;
-
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.Constants.LidarConstants;
 import frc.robot.commandGroups.SetPositionCommandGroup;
@@ -30,20 +16,11 @@ import static frc.robot.Constants.ColorConstants.*;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.RGBSubsystem;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import static frc.robot.Constants.IOConstants.*;
-
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -66,12 +43,9 @@ public class RobotContainer {
         private final GripperSubsystem m_gripperSubsystem = new GripperSubsystem(LidarConstants.kTargetLow,
                         LidarConstants.kTargetHigh, i -> {
                         }, LidarConstants.kLidarReadPort, LidarConstants.kLidarTriggerPort);
-        private final CameraSubsystem m_cameraSubsystem = new CameraSubsystem();
-
         private final LockCommand lockCommand = new LockCommand(m_swerveSubsystem);
         private final ZeroHeadingCommand m_zeroHeadingCommand = new ZeroHeadingCommand(m_swerveSubsystem);
 
-        private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
         private final RGBSubsystem m_RgbSubsystem = new RGBSubsystem(1);
 
         private final FixedAngleCommand m_bottomRowAngle = new FixedAngleCommand(m_armPivotSubsystem, BOTTOM_ROW_ANGLE);
