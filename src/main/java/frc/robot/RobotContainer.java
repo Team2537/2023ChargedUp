@@ -160,7 +160,7 @@ public class RobotContainer {
                 // m_gunnerJoystick.getButton(2).onTrue(m_bottomRowPosition);
                 m_gunnerJoystick.getButton(12).onTrue(m_zeroAngleCommand);
 
-                m_gunnerJoystick.getButton(11).onTrue(m_bottomRowPosition);
+                //m_gunnerJoystick.getButton(11).onTrue(m_bottomRowPosition);
                 m_gunnerJoystick.getButton(9).onTrue(m_middleRowPosition);
                 m_gunnerJoystick.getButton(7).onTrue(m_topRowPosition);
                 m_gunnerJoystick.getButton(4).onTrue(m_grabPosition);
@@ -172,7 +172,7 @@ public class RobotContainer {
                 m_gunnerJoystick.getButton(5).toggleOnTrue(purpleColor);
                 m_gunnerJoystick.getButton(3).toggleOnTrue(yellowColor);
 
-                m_gunnerJoystick.getButton(1).whileTrue(m_autoGrabCommand);
+                m_gunnerJoystick.getButton(11).toggleOnTrue(m_autoGrabCommand);
         }
 
      
@@ -183,16 +183,17 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         
-        PathPlannerTrajectory trajectory = PathPlanner.loadPath("RightStartBlue1",
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath("LeftStartBlue1",
                 new PathConstraints(AutoConstants.kMaxSpeedMps, AutoConstants.kMaxAccelerationMetersPerSecondSquared));
        
 
         //  return new SwerveHomingCommand(m_swerveSubsystem).andThen(new PathCommand(m_swerveSubsystem, trajectory).andThen(
         //         new BalanceCommand(m_swerveSubsystem).andThen(new LockCommand(m_swerveSubsystem))));
         
-        //         return new PathCommand(m_swerveSubsystem, trajectory).andThen(
+        // return new SwerveHomingCommand(m_swerveSubsystem).andThen(
+        //         new PathCommand(m_swerveSubsystem, trajectory).andThen(
         //        new BalanceCommand(m_swerveSubsystem)).andThen(
-        //         new LockCommand(m_swerveSubsystem));
+        //         new LockCommand(m_swerveSubsystem)));
 
         //cube
         // return new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).andThen(
@@ -205,16 +206,16 @@ public class RobotContainer {
         //         new BalanceCommand(m_swerveSubsystem)).andThen(
         //         new LockCommand(m_swerveSubsystem))) ;
 
-        //cone
+        // cone
         return new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).andThen(
-                new FixedAngleCommand(m_armPivotSubsystem, 32.07)).andThen(
-                new FixedExtensionCommand(m_armTelescopeSubsystem, 11.17)).andThen(
+                new FixedAngleCommand(m_armPivotSubsystem, 31.07)).andThen(
+                new FixedExtensionCommand(m_armTelescopeSubsystem, 13.17)).andThen(
                 new OpenGripperCommand(m_gripperSubsystem)).andThen(
                 new WaitCommand(0.5)).andThen(
-                new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).alongWith(
+                new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem)/* .alongWith(
                 new PathCommand(m_swerveSubsystem, trajectory)).andThen(
                 new BalanceCommand(m_swerveSubsystem)).andThen(
-                new LockCommand(m_swerveSubsystem))) ;
+                new LockCommand(m_swerveSubsystem))*/) ;
 
         // return new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).andThen(
         //         new FixedAngleCommand(m_armPivotSubsystem, 15.66)).andThen(
