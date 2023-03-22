@@ -146,10 +146,10 @@ public final class Constants {
         public static final double BOTTOM_ROW_EXTENSION = 0;
 
         public static final double MIDDLE_ROW_ANGLE = 6.3;
-        public static final double MIDDLE_ROW_EXTENSION = 3.2;
+        public static final double MIDDLE_ROW_EXTENSION = 4.2;
 
         public static final double TOP_ROW_ANGLE = 26.9;
-        public static final double TOP_ROW_EXTENSION = 8.9;
+        public static final double TOP_ROW_EXTENSION = 11;
 
         public static final double GRAB_ANGLE = -53.2; //from ground
         public static final double GRAB_EXTENSION = 2.45; //from ground

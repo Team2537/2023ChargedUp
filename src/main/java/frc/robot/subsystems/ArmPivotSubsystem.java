@@ -56,7 +56,7 @@ public class ArmPivotSubsystem extends SubsystemBase {
     m_shaftEncoder.reset();*/
 
     m_motor = new CANSparkMax(PIVOT_MOTOR, MotorType.kBrushless);
-
+    m_motor.setSmartCurrentLimit(10, 30);
     m_pidController = m_motor.getPIDController();
 
     // Encoder object initialized to display position values

@@ -8,6 +8,8 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -202,6 +204,10 @@ public class PathCommand extends CommandBase {
 
     if(isTimeEnd && angleToEnd<1) {
       System.out.println("A: Path Commmand End");
+    //   BufferedWriter writer = new BufferedWriter(new FileWriter("C:\\Users\\Public\\Documents\\output\\robot.log"));
+    // writer.write("Path Command End");
+    
+    // writer.close();
       return true;
     }
 
