@@ -42,7 +42,7 @@ public class ManualArmControlCommand extends CommandBase {
         extendTarget += (extendRate * m_telescopeControl.getAsDouble());
         angleTarget += (angleRate * m_pivotControl.getAsDouble());
 
-        extendTarget = Math.max(0, Math.min(extendTarget, 12));
+        extendTarget = Math.max(0, Math.min(extendTarget, 13));
         angleTarget = Math.max(-80, Math.min(angleTarget, 40));
 
         m_telescopeSubsystem.setExtension(extendTarget);

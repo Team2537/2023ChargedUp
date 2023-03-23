@@ -65,8 +65,8 @@ public class PathCommand extends CommandBase {
     this.trajectory = trajectory;
     startState = trajectory.getInitialState();
     startPose2d = startState.poseMeters;
-    mSwerveSubsystem.resetOdometry(startPose2d);
-    mSwerveSubsystem.setHeading(startState.holonomicRotation.getDegrees());
+    // mSwerveSubsystem.resetOdometry(startPose2d);
+    // mSwerveSubsystem.setHeading(startState.holonomicRotation.getDegrees());
 
     endState = trajectory.getEndState();
     endHeading = endState.holonomicRotation;
@@ -105,7 +105,7 @@ public class PathCommand extends CommandBase {
   @Override
   public void execute() {
     
-    double time = timer.get()+0.2;
+    double time = timer.get();
     if(time>endTime) {
       isTimeEnd=true;
     } 
@@ -145,10 +145,12 @@ public class PathCommand extends CommandBase {
     SmartDashboard.putNumber("xDesired", xDesired);
     SmartDashboard.putNumber("yDesired", yDesired);
 
-    // double xSpeed = desiredState.velocityMetersPerSecond*Math.cos(angleToDesired);
-    // double ySpeed = desiredState.velocityMetersPerSecond*Math.sin(angleToDesired);
-    double xSpeed = xPosController.calculate(xCurrent, xDesired);
-    double ySpeed = yPosController.calculate(yCurrent, yDesired);
+    double xSpeed = desiredState.velocityMetersPerSecond*Math.cos(angleToDesired)+xPosController.calculate(xCurrent, xDesired);
+    double ySpeed = desiredState.velocityMetersPerSecond*Math.sin(angleToDesired)+yPosController.calculate(yCurrent, yDesired);
+    // double xSpeed = xPosController.calculate(xCurrent, xDesired);
+    // double ySpeed = yPosController.calculate(yCurrent, yDesired);
+
+    
     SmartDashboard.putNumber("xSpeed", xSpeed);
     SmartDashboard.putNumber("ySpeed", ySpeed);
 
