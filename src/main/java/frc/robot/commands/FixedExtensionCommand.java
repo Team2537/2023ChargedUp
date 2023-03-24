@@ -15,6 +15,7 @@ public class FixedExtensionCommand extends CommandBase {
   private final ArmTelescopeSubsystem m_subsystem;
 
   private final double m_targetExtension;
+  private final double m_extensionRate = 0.5;
 
 
   // Constructor that asigns member variables to passed in variables, as well as adds subsystem requirements
@@ -25,10 +26,13 @@ public class FixedExtensionCommand extends CommandBase {
   }
 
   @Override
-  public void initialize() {
-    m_subsystem.setExtension(m_targetExtension);
+  public void execute(){
+    double position = m_subsystem.getPosition() + m_extensionRate * Math.signum(m_targetExtension - m_subsystem.getPosition());
+    if(Math.abs(m_targetExtension - position) < m_extensionRate){
+      position = m_targetExtension;
+    }
+    m_subsystem.setExtension(position);
   }
-
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {

@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.AutoConstants;
@@ -173,7 +174,7 @@ public class RobotContainer {
                 m_gunnerJoystick.getButton(5).toggleOnTrue(purpleColor);
                 m_gunnerJoystick.getButton(3).toggleOnTrue(yellowColor);
 
-                m_gunnerJoystick.getButton(11).toggleOnTrue(m_autoGrabCommand);
+                m_gunnerJoystick.getButton(1).toggleOnTrue(m_autoGrabCommand);
         }
 
      
@@ -199,7 +200,7 @@ public class RobotContainer {
         //         new BalanceCommand(m_swerveSubsystem).andThen(new LockCommand(m_swerveSubsystem))));
         
         // return new SwerveHomingCommand(m_swerveSubsystem).andThen(
-        //         new PathCommand(m_swerveSubsystem, trajectory).andThen(
+        //         new PathCommand(m_swerveSubsystem, trajPath).andThen(
         //        new BalanceCommand(m_swerveSubsystem)).andThen(
         //         new LockCommand(m_swerveSubsystem)));
 
@@ -212,35 +213,39 @@ public class RobotContainer {
         //         ))));
 
         // cube
-        // return new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).andThen(
-        //         new FixedAngleCommand(m_armPivotSubsystem, 15.66)).andThen(
-        //         new FixedExtensionCommand(m_armTelescopeSubsystem, 8.2)).andThen(
-        //         new OpenGripperCommand(m_gripperSubsystem)).andThen(
-        //         new WaitCommand(0.5)).andThen(
-        //         new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).alongWith(
-        //         new PathCommand(m_swerveSubsystem, trajPath)).andThen(
-        //         new FixedAngleCommand(m_armPivotSubsystem, GRAB_ANGLE).andThen(
-        //         new FixedExtensionCommand(m_armTelescopeSubsystem, GRAB_EXTENSION).andThen(
-        //         new AutonomousAutoGrabCommand(m_swerveSubsystem, m_gripperSubsystem).andThen(
-        //         new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem)).andThen(
-        //         new PathCommand(m_swerveSubsystem, trajReversePath).andThen(
-        //         new FixedAngleCommand(m_armPivotSubsystem, 15.66)).andThen(
-        //         new FixedExtensionCommand(m_armTelescopeSubsystem, 8.2)).andThen(
-        //         new OpenGripperCommand(m_gripperSubsystem)).andThen(
-        //         new WaitCommand(0.5)).andThen(
-        //         new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem
-        //         )))))));
-
-        // cone
-        return new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).andThen(
-                new FixedAngleCommand(m_armPivotSubsystem, 31.07)).andThen(
-                new FixedExtensionCommand(m_armTelescopeSubsystem, 13.17)).andThen(
+        return new SwerveHomingCommand(m_swerveSubsystem).andThen(
+                new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).andThen(
+                new FixedAngleCommand(m_armPivotSubsystem, 15.66)).andThen(
+                new FixedExtensionCommand(m_armTelescopeSubsystem, 8.2)).andThen(
                 new OpenGripperCommand(m_gripperSubsystem)).andThen(
                 new WaitCommand(0.5)).andThen(
-                new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem)/* .alongWith(
-                new PathCommand(m_swerveSubsystem, trajectory)).andThen(
-                new BalanceCommand(m_swerveSubsystem)).andThen(
-                new LockCommand(m_swerveSubsystem))*/) ;
+                new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).alongWith(
+                new PathCommand(m_swerveSubsystem, trajPath)).andThen(
+                new RotateCommand(m_swerveSubsystem, new Rotation2d().fromDegrees(180.0)). andThen(
+                new FixedAngleCommand(m_armPivotSubsystem, GRAB_ANGLE).andThen(
+                new FixedExtensionCommand(m_armTelescopeSubsystem, GRAB_EXTENSION).andThen(
+                new AutonomousAutoGrabCommand(m_swerveSubsystem, m_gripperSubsystem).andThen(
+                new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem)).andThen(
+                new RotateCommand(m_swerveSubsystem, new Rotation2d().fromDegrees(180.0)).andThen(
+                new PathCommand(m_swerveSubsystem, trajReversePath).andThen(
+                new FixedAngleCommand(m_armPivotSubsystem, 15.66)).andThen(
+                new FixedExtensionCommand(m_armTelescopeSubsystem, 4.2)).andThen(
+                new OpenGripperCommand(m_gripperSubsystem)).andThen(
+                new WaitCommand(0.5)).andThen(
+                new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem
+                ))))))))));
+
+
+        // cone
+        // return new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).andThen(
+        //         new FixedAngleCommand(m_armPivotSubsystem, 31.07)).andThen(
+        //         new FixedExtensionCommand(m_armTelescopeSubsystem, 13.17)).andThen(
+        //         new OpenGripperCommand(m_gripperSubsystem)).andThen(
+        //         new WaitCommand(0.5)).andThen(
+        //         new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem)/* .alongWith(
+        //         new PathCommand(m_swerveSubsystem, trajectory)).andThen(
+        //         new BalanceCommand(m_swerveSubsystem)).andThen(
+        //         new LockCommand(m_swerveSubsystem))*/) ;
 
         // return new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).andThen(
         //         new FixedAngleCommand(m_armPivotSubsystem, 15.66)).andThen(

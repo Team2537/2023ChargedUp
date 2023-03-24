@@ -69,7 +69,7 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
     m_encoder = m_motor.getEncoder();
 
     // PID coefficients
-    kPPosition = 0.5;
+    kPPosition = 8;
     kIPosition = 0; 
     kDPosition = 0;
     kIzPosition = 0;
