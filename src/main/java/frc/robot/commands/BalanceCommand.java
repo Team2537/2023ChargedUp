@@ -12,8 +12,8 @@ import frc.robot.subsystems.SwerveSubsystem;
 
 public class BalanceCommand extends CommandBase {
     double target = 0;
-    double kP = 0.06;
-    double kI = 0;
+    double kP = 0.01;
+    double kI = 0.0001;
     double kD = 0;
     double e = 0;
     double ePrev = 0;
@@ -80,6 +80,6 @@ public class BalanceCommand extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-      return Math.abs(mPigeonPitch)<5.0;
+      return Math.abs(mPigeonPitch)<3.0;
     }
   }

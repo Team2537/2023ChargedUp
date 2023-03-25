@@ -24,10 +24,11 @@ public class HomingCommand extends CommandBase{
 
         addRequirements(pivotSubsystem, telescopeSubsystem);
     }
-  
+
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
+
         if (!retracted) {
             if (m_telescopeSubsystem.getMagnetClosed()) {
                 retracted = true;
@@ -35,9 +36,9 @@ public class HomingCommand extends CommandBase{
             } else {
                 m_telescopeSubsystem.incrementPosition(false, 0.25);
             }
-        } /*else if (!m_telescopeSubsystem.isClose(0.4)) {
-            m_telescopeSubsystem.incrementPosition(0.4, 0.25);
-        }*/ else if (!m_pivotSubsystem.isClose(HOME_ANGLE)) {            
+        } else if (!m_telescopeSubsystem.isClose(0.4)) {
+            m_telescopeSubsystem.incrementPosition(0.4, 0.5);
+        } else if (!m_pivotSubsystem.isClose(HOME_ANGLE)) {            
             //m_pivotSubsystem.syncEncoders();
             m_pivotSubsystem.setAngle(HOME_ANGLE);
         }
@@ -46,7 +47,6 @@ public class HomingCommand extends CommandBase{
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-        retracted = false;
         // When the command ends, both subsystems are reset
         //m_telescopeSubsystem.reset();
         //m_pivotSubsystem.reset();
@@ -56,7 +56,6 @@ public class HomingCommand extends CommandBase{
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return (m_pivotSubsystem.getMagnetClosed() || m_pivotSubsystem.isClose(0.4)) && m_pivotSubsystem.isClose(HOME_ANGLE);
+        return (m_pivotSubsystem.getMagnetClosed() || m_telescopeSubsystem.isClose(0.4)) && m_pivotSubsystem.isClose(HOME_ANGLE);
     }
-
 }

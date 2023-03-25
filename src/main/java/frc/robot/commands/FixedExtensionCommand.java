@@ -33,6 +33,11 @@ public class FixedExtensionCommand extends CommandBase {
     }
     m_subsystem.setExtension(position);
   }
+
+  @Override
+  public void end(boolean interrupted) {
+    System.out.println("Finished");
+  }
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {

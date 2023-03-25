@@ -186,16 +186,15 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         
-        //two piece path
-        PathPlannerTrajectory trajPath = PathPlanner.loadPath("HumanSide",
-                new PathConstraints(AutoConstants.kMaxSpeedMps, AutoConstants.kMaxAccelerationMetersPerSecondSquared));
-        PathPlannerTrajectory trajReversePath = PathPlanner.loadPath("Reverse HumanSide",
-        new PathConstraints(AutoConstants.kMaxSpeedMps, AutoConstants.kMaxAccelerationMetersPerSecondSquared));
+        //one piece path
+        // PathPlannerTrajectory trajPath = PathPlanner.loadPath("Path",
+        // new PathConstraints(AutoConstants.kMaxSpeedMps, AutoConstants.kMaxAccelerationMetersPerSecondSquared));
 
-        // PathPlannerTrajectory trajPath = PathPlanner.loadPath("OtherSide",
-        // new PathConstraints(AutoConstants.kMaxSpeedMps, AutoConstants.kMaxAccelerationMetersPerSecondSquared));
-        // PathPlannerTrajectory trajReversePath = PathPlanner.loadPath("Reverse OtherSide",
-        // new PathConstraints(AutoConstants.kMaxSpeedMps, AutoConstants.kMaxAccelerationMetersPerSecondSquared));
+        
+        PathPlannerTrajectory trajPath = PathPlanner.loadPath("Path",
+        new PathConstraints(AutoConstants.kMaxSpeedMps, AutoConstants.kMaxAccelerationMetersPerSecondSquared));
+        PathPlannerTrajectory trajReversePath = PathPlanner.loadPath("Reverse Path",
+        new PathConstraints(AutoConstants.kMaxSpeedMps, AutoConstants.kMaxAccelerationMetersPerSecondSquared));
 
         //center path
         // PathPlannerTrajectory trajPath = PathPlanner.loadPath("CenterBalance",
@@ -212,8 +211,7 @@ public class RobotContainer {
 
         
         //center - cube and balance
-        // return new SwerveHomingCommand(m_swerveSubsystem).andThen(
-        //         new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).andThen(
+        // return  new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).andThen(
         //         new FixedAngleCommand(m_armPivotSubsystem, 15.66)).andThen(
         //         new FixedExtensionCommand(m_armTelescopeSubsystem, 8.2)).andThen(
         //         new OpenGripperCommand(m_gripperSubsystem)).andThen(
@@ -222,7 +220,7 @@ public class RobotContainer {
         //         new PathCommand(m_swerveSubsystem, trajPath)).andThen(
         //         new BalanceCommand(m_swerveSubsystem).andThen(
         //         new LockCommand(m_swerveSubsystem)
-        //         ))));
+        //         )));
                 
 
         //  return new SwerveHomingCommand(m_swerveSubsystem).andThen(new PathCommand(m_swerveSubsystem, trajectory).andThen(
@@ -242,13 +240,12 @@ public class RobotContainer {
         //         ))));
 
         // two cubes
-        return new SwerveHomingCommand(m_swerveSubsystem).andThen(
-                new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).andThen(
+        return  new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).andThen(
                 new FixedAngleCommand(m_armPivotSubsystem, 15.66)).andThen(
                 new FixedExtensionCommand(m_armTelescopeSubsystem, 8.2)).andThen(
                 new OpenGripperCommand(m_gripperSubsystem)).andThen(
                 new WaitCommand(0.5)).andThen(
-                new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).alongWith(
+                new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).andThen(
                 new PathCommand(m_swerveSubsystem, trajPath)).andThen(
                 new RotateCommand(m_swerveSubsystem, Rotation2d.fromDegrees(180.0)). andThen(
                 new FixedAngleCommand(m_armPivotSubsystem, GRAB_ANGLE).andThen(
@@ -262,7 +259,7 @@ public class RobotContainer {
                 new OpenGripperCommand(m_gripperSubsystem)).andThen(
                 new WaitCommand(0.5)).andThen(
                 new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem
-                ))))))))));
+                )))))))));
 
 
         // cone
@@ -278,11 +275,11 @@ public class RobotContainer {
 
         // return new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).andThen(
         //         new FixedAngleCommand(m_armPivotSubsystem, 15.66)).andThen(
-        //         new FixedExtensionCommand(m_armTelescopeSubsystem, 6.4)).andThen(
+        //         new FixedExtensionCommand(m_armTelescopeSubsystem, 8.2)).andThen(
         //         new OpenGripperCommand(m_gripperSubsystem)).andThen(
         //         new WaitCommand(0.5)).andThen(
-        //         new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).alongWith(
-        //         new PathCommand(m_swerveSubsystem, trajectory)));
+        //         new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).andThen(
+        //         new PathCommand(m_swerveSubsystem, trajPath)));
 
                 // // 1. Create trajectory settings
                 // TrajectoryConfig trajectoryConfig = new TrajectoryConfig(

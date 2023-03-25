@@ -54,11 +54,11 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
 
     // initialize motor
     m_motor = new CANSparkMax(EXTENSION_MOTOR, MotorType.kBrushless);
-    m_motor.setSmartCurrentLimit(10, 30);
     m_motor.setInverted(true);
 
     m_motor.getEncoder().setPositionConversionFactor(1/16f);
     //m_motor.getEncoder().setVelocityConversionFactor(1/16f);
+    m_motor.setSmartCurrentLimit(30, 40);
 
     // PID object created to display PID values
     m_pidController = m_motor.getPIDController();
@@ -68,10 +68,10 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
 
     // PID coefficients
     kPPosition = 8;
-    kIPosition = 0; 
+    kIPosition = 0.0; 
     kDPosition = 0;
     kIzPosition = 0;
-    kFFPosition = 0.000015;
+    kFFPosition = 0.0;
 
     kMaxOutput = 1;
     kMinOutput = -1;
@@ -98,6 +98,7 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
     telescopingTab.addNumber("Velocity", () -> m_encoder.getVelocity());
     telescopingTab.addBoolean("Retracted", () -> getMagnetClosed());
     telescopingTab.addNumber("Target", () -> target);
+    telescopingTab.addNumber("Output", () -> m_motor.getAppliedOutput());
   }
 
   public void setExtension(double amt) {
@@ -105,7 +106,7 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
   }
 
   public void incrementPosition(double target, double rate) {
-    double next = getPosition() + rate * Math.signum(getPosition() - target);
+    double next = getPosition() + rate * Math.signum(target - getPosition());
             if(Math.abs(target - next) <= rate){
                 next = target;
             }
