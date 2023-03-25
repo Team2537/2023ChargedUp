@@ -25,7 +25,6 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
 //this creates the log entries
   private static BooleanLogEntry retractedLog;
   private static DoubleLogEntry positionInRevolutionsLog;
-  private static DoubleLogEntry positionInInchesLog;
   private static DoubleLogEntry velocityLog;
 
 
@@ -51,7 +50,6 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
 // this will put the values in the log
   retractedLog = new BooleanLogEntry(DataLogManager.getLog(), "/ArmTelescopeSubsystem/Retracted");
   positionInRevolutionsLog = new DoubleLogEntry(DataLogManager.getLog(), "/ArmTelescopeSubsystem/PositionInRevolutions");
-  positionInInchesLog = new DoubleLogEntry(DataLogManager.getLog(), "/ArmTelescopeSubsystem/PositionInInches");
   velocityLog = new DoubleLogEntry(DataLogManager.getLog(), "/ArmTelescopeSubsystem/Velocity");
 
     // initialize motor
@@ -106,6 +104,19 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
     target = amt;
   }
 
+  public void incrementPosition(double target, double rate) {
+    double next = getPosition() + rate * Math.signum(getPosition() - target);
+            if(Math.abs(target - next) <= rate){
+                next = target;
+            }
+    setExtension(next);
+  }
+
+  public void incrementPosition(boolean forward, double rate) {
+    double next = getPosition() + rate * (forward ? 1 : -1);
+    setExtension(next);
+  }
+
   /*
    * Disables the positional PID temporarily and uses a velocity PID loop
    * Instead of trying to make it to a target position the loop tries to reach a target velocity
@@ -149,14 +160,7 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
   }
 
   /**
-   * @return the encoder value in inches
-   */
-  public double getPosInches(){
-    return Math.PI*0.75*m_encoder.getPosition();
-  }
-
-  /**
-   * @return true when the magnets pick each other up
+   * @return true when the magnet sensor is triggered
    */
   public boolean getMagnetClosed(){
     return !m_telescopeMagnet.get();
@@ -181,7 +185,6 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
 //this will continually update the logs with the values from the shuffleboard
   retractedLog.append(getMagnetClosed());
   positionInRevolutionsLog.append(getPosition());
-  positionInInchesLog.append(getPosInches());
   velocityLog.append(m_encoder.getVelocity());
 
 

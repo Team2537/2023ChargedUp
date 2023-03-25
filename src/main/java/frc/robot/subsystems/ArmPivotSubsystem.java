@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.util.datalog.BooleanLogEntry;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -32,6 +33,7 @@ public class ArmPivotSubsystem extends SubsystemBase {
 
   private final CANSparkMax m_motor;
   private final RelativeEncoder m_motorEncoder;
+  private final DutyCycleEncoder m_absoluteEncoder;
   private final SparkMaxPIDController m_pidController;
   
   //private final DutyCycleEncoder m_shaftEncoder;
@@ -55,9 +57,12 @@ public class ArmPivotSubsystem extends SubsystemBase {
 
     m_motor = new CANSparkMax(PIVOT_MOTOR, MotorType.kBrushless);
     m_motor.setSmartCurrentLimit(10, 30);
+
     m_pidController = m_motor.getPIDController();
 
-    // Encoder object initialized to display position values
+    m_absoluteEncoder = new DutyCycleEncoder(ABSOLUTE_ENCODER);
+    m_absoluteEncoder.setPositionOffset(ABSOLUTE_OFFSET);
+
     m_motorEncoder = m_motor.getEncoder();
 
     // set position conversion factor to convert encoder counts to degrees
@@ -65,7 +70,6 @@ public class ArmPivotSubsystem extends SubsystemBase {
     //m_motorEncoder.setVelocityConversionFactor(1/60f);
     m_motorEncoder.setPosition(ARM_PIVOT_OFFSET);
 
-    //m_shaftEncoder.setPositionOffset(0.222);
 
     // PID coefficients
     kP = 0.0004;
@@ -96,10 +100,20 @@ public class ArmPivotSubsystem extends SubsystemBase {
     armPivotTab.addNumber("Current Position", () -> getAngle());
     //armPivotTab.addNumber("Absolute Position", () -> m_shaftEncoder.get());
     armPivotTab.addNumber("Angular Velocity", () -> m_motorEncoder.getVelocity());
+    armPivotTab.addNumber("Absolute Angle", () -> getAbsolutePosition());
   }
 
   public double getAngle() {
     return m_motorEncoder.getPosition();
+  }
+
+  public double getAbsolutePosition() {
+    return m_absoluteEncoder.get() * 360;
+  }
+
+  public void syncEncoders() {
+    setAngle(getAbsolutePosition());
+    m_motorEncoder.setPosition(getAbsolutePosition());
   }
 
   /**

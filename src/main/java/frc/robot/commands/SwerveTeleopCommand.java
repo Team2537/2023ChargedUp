@@ -63,7 +63,9 @@ public class SwerveTeleopCommand extends CommandBase {
     // 1. Get real-time joystick inputs
 
     xSpeed = Math.pow(xSpdFunction.get(), 3);
+    // xSpeed+= .2*Math.signum(xSpeed);
     ySpeed = Math.pow(ySpdFunction.get(), 3);
+    // ySpeed+= .2*Math.signum(ySpeed);
     double turningSpeed = turningSpdFunction.get();
 
     activeAccel = Math.min(joystickAccel / Math.pow(Math.sqrt(Math.pow(xSpeed, 2) + Math.pow(ySpeed, 2)), 0.4), 0.35);

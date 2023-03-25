@@ -128,7 +128,7 @@ public final class Constants {
 
     public static final class AutoConstants {
 
-        public static final double kMaxSpeedMps = 2.0; //DriveConstants.kPhysicalMaxSpeedMps / 3.0
+        public static final double kMaxSpeedMps = 2.5; //DriveConstants.kPhysicalMaxSpeedMps / 3.0
         public static final double kMaxAccelerationMetersPerSecondSquared = 1.0; // DriveConstants.kPhysicalMaxAccelerationMps/ 5
 
         //TODO: decide whether or not to delete
@@ -159,6 +159,7 @@ public final class Constants {
         public static final double HOME_ANGLE = -67;
         public static final double PIVOT_OFFSET = 0;
 
+        public static final double ABSOLUTE_OFFSET = 0.915914;
         public static final double ARM_PIVOT_OFFSET = -72.549;
         public static final double DEFAULT_ANGLE = -72.549;
 
