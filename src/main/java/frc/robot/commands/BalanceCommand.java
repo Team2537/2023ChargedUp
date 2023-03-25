@@ -12,7 +12,7 @@ import frc.robot.subsystems.SwerveSubsystem;
 
 public class BalanceCommand extends CommandBase {
     double target = 0;
-    double kP = 0.01;
+    double kP = 0.002; //maybe adjust value. goes too far over when trying to balance
     double kI = 0.0001;
     double kD = 0;
     double e = 0;
