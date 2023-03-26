@@ -12,13 +12,16 @@ import frc.robot.subsystems.SwerveSubsystem;
 
 public class BalanceCommand extends CommandBase {
     double target = 0;
-    double kP = 0.002; //maybe adjust value. goes too far over when trying to balance
-    double kI = 0.0001;
+    double kP = 0.004; //maybe adjust value. goes too far over when trying to balance
+    double kI = 0.0005;
     double kD = 0;
     double e = 0;
     double ePrev = 0;
 
     double iAccumulator = 0;
+
+    private int count = 0;
+    private boolean isEnd = false;
     
     private SwerveSubsystem mSwerveSubsystem;
 
@@ -63,6 +66,7 @@ public class BalanceCommand extends CommandBase {
         ePrev = e;
 
         double xSpeed = -(p + i + d);
+        xSpeed = Math.max(-0.7, Math.min(xSpeed, 0.7));
 
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
             xSpeed, 0.0, 0.0, mSwerveSubsystem.getHeadingRotation2d());
@@ -72,6 +76,20 @@ public class BalanceCommand extends CommandBase {
       
            // 6. Output each module states to wheels
            mSwerveSubsystem.setModuleStates(moduleStates);
+
+
+        if(count<25) {
+            if(Math.abs(mPigeonPitch)<5.0) {
+                count++;
+            }
+            else {
+                count=0;
+            }
+        } else {
+            isEnd = true;
+        }
+
+
     }
 
     @Override
@@ -80,6 +98,7 @@ public class BalanceCommand extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-      return Math.abs(mPigeonPitch)<3.0;
+   
+      return isEnd;
     }
   }

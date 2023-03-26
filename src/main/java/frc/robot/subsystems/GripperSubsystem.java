@@ -41,19 +41,19 @@ public class GripperSubsystem extends SubsystemBase {
      * DIOJNI.setDIO(m_trig,false);
      */
 
-    m_trig = new DigitalOutput(lidar_trigger_port);
-    m_trig.set(false);
+    // m_trig = new DigitalOutput(lidar_trigger_port);
+    // m_trig.set(false);
 
     /*
      * m_read = DIOJNI.initializeDIOPort(HAL.getPort((byte) 1), true);
      * DIOJNI.setDIODirection(m_read, true);
      */
-    m_read = new DigitalInput(lidar_read_port);
-    m_pwm = new DutyCycle(m_read);
+    m_read = new DigitalInput(4);
+    //m_pwm = new DutyCycle(m_read);
     Shuffleboard.getTab("Gripper Subsystem").addBoolean("Gamepiece detected", () -> isTarget());
 
-    Shuffleboard.getTab("Gripper Subsystem").addNumber("pulse_width_cm_filtered", () -> filtered_pulse_width);
-    Shuffleboard.getTab("Gripper Subsystem").addNumber("pulse_width_cm", () -> m_pwm.getHighTimeNanoseconds() * 10e-5);
+    //Shuffleboard.getTab("Gripper Subsystem").addNumber("pulse_width_cm_filtered", () -> filtered_pulse_width);
+    //Shuffleboard.getTab("Gripper Subsystem").addNumber("pulse_width_cm", () -> m_pwm.getHighTimeNanoseconds() * 10e-5);
 
     closeGripper();
     opened = false;
@@ -81,18 +81,19 @@ public class GripperSubsystem extends SubsystemBase {
     return opened;
   }
 
-  @Override
-  public void periodic() {
-    // get and output the pulse width of m_read
-    // System.out.println(DIOJNI.getDIO(m_read));
-    boolean inTarget = isTarget();
-    // only trigger the sensor every 10th time
-    if (m_count++ % 10 == 0 && m_vibrate) {
-      m_rumble.accept(inTarget ? 1.0 / 4.0 : 0.0);
-    } else if (m_count % 10 == 0) {
-      m_rumble.accept(0.0);
-    }
-  }
+  // @Override
+  // public void periodic() {
+  //   // // get and output the pulse width of m_read
+  //   // // System.out.println(DIOJNI.getDIO(m_read));
+  //   // boolean inTarget = isTarget();
+  //   // // only trigger the sensor every 10th time
+  //   // if (m_count++ % 10 == 0 && m_vibrate) {
+  //   //   m_rumble.accept(inTarget ? 1.0 / 4.0 : 0.0);
+  //   // } else if (m_count % 10 == 0) {
+  //   //   m_rumble.accept(0.0);
+  //   // }
+    
+  // }
 
   // implement a low pass filter
   private double lowPass(double raw, double filtered, double alpha) {
@@ -101,10 +102,18 @@ public class GripperSubsystem extends SubsystemBase {
 
   // return true if the target is in target bounds
   public boolean isTarget() {
-    double pulse_width = m_pwm.getHighTimeNanoseconds() * 10e-5; // should be in cm
 
-    filtered_pulse_width = lowPass(pulse_width, filtered_pulse_width, FILTERED_GAIN);
-    return filtered_pulse_width > m_target_low && filtered_pulse_width < m_target_high;
+    // double pulse_width = m_pwm.getHighTimeNanoseconds() * 10e-5; // should be in cm
+
+    // filtered_pulse_width = lowPass(pulse_width, filtered_pulse_width, FILTERED_GAIN);
+    // return filtered_pulse_width > m_target_low && filtered_pulse_width < m_target_high;
+    return !m_read.get();
+
+  }
+
+  @Override
+  public void periodic() {
+    System.out.println(!m_read.get());
   }
 
   @Override
