@@ -8,6 +8,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.Constants.LidarConstants;
@@ -15,6 +17,9 @@ import frc.robot.commandGroups.SetPositionCommandGroup;
 import frc.robot.subsystems.SwerveSubsystem;
 import static frc.robot.Constants.ArmConstants.*;
 import static frc.robot.Constants.ColorConstants.*;
+
+import java.util.function.Supplier;
+
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -117,6 +122,8 @@ public class RobotContainer {
         private final SetColorCommand greenColor = new SetColorCommand(m_RgbSubsystem, GREEN);
         private final SetColorCommand awesomeColor = new SetColorCommand(m_RgbSubsystem, AWESOME);
 
+        private final SendableChooser<Supplier<Command>> m_autoChooser = new SendableChooser<>();
+
         /**
          * The container for the robot. Contains subsystems, OI devices, and commands.
          */
@@ -128,11 +135,16 @@ public class RobotContainer {
                                 () -> -m_controller.getLeftX(),
                                 () -> -m_controller.getRightX(),
                                 () -> !m_controller.getRightBumper(),
-                                () -> (m_controller.getLeftTriggerAxis() > 0.75
-                                                && !(m_controller.getRightTriggerAxis() > 0.75))));
+                                () -> m_controller.getLeftTriggerAxis()> 0.75));
 
                 // Configure the button bindings
                 configureButtonBindings();
+
+                m_autoChooser.addOption("One Gamepiece and Back", () -> placeAndDriveCommand());
+                m_autoChooser.addOption("One Gamepiece", () -> getPlaceCmd());
+
+                Shuffleboard.getTab("Autonomous").add(m_autoChooser);
+
         }
 
         /**
@@ -163,7 +175,7 @@ public class RobotContainer {
                 // m_gunnerJoystick.getButton(2).onTrue(m_bottomRowPosition);
                 m_gunnerJoystick.getButton(12).onTrue(m_encoderSync);
 
-                //m_gunnerJoystick.getButton(11).onTrue(m_bottomRowPosition);
+                // m_gunnerJoystick.getButton(11).onTrue(m_bottomRowPosition);
                 m_gunnerJoystick.getButton(9).onTrue(m_middleRowPosition);
                 m_gunnerJoystick.getButton(7).onTrue(m_topRowPosition);
                 m_gunnerJoystick.getButton(4).onTrue(m_grabPosition);
@@ -178,113 +190,163 @@ public class RobotContainer {
                 m_gunnerJoystick.getButton(1).toggleOnTrue(m_autoGrabCommand);
         }
 
-     
-    /**
-     * Use this to pass the autonomous command to the main {@link Robot} class.
-     *
-     * @return the command to run in autonomous
-     */
-    public Command getAutonomousCommand() {
-        
-        // one piece path
-        PathPlannerTrajectory trajPath = PathPlanner.loadPath("Path",
-        new PathConstraints(AutoConstants.kMaxSpeedMps, AutoConstants.kMaxAccelerationMetersPerSecondSquared));
-
-        //two piece path
-        // PathPlannerTrajectory trajPath = PathPlanner.loadPath("Path",
-        // new PathConstraints(AutoConstants.kMaxSpeedMps, AutoConstants.kMaxAccelerationMetersPerSecondSquared));
-        // PathPlannerTrajectory trajReversePath = PathPlanner.loadPath("Reverse Path",
-        // new PathConstraints(AutoConstants.kMaxSpeedMps, AutoConstants.kMaxAccelerationMetersPerSecondSquared));
-
-        //center path
-        // PathPlannerTrajectory trajPath = PathPlanner.loadPath("CenterBalancePt1",
-        // new PathConstraints(1.0, 2.0));
-        // PathPlannerTrajectory trajReversePath = PathPlanner.loadPath("CenterBalancePt2",
-        // new PathConstraints(0.5, 2.0));
-
-        PathPlannerTrajectory.transformTrajectoryForAlliance(trajPath, DriverStation.getAlliance());
-        // PathPlannerTrajectory.transformTrajectoryForAlliance(trajReversePath, DriverStation.getAlliance());
-
-        
-        m_swerveSubsystem.resetOdometry(trajPath.getInitialState().poseMeters);
-        m_swerveSubsystem.setHeading(trajPath.getInitialState().holonomicRotation.getDegrees());
-
-
-
-        
-        //center - cube and balance
-        // return  new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).andThen(
-        //         new FixedAngleCommand(m_armPivotSubsystem, 15.66)).andThen(
-        //         new FixedExtensionCommand(m_armTelescopeSubsystem, 8.2)).andThen(
-        //         new OpenGripperCommand(m_gripperSubsystem)).andThen(
-        //         new WaitCommand(0.5)).andThen(
-        //         new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).alongWith(
-        //         new PathCommand(m_swerveSubsystem, trajPath)).andThen(
-        //         new BalanceCommand(m_swerveSubsystem).andThen(
-        //         new LockCommand(m_swerveSubsystem)
-        //         )));
+        public Command placeAndDriveCommand() {
+                PathPlannerTrajectory trajPath = PathPlanner.loadPath("Path",
+                new PathConstraints(AutoConstants.kMaxSpeedMps,
+                        AutoConstants.kMaxAccelerationMetersPerSecondSquared));
                 
+                // PathPlannerTrajectory.transformTrajectoryForAlliance(trajPath, DriverStation.getAlliance());
+                // PathPlannerTrajectory.transformTrajectoryForAlliance(trajReversePath,
+                // DriverStation.getAlliance());
 
-        //  return new SwerveHomingCommand(m_swerveSubsystem).andThen(new PathCommand(m_swerveSubsystem, trajectory).andThen(
-        //         new BalanceCommand(m_swerveSubsystem).andThen(new LockCommand(m_swerveSubsystem))));
-        
-        // return new SwerveHomingCommand(m_swerveSubsystem).andThen(
-        //         new PathCommand(m_swerveSubsystem, trajPath).andThen(
-        //        new BalanceCommand(m_swerveSubsystem)).andThen(
-        //         new LockCommand(m_swerveSubsystem)));
+                m_swerveSubsystem.resetOdometry(trajPath.getInitialState().poseMeters);
+                m_swerveSubsystem.setHeading(trajPath.getInitialState().holonomicRotation.getDegrees());
 
-        //one cube
-        return  new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).andThen(
-                new FixedAngleCommand(m_armPivotSubsystem, 15.66)).andThen(
-                new FixedExtensionCommand(m_armTelescopeSubsystem, 8.2)).andThen(
-                new OpenGripperCommand(m_gripperSubsystem)).andThen(
-                new WaitCommand(0.5)).andThen(
-                new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).andThen(
-                new PathCommand(m_swerveSubsystem, trajPath).andThen(
-                new RotateCommand(m_swerveSubsystem, Rotation2d.fromDegrees(180.0)
+                return new HomingCommand(m_armPivotSubsystem,
+                m_armTelescopeSubsystem).andThen(
+                        new FixedAngleCommand(m_armPivotSubsystem, 15.66)).andThen(
+                        new FixedExtensionCommand(m_armTelescopeSubsystem, 8.2)).andThen(
+                        new OpenGripperCommand(m_gripperSubsystem)).andThen(
+                        new WaitCommand(0.1)).andThen(
+                        new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).alongWith(
+                        new PathCommand(m_swerveSubsystem, trajPath
+                )));
+
+               
+        }
+
+        public Command getPlaceCmd() {
+                PathPlannerTrajectory trajPath = PathPlanner.loadPath("Backup",
+                new PathConstraints(AutoConstants.kMaxSpeedMps,
+                        AutoConstants.kMaxAccelerationMetersPerSecondSquared));
+                
+                PathPlannerTrajectory.transformTrajectoryForAlliance(trajPath, DriverStation.getAlliance());
+                // PathPlannerTrajectory.transformTrajectoryForAlliance(trajReversePath,
+                // DriverStation.getAlliance());
+                return new HomingCommand(m_armPivotSubsystem,
+                m_armTelescopeSubsystem).andThen(
+                        new FixedAngleCommand(m_armPivotSubsystem, 15.66)).andThen(
+                        new FixedExtensionCommand(m_armTelescopeSubsystem, 8.2)).andThen(
+                        new OpenGripperCommand(m_gripperSubsystem)).andThen(
+                        new WaitCommand(0.5)).andThen(
+                        new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).andThen(
+                        new PathCommand(m_swerveSubsystem, trajPath).andThen(
+                        new RotateCommand(m_swerveSubsystem, Rotation2d.fromDegrees(180.0)
                 ))));
+        }
+        /**
+         * Use this to pass the autonomous command to the main {@link Robot} class.
+         *
+         * @return the command to run in autonomous
+         */
+        public Command getAutonomousCommand() {
 
-        // two cubes
-        // return  new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).andThen(
-        //         new FixedAngleCommand(m_armPivotSubsystem, 15.66)).andThen(
-        //         new FixedExtensionCommand(m_armTelescopeSubsystem, 8.2)).andThen(
-        //         new OpenGripperCommand(m_gripperSubsystem)).andThen(
-        //         new WaitCommand(0.5)).andThen(
-        //         new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).andThen(
-        //         new PathCommand(m_swerveSubsystem, trajPath)).andThen(
-        //         new RotateCommand(m_swerveSubsystem, Rotation2d.fromDegrees(180.0)). andThen(
-        //         new FixedAngleCommand(m_armPivotSubsystem, GRAB_ANGLE).andThen(
-        //         new FixedExtensionCommand(m_armTelescopeSubsystem, GRAB_EXTENSION).andThen(
-        //         new AutonomousAutoGrabCommand(m_swerveSubsystem, m_gripperSubsystem).andThen(
-        //         new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem)).andThen(
-        //         new RotateCommand(m_swerveSubsystem, Rotation2d.fromDegrees(180.0)).andThen(
-        //         new PathCommand(m_swerveSubsystem, trajReversePath).andThen(
-        //         new FixedAngleCommand(m_armPivotSubsystem, 15.66)).andThen(
-        //         new FixedExtensionCommand(m_armTelescopeSubsystem, 4.2)).andThen(
-        //         new OpenGripperCommand(m_gripperSubsystem)).andThen(
-        //         new WaitCommand(0.5)).andThen(
-        //         new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem
-        //         )))))))));
+                // one piece path
+                // PathPlannerTrajectory trajPath = PathPlanner.loadPath("Path",
+                //         new PathConstraints(AutoConstants.kMaxSpeedMps,
+                //                 AutoConstants.kMaxAccelerationMetersPerSecondSquared));
 
+                // two piece path
+                // PathPlannerTrajectory trajPath = PathPlanner.loadPath("Path",
+                // new PathConstraints(AutoConstants.kMaxSpeedMps,
+                // AutoConstants.kMaxAccelerationMetersPerSecondSquared));
+                // PathPlannerTrajectory trajReversePath = PathPlanner.loadPath("Reverse Path",
+                // new PathConstraints(AutoConstants.kMaxSpeedMps,
+                // AutoConstants.kMaxAccelerationMetersPerSecondSquared));
 
-        // cone
-        // return new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).andThen(
-        //         new FixedAngleCommand(m_armPivotSubsystem, 31.07)).andThen(
-        //         new FixedExtensionCommand(m_armTelescopeSubsystem, 13.17)).andThen(
-        //         new OpenGripperCommand(m_gripperSubsystem)).andThen(
-        //         new WaitCommand(0.5)).andThen(
-        //         new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem)/* .alongWith(
-        //         new PathCommand(m_swerveSubsystem, trajectory)).andThen(
-        //         new BalanceCommand(m_swerveSubsystem)).andThen(
-        //         new LockCommand(m_swerveSubsystem))*/) ;
+                // center path
+                // PathPlannerTrajectory trajPath = PathPlanner.loadPath("CenterBalancePt1",
+                // new PathConstraints(1.0, 2.0));
+                // PathPlannerTrajectory trajReversePath =
+                // PathPlanner.loadPath("CenterBalancePt2",
+                // new PathConstraints(0.5, 2.0));
 
-        // return new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).andThen(
-        //         new FixedAngleCommand(m_armPivotSubsystem, 15.66)).andThen(
-        //         new FixedExtensionCommand(m_armTelescopeSubsystem, 8.2)).andThen(
-        //         new OpenGripperCommand(m_gripperSubsystem)).andThen(
-        //         new WaitCommand(0.5)).andThen(
-        //         new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).andThen(
-        //         new PathCommand(m_swerveSubsystem, trajPath)));
+                // PathPlannerTrajectory.transformTrajectoryForAlliance(trajPath, DriverStation.getAlliance());
+                // PathPlannerTrajectory.transformTrajectoryForAlliance(trajReversePath,
+                // DriverStation.getAlliance());
+
+                // m_swerveSubsystem.resetOdometry(trajPath.getInitialState().poseMeters);
+                // m_swerveSubsystem.setHeading(trajPath.getInitialState().holonomicRotation.getDegrees());
+
+                // center - cube and balance
+                // return new HomingCommand(m_armPivotSubsystem,
+                // m_armTelescopeSubsystem).andThen(
+                // new FixedAngleCommand(m_armPivotSubsystem, 15.66)).andThen(
+                // new FixedExtensionCommand(m_armTelescopeSubsystem, 8.2)).andThen(
+                // new OpenGripperCommand(m_gripperSubsystem)).andThen(
+                // new WaitCommand(0.5)).andThen(
+                // new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).alongWith(
+                // new PathCommand(m_swerveSubsystem, trajPath)).andThen(
+                // new BalanceCommand(m_swerveSubsystem).andThen(
+                // new LockCommand(m_swerveSubsystem)
+                // )));
+
+                // return new SwerveHomingCommand(m_swerveSubsystem).andThen(new
+                // PathCommand(m_swerveSubsystem, trajectory).andThen(
+                // new BalanceCommand(m_swerveSubsystem).andThen(new
+                // LockCommand(m_swerveSubsystem))));
+
+                // return new SwerveHomingCommand(m_swerveSubsystem).andThen(
+                // new PathCommand(m_swerveSubsystem, trajPath).andThen(
+                // new BalanceCommand(m_swerveSubsystem)).andThen(
+                // new LockCommand(m_swerveSubsystem)));
+
+                // one cube
+                // return new HomingCommand(m_armPivotSubsystem,
+                // m_armTelescopeSubsystem).andThen(
+                // new FixedAngleCommand(m_armPivotSubsystem, 15.66)).andThen(
+                // new FixedExtensionCommand(m_armTelescopeSubsystem, 8.2)).andThen(
+                // new OpenGripperCommand(m_gripperSubsystem)).andThen(
+                // new WaitCommand(0.5)).andThen(
+                // new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).andThen(
+                // new PathCommand(m_swerveSubsystem, trajPath).andThen(
+                // new RotateCommand(m_swerveSubsystem, Rotation2d.fromDegrees(180.0)
+                // ))));
+
+                return m_autoChooser.getSelected().get();
+                // two cubes
+                // return new HomingCommand(m_armPivotSubsystem,
+                // m_armTelescopeSubsystem).andThen(
+                // new FixedAngleCommand(m_armPivotSubsystem, 15.66)).andThen(
+                // new FixedExtensionCommand(m_armTelescopeSubsystem, 8.2)).andThen(
+                // new OpenGripperCommand(m_gripperSubsystem)).andThen(
+                // new WaitCommand(0.5)).andThen(
+                // new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).andThen(
+                // new PathCommand(m_swerveSubsystem, trajPath)).andThen(
+                // new RotateCommand(m_swerveSubsystem, Rotation2d.fromDegrees(180.0)). andThen(
+                // new FixedAngleCommand(m_armPivotSubsystem, GRAB_ANGLE).andThen(
+                // new FixedExtensionCommand(m_armTelescopeSubsystem, GRAB_EXTENSION).andThen(
+                // new AutonomousAutoGrabCommand(m_swerveSubsystem, m_gripperSubsystem).andThen(
+                // new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem)).andThen(
+                // new RotateCommand(m_swerveSubsystem, Rotation2d.fromDegrees(180.0)).andThen(
+                // new PathCommand(m_swerveSubsystem, trajReversePath).andThen(
+                // new FixedAngleCommand(m_armPivotSubsystem, 15.66)).andThen(
+                // new FixedExtensionCommand(m_armTelescopeSubsystem, 4.2)).andThen(
+                // new OpenGripperCommand(m_gripperSubsystem)).andThen(
+                // new WaitCommand(0.5)).andThen(
+                // new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem
+                // )))))))));
+
+                // cone
+                // return new HomingCommand(m_armPivotSubsystem,
+                // m_armTelescopeSubsystem).andThen(
+                // new FixedAngleCommand(m_armPivotSubsystem, 31.07)).andThen(
+                // new FixedExtensionCommand(m_armTelescopeSubsystem, 13.17)).andThen(
+                // new OpenGripperCommand(m_gripperSubsystem)).andThen(
+                // new WaitCommand(0.5)).andThen(
+                // new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem)/* .alongWith(
+                // new PathCommand(m_swerveSubsystem, trajectory)).andThen(
+                // new BalanceCommand(m_swerveSubsystem)).andThen(
+                // new LockCommand(m_swerveSubsystem))*/) ;
+
+                // return new HomingCommand(m_armPivotSubsystem,
+                // m_armTelescopeSubsystem).andThen(
+                // new FixedAngleCommand(m_armPivotSubsystem, 15.66)).andThen(
+                // new FixedExtensionCommand(m_armTelescopeSubsystem, 8.2)).andThen(
+                // new OpenGripperCommand(m_gripperSubsystem)).andThen(
+                // new WaitCommand(0.5)).andThen(
+                // new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).andThen(
+                // new PathCommand(m_swerveSubsystem, trajPath)));
 
                 // // 1. Create trajectory settings
                 // TrajectoryConfig trajectoryConfig = new TrajectoryConfig(

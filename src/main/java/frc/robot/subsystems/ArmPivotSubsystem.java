@@ -83,8 +83,8 @@ public class ArmPivotSubsystem extends SubsystemBase {
     m_pidController.setD(kD);
 
     // set up motor pid settings
-    m_pidController.setSmartMotionMaxAccel(11000, 0);
-    m_pidController.setSmartMotionMaxVelocity(5000, 0);
+    m_pidController.setSmartMotionMaxAccel(15000, 0);
+    m_pidController.setSmartMotionMaxVelocity(5676, 0);
     m_pidController.setSmartMotionMinOutputVelocity(0, 0);
     m_pidController.setSmartMotionAllowedClosedLoopError(0.1, 0);
     m_pidController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);

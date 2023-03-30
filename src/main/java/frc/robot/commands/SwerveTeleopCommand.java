@@ -16,7 +16,7 @@ public class SwerveTeleopCommand extends CommandBase {
   @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
   private final SwerveSubsystem mSwerveSubsystem;
   private final Supplier<Double> xSpdFunction, ySpdFunction, turningSpdFunction;
-  private final Supplier<Boolean> fieldOrientedFunction, slowSpeedFunction;
+  private final Supplier<Boolean> fieldOrientedFunction, fastSpeedFunction;
   private final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
   private final double joystickAccel = 10 * 0.02;
   private double activeAccel = joystickAccel;
@@ -29,18 +29,18 @@ public class SwerveTeleopCommand extends CommandBase {
    */
   public SwerveTeleopCommand(SwerveSubsystem swerveSubsystem, Supplier<Double> xSpdFunction,
       Supplier<Double> ySpdFunction, Supplier<Double> turningSpdFunction,
-      Supplier<Boolean> fieldOrientedFunction, Supplier<Boolean> slowSpeedFunction) {
+      Supplier<Boolean> fieldOrientedFunction, Supplier<Boolean> fastSpeedFunction) {
     mSwerveSubsystem = swerveSubsystem;
     this.xSpdFunction = xSpdFunction;
     this.ySpdFunction = ySpdFunction;
     this.turningSpdFunction = turningSpdFunction;
     this.fieldOrientedFunction = fieldOrientedFunction;
-    this.slowSpeedFunction = slowSpeedFunction;
+    this.fastSpeedFunction = fastSpeedFunction;
     xLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
     yLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
     turningLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAngularAccelerationUnitsPerSecond);
     ShuffleboardTab tab = Shuffleboard.getTab("Swerve State");
-    tab.addBoolean("Slow Mode", () -> this.slowSpeedFunction.get());
+    tab.addBoolean("Slow Mode", () -> this.fastSpeedFunction.get());
 
     tab.addNumber("X Speed", () -> xSpeed);
     tab.addNumber("Y Speed", () -> ySpeed);
@@ -82,7 +82,7 @@ public class SwerveTeleopCommand extends CommandBase {
 
     // SmartDashboard.putNumber("Turning speed", turningSpeed);
 
-    if (slowSpeedFunction.get()) {
+    if (!fastSpeedFunction.get()) {
       xSpeed *= DriveConstants.kSpeedMultiplier;
       ySpeed *= DriveConstants.kSpeedMultiplier;
       turningSpeed *= DriveConstants.kSpeedMultiplier;
@@ -107,6 +107,7 @@ public class SwerveTeleopCommand extends CommandBase {
       chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
     }
 
+    
     // 5. Convert chassis speeds to individual module states
     SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
 

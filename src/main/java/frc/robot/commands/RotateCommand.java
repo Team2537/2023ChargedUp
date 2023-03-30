@@ -43,7 +43,7 @@ public class RotateCommand extends CommandBase {
   //private final double kp=0.01, ki=0.0, kd=0.0; //barely turns
   //private final double kp=0.05, ki=0.0, kd=0.0; //turn smoothly but oscillates at setpoint
   //private final double kp=0.05, ki=0.0, kd=0.01; //turn smoothly but oscillates at setpoint
-  private final static double kp=0.08, ki=0.0, kd=0.0;
+  private final static double kp=0.06, ki=0.0, kd=0.0;
 
   /**
    * Creates a new ExampleCommand.

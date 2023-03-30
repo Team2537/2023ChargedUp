@@ -5,28 +5,31 @@ import frc.robot.subsystems.GripperSubsystem;
 
 public class AutoGrabCommand extends CommandBase {
 
-    private final GripperSubsystem m_subsystem;
+    private final GripperSubsystem mGripperSubsystem;
 
     public AutoGrabCommand(GripperSubsystem subsystem) {
-        m_subsystem = subsystem;
+        mGripperSubsystem = subsystem;
 
         addRequirements(subsystem);
     }
 
     @Override
     public void initialize(){
-        m_subsystem.openGripper();
+        mGripperSubsystem.openGripper();
     }
 
     @Override
     public void execute() {
-        if (m_subsystem.isTarget() && m_subsystem.isOpened()) {
-            m_subsystem.closeGripper();
-        }
+       
     }
     
     @Override
     public boolean isFinished() {
+        if (mGripperSubsystem.isTarget() && mGripperSubsystem.isOpened()) {
+            mGripperSubsystem.closeGripper();
+           return true;
+        }
+    
         return false; // command will end when button is released
     }
 }

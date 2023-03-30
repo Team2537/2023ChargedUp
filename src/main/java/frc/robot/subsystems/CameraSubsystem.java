@@ -7,6 +7,7 @@ public class CameraSubsystem extends SubsystemBase {
 
     public CameraSubsystem() {
         CameraServer.startAutomaticCapture();
+        CameraServer.startAutomaticCapture();
     }
 
     @Override

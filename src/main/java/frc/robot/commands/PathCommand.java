@@ -24,7 +24,7 @@ import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 public class PathCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final SwerveSubsystem mSwerveSubsystem;
-  private final PIDController pidController;
+  private final PIDController turningPidController;
   private PathPlannerTrajectory trajectory;
   private Timer timer;
   private PIDController xPosController, yPosController;
@@ -43,7 +43,7 @@ public class PathCommand extends CommandBase {
   //private final double kp=0.01, ki=0.0, kd=0.0; //barely turns
   //private final double kp=0.05, ki=0.0, kd=0.0; //turn smoothly but oscillates at setpoint
   //private final double kp=0.05, ki=0.0, kd=0.01; //turn smoothly but oscillates at setpoint
-  private final static double kp=0.08, ki=0.0, kd=0.0;
+  private final static double kp=0.1, ki=0.0, kd=0.0;
 
   /**
    * Creates a new ExampleCommand.
@@ -52,10 +52,10 @@ public class PathCommand extends CommandBase {
    */
   public PathCommand(SwerveSubsystem swerveSubsystem, PathPlannerTrajectory trajectory) {
     mSwerveSubsystem = swerveSubsystem;
-    pidController=new PIDController(kp, ki, kd);
-    xPosController = new PIDController(4.0, 0.1, 0.0);
-    yPosController = new PIDController(4.0, 0.1, 0.0);
-    pidController.enableContinuousInput(0,360);
+    turningPidController=new PIDController(kp, ki, kd);
+    xPosController = new PIDController(4.0, 0.01, 0.0);
+    yPosController = new PIDController(4.0, 0.0, 0.0);
+    turningPidController.enableContinuousInput(0,360);
     
     ShuffleboardTab tab = Shuffleboard.getTab("Swerve State");
     timer = new Timer();
@@ -127,7 +127,7 @@ public class PathCommand extends CommandBase {
     // else if(mSwerveSubsystem.getHeading() - desiredHeading.getDegrees() < -180.0){
     //   headingOffset = 180;
     // }
-    double turningSpeed = pidController.calculate(angleToDesired2d.getDegrees(), 0.0);
+    double turningSpeed = turningPidController.calculate(angleToDesired2d.getDegrees(), 0.0);
     SmartDashboard.putNumber("Turning speed", turningSpeed);
     double xCurrent = currentPose.getX();
     double xDesired = desiredPose.getX();

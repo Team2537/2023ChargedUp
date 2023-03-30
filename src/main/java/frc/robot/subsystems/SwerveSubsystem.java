@@ -9,6 +9,8 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
@@ -97,6 +99,10 @@ public class SwerveSubsystem extends SubsystemBase{
         mFrontRight.resetEncoders();
         mBackLeft.resetEncoders();
         mBackRight.resetEncoders();
+
+        ShuffleboardTab swerveTab = Shuffleboard.getTab("Swerve State");
+
+        swerveTab.addNumber("Heading", () -> getHeading());
         
 
 

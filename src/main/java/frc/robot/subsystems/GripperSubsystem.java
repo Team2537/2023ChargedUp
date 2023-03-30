@@ -113,7 +113,7 @@ public class GripperSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    System.out.println(!m_read.get());
+    
   }
 
   @Override

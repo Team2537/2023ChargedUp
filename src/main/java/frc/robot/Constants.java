@@ -85,10 +85,10 @@ public final class Constants {
         public static final boolean kBackLeftAbsoluteEncoderReversed = false;
         public static final boolean kBackRightAbsoluteEncoderReversed = false;
 
-        public static final double kFrontLeftAbsoluteEncoderOffsetRad = 1.967;
-        public static final double kFrontRightAbsoluteEncoderOffsetRad = 0.385;
-        public static final double kBackLeftAbsoluteEncoderOffsetRad = 0.687;
-        public static final double kBackRightAbsoluteEncoderOffsetRad = 3.335;
+        public static final double kFrontLeftAbsoluteEncoderOffsetRad = 1.954; //1.967
+        public static final double kFrontRightAbsoluteEncoderOffsetRad = 0.390; //0.385
+        public static final double kBackLeftAbsoluteEncoderOffsetRad = 0.67; //0.687
+        public static final double kBackRightAbsoluteEncoderOffsetRad = 3.290; //3.335
 
         
 
@@ -110,7 +110,7 @@ public final class Constants {
         public static final double kTeleDriveMaxAccelerationUnitsPerSecond = kPhysicalMaxAccelerationMps;
         public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = kPhysicalMaxAngularAccelerationRps;
 
-        public static final double kSpeedMultiplier = 0.18;
+        public static final double kSpeedMultiplier = 0.5;
 
         public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
                 new Translation2d(kWheelBaseMeters / 2, kTrackWidthMeters / 2), // mFrontLeft
@@ -128,8 +128,8 @@ public final class Constants {
 
     public static final class AutoConstants {
 
-        public static final double kMaxSpeedMps = 2.0; //DriveConstants.kPhysicalMaxSpeedMps / 3.0
-        public static final double kMaxAccelerationMetersPerSecondSquared = 1.0; // DriveConstants.kPhysicalMaxAccelerationMps/ 5
+        public static final double kMaxSpeedMps = 2.5; //DriveConstants.kPhysicalMaxSpeedMps / 3.0
+        public static final double kMaxAccelerationMetersPerSecondSquared = 2.5; // DriveConstants.kPhysicalMaxAccelerationMps/ 5
 
         //TODO: decide whether or not to delete
         public static final double kPThetaController = 0;
@@ -153,7 +153,7 @@ public final class Constants {
         public static final double GRAB_ANGLE = -53.2; //from ground
         public static final double GRAB_EXTENSION = 2.45; //from ground
 
-        public static final double SHELF_ANGLE = 13.1;
+        public static final double SHELF_ANGLE = 17.5;
         public static final double SHELF_EXTENSION = 0.0;
 
         public static final double HOME_ANGLE = -67;
