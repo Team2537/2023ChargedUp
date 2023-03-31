@@ -143,7 +143,7 @@ public class RobotContainer {
 
                 // Configure the button bindings
                 configureButtonBindings();
-
+                m_autoChooser.addOption("Two Piece Auto", () -> getTwoPieceCmd());
                 m_autoChooser.addOption("One Gamepiece and Back", () -> placeAndDriveCommand());
                 m_autoChooser.addOption("One Gamepiece", () -> getPlaceCmd());
                 m_autoChooser.addOption("Super Extension", () -> superExtensionCommand());
@@ -217,17 +217,6 @@ public class RobotContainer {
                 m_swerveSubsystem.resetOdometry(trajPath.getInitialState().poseMeters);
                 m_swerveSubsystem.setHeading(trajPath.getInitialState().holonomicRotation.getDegrees());
 
-                // return new HomingCommand(m_armPivotSubsystem,
-                // m_armTelescopeSubsystem).andThen(
-                //         new FixedAngleCommand(m_armPivotSubsystem, 15.66)).andThen(
-                //         new FixedExtensionCommand(m_armTelescopeSubsystem, 8.2)).andThen(
-                //         new OpenGripperCommand(m_gripperSubsystem)).andThen(
-                //         new WaitCommand(0.1)).andThen(
-                //         new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).alongWith(
-                //         new PathCommand(m_swerveSubsystem, trajPath).andThen(
-                //         new AutonomousAutoGrabCommand(m_swerveSubsystem, m_gripperSubsystem)
-                //          )));
-
                 return new SequentialCommandGroup(
                         new FixedAngleCommand(m_armPivotSubsystem, 26.9), //15.66
                         new FixedExtensionCommand(m_armTelescopeSubsystem, 11.0), //8.2
@@ -244,10 +233,49 @@ public class RobotContainer {
                         ),
                         new AutonomousAutoGrabCommand(m_swerveSubsystem, m_gripperSubsystem)
                 );
+                               
+        }
+
+        public Command getTwoPieceCmd() {
+                PathPlannerTrajectory trajPath = PathPlanner.loadPath("Path",
+                new PathConstraints(3.0,
+                       3.5)); //meters per second //seems to work better when constraint acceleration is higher than path planner acceleration
+                       PathPlannerTrajectory trajReversePath = PathPlanner.loadPath("Reverse Path",
+                       new PathConstraints(3.0,
+                              3.5));
+                // PathPlannerTrajectory.transformTrajectoryForAlliance(trajPath, DriverStation.getAlliance());
+                // PathPlannerTrajectory.transformTrajectoryForAlliance(trajReversePath,
+                // DriverStation.getAlliance());
+
+                m_swerveSubsystem.resetOdometry(trajPath.getInitialState().poseMeters);
+                m_swerveSubsystem.setHeading(trajPath.getInitialState().holonomicRotation.getDegrees());
+
+                return new SequentialCommandGroup(
+                        new FixedAngleCommand(m_armPivotSubsystem, 26.9), //15.66
+                        new FixedExtensionCommand(m_armTelescopeSubsystem, 11.0), //8.2
+                        new OpenGripperCommand(m_gripperSubsystem),
+                        new WaitCommand(0.1),
+                        new ParallelCommandGroup(
+                                new SequentialCommandGroup(
+                                        //new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem),
+                                        new FixedExtensionCommand(m_armTelescopeSubsystem, GRAB_EXTENSION),
+                                        new FixedAngleCommand(m_armPivotSubsystem, GRAB_ANGLE)
+                                ),
+                                new PathCommand(m_swerveSubsystem, trajPath)
+                                
+                        ),
+                        new AutonomousAutoGrabCommand(m_swerveSubsystem, m_gripperSubsystem),
+                        new ParallelCommandGroup(
+                                new SequentialCommandGroup(
+                                        new WaitUntilDesiredHeadingCommand(m_swerveSubsystem, new Rotation2d().fromDegrees(180.0)),
+                                        new FixedAngleCommand(m_armPivotSubsystem, 15.66),
+                                        new FixedExtensionCommand(m_armTelescopeSubsystem, 8.2)     
+                                ),
+                                new PathCommand(m_swerveSubsystem, trajReversePath)
+                        ),
+                        new OpenGripperCommand(m_gripperSubsystem)
                         
-
-
-               
+                );
         }
 
         // public class getPlaceAndDriveCmd extends CommandBase {

@@ -106,7 +106,7 @@ public class PathCommand extends CommandBase {
   public void execute() {
     
     double time = timer.get();
-    if(time>endTime) {
+    if(time>endTime+0.3) {
       isTimeEnd=true;
     } 
     // double headingOffset = 0.0;
