@@ -35,7 +35,7 @@ public class AutonomousAutoGrabCommand extends CommandBase {
     public void execute() {
         time = timer.get();
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-      0.1, 0.0, 0.0, mSwerveSubsystem.getHeadingRotation2d());
+      0.25, 0.0, 0.0, mSwerveSubsystem.getHeadingRotation2d());
 
       // 5. Convert chassis speeds to individual module states
      SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);

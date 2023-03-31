@@ -43,7 +43,7 @@ public class PathCommand extends CommandBase {
   //private final double kp=0.01, ki=0.0, kd=0.0; //barely turns
   //private final double kp=0.05, ki=0.0, kd=0.0; //turn smoothly but oscillates at setpoint
   //private final double kp=0.05, ki=0.0, kd=0.01; //turn smoothly but oscillates at setpoint
-  private final static double kp=0.1, ki=0.0, kd=0.0;
+  private final static double kp=0.03, ki=0.0, kd=0.0; //kp=0.1
 
   /**
    * Creates a new ExampleCommand.
@@ -54,7 +54,7 @@ public class PathCommand extends CommandBase {
     mSwerveSubsystem = swerveSubsystem;
     turningPidController=new PIDController(kp, ki, kd);
     xPosController = new PIDController(4.0, 0.01, 0.0);
-    yPosController = new PIDController(4.0, 0.0, 0.0);
+    yPosController = new PIDController(4.0, 0.01, 0.0);
     turningPidController.enableContinuousInput(0,360);
     
     ShuffleboardTab tab = Shuffleboard.getTab("Swerve State");

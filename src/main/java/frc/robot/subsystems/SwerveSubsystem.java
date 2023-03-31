@@ -103,6 +103,10 @@ public class SwerveSubsystem extends SubsystemBase{
         ShuffleboardTab swerveTab = Shuffleboard.getTab("Swerve State");
 
         swerveTab.addNumber("Heading", () -> getHeading());
+        swerveTab.addNumber("FLV", () -> mFrontLeft.getDriveVelocity());
+        swerveTab.addNumber("FRV", () -> mFrontRight.getDriveVelocity());
+        swerveTab.addNumber("BLV", () -> mBackLeft.getDriveVelocity());
+        swerveTab.addNumber("BRV", () -> mBackRight.getDriveVelocity());
         
 
 

@@ -23,6 +23,10 @@ import java.util.function.Supplier;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.CommandGroupBase;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.RGBSubsystem;
@@ -142,6 +146,7 @@ public class RobotContainer {
 
                 m_autoChooser.addOption("One Gamepiece and Back", () -> placeAndDriveCommand());
                 m_autoChooser.addOption("One Gamepiece", () -> getPlaceCmd());
+                m_autoChooser.addOption("Super Extension", () -> superExtensionCommand());
 
                 Shuffleboard.getTab("Autonomous").add(m_autoChooser);
 
@@ -190,10 +195,20 @@ public class RobotContainer {
                 m_gunnerJoystick.getButton(1).toggleOnTrue(m_autoGrabCommand);
         }
 
+        public Command superExtensionCommand() {
+                return  new FixedAngleCommand(m_armPivotSubsystem, 15.66).andThen(
+                        new FixedExtensionCommand(m_armTelescopeSubsystem, 8.2)).andThen(
+                        new OpenGripperCommand(m_gripperSubsystem)).andThen(
+                        new WaitCommand(0.3)).andThen(
+                        new FixedAngleCommand(m_armPivotSubsystem, -22).andThen(
+                        new FixedExtensionCommand(m_armTelescopeSubsystem, 12.998)
+                        ));
+        }
+
         public Command placeAndDriveCommand() {
                 PathPlannerTrajectory trajPath = PathPlanner.loadPath("Path",
-                new PathConstraints(AutoConstants.kMaxSpeedMps,
-                        AutoConstants.kMaxAccelerationMetersPerSecondSquared));
+                new PathConstraints(3.0,
+                       3.5)); //meters per second //seems to work better when constraint acceleration is higher than path planner acceleration
                 
                 // PathPlannerTrajectory.transformTrajectoryForAlliance(trajPath, DriverStation.getAlliance());
                 // PathPlannerTrajectory.transformTrajectoryForAlliance(trajReversePath,
@@ -202,18 +217,59 @@ public class RobotContainer {
                 m_swerveSubsystem.resetOdometry(trajPath.getInitialState().poseMeters);
                 m_swerveSubsystem.setHeading(trajPath.getInitialState().holonomicRotation.getDegrees());
 
-                return new HomingCommand(m_armPivotSubsystem,
-                m_armTelescopeSubsystem).andThen(
-                        new FixedAngleCommand(m_armPivotSubsystem, 15.66)).andThen(
-                        new FixedExtensionCommand(m_armTelescopeSubsystem, 8.2)).andThen(
-                        new OpenGripperCommand(m_gripperSubsystem)).andThen(
-                        new WaitCommand(0.1)).andThen(
-                        new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).alongWith(
-                        new PathCommand(m_swerveSubsystem, trajPath
-                )));
+                // return new HomingCommand(m_armPivotSubsystem,
+                // m_armTelescopeSubsystem).andThen(
+                //         new FixedAngleCommand(m_armPivotSubsystem, 15.66)).andThen(
+                //         new FixedExtensionCommand(m_armTelescopeSubsystem, 8.2)).andThen(
+                //         new OpenGripperCommand(m_gripperSubsystem)).andThen(
+                //         new WaitCommand(0.1)).andThen(
+                //         new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).alongWith(
+                //         new PathCommand(m_swerveSubsystem, trajPath).andThen(
+                //         new AutonomousAutoGrabCommand(m_swerveSubsystem, m_gripperSubsystem)
+                //          )));
+
+                return new SequentialCommandGroup(
+                        new FixedAngleCommand(m_armPivotSubsystem, 26.9), //15.66
+                        new FixedExtensionCommand(m_armTelescopeSubsystem, 11.0), //8.2
+                        new OpenGripperCommand(m_gripperSubsystem),
+                        new WaitCommand(0.1),
+                        new ParallelCommandGroup(
+                                new SequentialCommandGroup(
+                                        //new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem),
+                                        new FixedExtensionCommand(m_armTelescopeSubsystem, GRAB_EXTENSION),
+                                        new FixedAngleCommand(m_armPivotSubsystem, GRAB_ANGLE)
+                                ),
+                                new PathCommand(m_swerveSubsystem, trajPath)
+                                
+                        ),
+                        new AutonomousAutoGrabCommand(m_swerveSubsystem, m_gripperSubsystem)
+                );
+                        
+
 
                
         }
+
+        // public class getPlaceAndDriveCmd extends CommandBase {
+
+        //         public  getPlaceAndDriveCmd() {
+        //                 addSequential(new FixedAngleCommand(m_armPivotSubsystem, 15.66)); // 1
+        //                 addSequential(new FixedExtensionCommand(m_armTelescopeSubsystem, 8.2));
+        //                 addSequential(new OpenGripperCommand(m_gripperSubsystem));
+        //                 addSequential(new WaitCommand(0.1));
+        //                 addParallel(new PathCommand(m_swerveSubsystem, trajPath));
+        //                 addSequential(new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem)); // 2
+                
+        //                 addSequential(new FixedAngleCommand(m_armPivotSubsystem, GRAB_ANGLE);
+        //                 addSequential(new FixedExtensionCommand(m_armTelescopeSubsystem, GRAB_EXTENSION));
+        //                 addSequential(new AutonomousAutoGrabCommand(m_swerveSubsystem, m_gripperSubsystem));
+        //         }
+        //         }
+
+        // public  
+
+       
+       
 
         public Command getPlaceCmd() {
                 PathPlannerTrajectory trajPath = PathPlanner.loadPath("Backup",

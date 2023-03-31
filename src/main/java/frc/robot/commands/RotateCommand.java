@@ -50,11 +50,11 @@ public class RotateCommand extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public RotateCommand(SwerveSubsystem swerveSubsystem, Rotation2d rotateBy) {
+  public RotateCommand(SwerveSubsystem swerveSubsystem, Rotation2d endRotation2d) {
     mSwerveSubsystem = swerveSubsystem;
     pidController=new PIDController(kp, ki, kd);
     pidController.enableContinuousInput(0,360);
-    endHeading = mSwerveSubsystem.getHeadingRotation2d().rotateBy(rotateBy);
+    endHeading = endRotation2d;
     ShuffleboardTab tab = Shuffleboard.getTab("Swerve State");
     
     // Use addRequirements() here to declare subsystem dependencies.
