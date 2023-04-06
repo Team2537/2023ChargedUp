@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.Constants.AutoConstants;
@@ -143,10 +144,11 @@ public class RobotContainer {
 
                 // Configure the button bindings
                 configureButtonBindings();
-                m_autoChooser.addOption("Two Piece Auto", () -> getTwoPieceCmd());
+                m_autoChooser.addOption("Two Piece Auto", () -> blueGetTwoPieceCmd());
                 m_autoChooser.addOption("One Gamepiece and Back", () -> placeAndDriveCommand());
                 m_autoChooser.addOption("One Gamepiece", () -> getPlaceCmd());
                 m_autoChooser.addOption("Super Extension", () -> superExtensionCommand());
+                m_autoChooser.addOption("Red Two Piece Auto", () -> redGetTwoPieceCmd());
 
                 Shuffleboard.getTab("Autonomous").add(m_autoChooser);
 
@@ -205,6 +207,18 @@ public class RobotContainer {
                         ));
         }
 
+        public Command driveCmd() {
+                PathPlannerTrajectory trajPath = PathPlanner.loadPath("Red Path",
+                new PathConstraints(3.0,
+                       3.5));
+
+                m_swerveSubsystem.resetOdometry(trajPath.getInitialState().poseMeters);
+                m_swerveSubsystem.setHeading(trajPath.getInitialState().holonomicRotation.getDegrees());
+       
+             
+                return new PathCommand(m_swerveSubsystem, trajPath);
+        }
+
         public Command placeAndDriveCommand() {
                 PathPlannerTrajectory trajPath = PathPlanner.loadPath("Path",
                 new PathConstraints(3.0,
@@ -236,16 +250,55 @@ public class RobotContainer {
                                
         }
 
-        public Command getTwoPieceCmd() {
+        public Command blueGetTwoPieceCmd() {
                 PathPlannerTrajectory trajPath = PathPlanner.loadPath("Path",
                 new PathConstraints(3.0,
                        3.5)); //meters per second //seems to work better when constraint acceleration is higher than path planner acceleration
                        PathPlannerTrajectory trajReversePath = PathPlanner.loadPath("Reverse Path",
                        new PathConstraints(3.0,
                               3.5));
-                // PathPlannerTrajectory.transformTrajectoryForAlliance(trajPath, DriverStation.getAlliance());
+                // PathPlannerTrajectory.transformTrajectoryForAlliance(trajPath, DriverStation.Alliance.Red);
                 // PathPlannerTrajectory.transformTrajectoryForAlliance(trajReversePath,
-                // DriverStation.getAlliance());
+                // DriverStation.Alliance.Red);
+
+                m_swerveSubsystem.resetOdometry(trajPath.getInitialState().poseMeters);
+                m_swerveSubsystem.setHeading(trajPath.getInitialState().holonomicRotation.getDegrees());
+
+                return new SequentialCommandGroup(
+                        new FixedAngleCommand(m_armPivotSubsystem, 26.9), //15.66
+                        new FixedExtensionCommand(m_armTelescopeSubsystem, 11.0), //8.2
+                        new OpenGripperCommand(m_gripperSubsystem),
+                        new WaitCommand(0.1),
+                        new ParallelCommandGroup(
+                                new SequentialCommandGroup(
+                                        //new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem),
+                                        new FixedExtensionCommand(m_armTelescopeSubsystem, GRAB_EXTENSION),
+                                        new FixedAngleCommand(m_armPivotSubsystem, GRAB_ANGLE)
+                                ),
+                                new PathCommand(m_swerveSubsystem, trajPath)
+                                
+                        ),
+                        new AutonomousAutoGrabCommand(m_swerveSubsystem, m_gripperSubsystem),
+                        new ParallelCommandGroup(
+                                new SequentialCommandGroup(
+                                        new WaitUntilDesiredHeadingCommand(m_swerveSubsystem, new Rotation2d().fromDegrees(180.0)),
+                                        new FixedAngleCommand(m_armPivotSubsystem, 15.66),
+                                        new FixedExtensionCommand(m_armTelescopeSubsystem, 8.2)     
+                                ),
+                                new PathCommand(m_swerveSubsystem, trajReversePath)
+                        ),
+                        new OpenGripperCommand(m_gripperSubsystem)
+                        
+                );
+        }
+
+        public Command redGetTwoPieceCmd() {
+                PathPlannerTrajectory trajPath = PathPlanner.loadPath("Red Path",
+                new PathConstraints(3.0,
+                       3.5)); //meters per second //seems to work better when constraint acceleration is higher than path planner acceleration
+                       PathPlannerTrajectory trajReversePath = PathPlanner.loadPath("Red Reverse Path",
+                       new PathConstraints(3.0,
+                              3.5));
 
                 m_swerveSubsystem.resetOdometry(trajPath.getInitialState().poseMeters);
                 m_swerveSubsystem.setHeading(trajPath.getInitialState().holonomicRotation.getDegrees());

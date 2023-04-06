@@ -51,6 +51,9 @@ public class AutonomousAutoGrabCommand extends CommandBase {
             mGripperSubsystem.closeGripper();
             return true;
         }
+        else if(mSwerveSubsystem.getPose().getY()>7.8) {
+            return true;
+        }
         return false;
        
     }
