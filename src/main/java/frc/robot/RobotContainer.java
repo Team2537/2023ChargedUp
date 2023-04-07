@@ -145,14 +145,18 @@ public class RobotContainer {
 
                 // Configure the button bindings
                 configureButtonBindings();
-                m_autoChooser.addOption("Two Piece Auto", () -> blueGetTwoPieceCmd());
+                m_autoChooser.addOption("Test Drive Cmd", () -> testDriveCmd());
+                m_autoChooser.addOption("Red Two Piece Auto", () -> redGetTwoPieceCmd());
+                m_autoChooser.addOption("Blue Two Piece Auto", () -> blueGetTwoPieceCmd());
                 m_autoChooser.addOption("One Gamepiece and Back", () -> placeAndDriveCommand());
                 m_autoChooser.addOption("One Gamepiece", () -> getPlaceCmd());
-                m_autoChooser.addOption("Super Extension", () -> superExtensionCommand());
-                m_autoChooser.addOption("Red Two Piece Auto", () -> redGetTwoPieceCmd());
+                // m_autoChooser.addOption("Super Extension", () -> superExtensionCommand());
+                
                 m_autoChooser.addOption("Test Auto Grab", () -> testAutoGrab());
-                m_autoChooser.addOption("Drive Cmd", () -> driveCmd());
+               
                 Shuffleboard.getTab("Autonomous").add(m_autoChooser);
+
+                Shuffleboard.getTab("controls").addNumber("POV", () -> m_controller.getPOV());
 
         }
 
@@ -197,6 +201,16 @@ public class RobotContainer {
                 m_gunnerJoystick.getButton(3).toggleOnTrue(yellowColor);
 
                 m_gunnerJoystick.getButton(1).toggleOnTrue(m_autoGrabCommand);
+
+                // Trigger moveForwardTrigger = new Trigger(() -> m_controller.getPOV() == 0);
+                Trigger moveRightTrigger = new Trigger(() -> m_controller.getPOV() > 0 && m_controller.getPOV() < 180);
+                // Trigger moveBackTrigger = new Trigger(() -> m_controller.getPOV() == 180);
+                Trigger moveLeftTrigger = new Trigger(() -> m_controller.getPOV() > 180 && m_controller.getPOV() < 360);
+
+                // moveForwardTrigger.whileTrue(new SetChassisStateCommand(m_swerveSubsystem, () -> 0.1, () -> 0.0, null));
+                moveRightTrigger.whileTrue(new SetChassisStateCommand(m_swerveSubsystem, () -> 0.0, () -> -0.1, null));
+                // moveBackTrigger.whileTrue(new SetChassisStateCommand(m_swerveSubsystem, () -> -0.1, () -> 0.0, null));
+                moveLeftTrigger.whileTrue(new SetChassisStateCommand(m_swerveSubsystem, () -> 0.0, () -> 0.1, null));
         }
 
         public Command superExtensionCommand() {
@@ -209,10 +223,10 @@ public class RobotContainer {
                         ));
         }
 
-        public Command driveCmd() {
+        public Command testDriveCmd() {
                 PathPlannerTrajectory trajPath = PathPlanner.loadPath("Red Path",
-                new PathConstraints(3.0,
-                       3.5));
+                new PathConstraints(1.0,
+                       1.5));
 
                 m_swerveSubsystem.resetOdometry(trajPath.getInitialState().poseMeters);
                 m_swerveSubsystem.setHeading(trajPath.getInitialState().holonomicRotation.getDegrees());
@@ -232,7 +246,7 @@ public class RobotContainer {
         }
 
         public Command placeAndDriveCommand() {
-                PathPlannerTrajectory trajPath = PathPlanner.loadPath("Path Copy",
+                PathPlannerTrajectory trajPath = PathPlanner.loadPath("Backup",
                 new PathConstraints(3.0,
                        3.5)); //meters per second //seems to work better when constraint acceleration is higher than path planner acceleration
                 
@@ -244,6 +258,7 @@ public class RobotContainer {
                 m_swerveSubsystem.setHeading(trajPath.getInitialState().holonomicRotation.getDegrees());
 
                 return new SequentialCommandGroup(
+                        new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem),
                         new FixedAngleCommand(m_armPivotSubsystem, 26.9), //15.66
                         new FixedExtensionCommand(m_armTelescopeSubsystem, 11.0), //8.2
                         new OpenGripperCommand(m_gripperSubsystem),
@@ -354,23 +369,15 @@ public class RobotContainer {
        
 
         public Command getPlaceCmd() {
-                PathPlannerTrajectory trajPath = PathPlanner.loadPath("Backup",
-                new PathConstraints(AutoConstants.kMaxSpeedMps,
-                        AutoConstants.kMaxAccelerationMetersPerSecondSquared));
-                
-                PathPlannerTrajectory.transformTrajectoryForAlliance(trajPath, DriverStation.getAlliance());
-                // PathPlannerTrajectory.transformTrajectoryForAlliance(trajReversePath,
-                // DriverStation.getAlliance());
+              
                 return new HomingCommand(m_armPivotSubsystem,
                 m_armTelescopeSubsystem).andThen(
                         new FixedAngleCommand(m_armPivotSubsystem, 15.66)).andThen(
                         new FixedExtensionCommand(m_armTelescopeSubsystem, 8.2)).andThen(
                         new OpenGripperCommand(m_gripperSubsystem)).andThen(
                         new WaitCommand(0.5)).andThen(
-                        new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem).andThen(
-                        new PathCommand(m_swerveSubsystem, trajPath).andThen(
-                        new RotateCommand(m_swerveSubsystem, Rotation2d.fromDegrees(180.0)
-                ))));
+                        new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem)
+                );
         }
         /**
          * Use this to pass the autonomous command to the main {@link Robot} class.

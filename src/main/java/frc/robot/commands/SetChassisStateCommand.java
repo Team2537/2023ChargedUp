@@ -43,10 +43,10 @@ public class SetChassisStateCommand extends CommandBase {
     pidController=new PIDController(kp, ki, kd);
     pidController.enableContinuousInput(0,360); //maximum 360 degrees
 
-    ShuffleboardTab tab = Shuffleboard.getTab("Swerve State");
+    // ShuffleboardTab tab = Shuffleboard.getTab("Swerve State");
 
-    tab.addNumber("turning speed", () -> turningSpeed);
-    tab.addNumber("desired heading", () -> heading.get());
+    // tab.addNumber("turning speed", () -> turningSpeed);
+    // tab.addNumber("desired heading", () -> heading.get());
     
 
     // Use addRequirements() here to declare subsystem dependencies.
@@ -64,9 +64,14 @@ public class SetChassisStateCommand extends CommandBase {
   public void execute() {
     double xSpeed = xSpdFunction.get();
     double ySpeed = ySpdFunction.get();
-    double heading = headingFunction.get();
-    
-    turningSpeed = pidController.calculate(mSwerveSubsystem.getHeading(), heading); 
+
+    if (headingFunction != null) {
+      double heading = headingFunction.get();
+      
+      turningSpeed = pidController.calculate(mSwerveSubsystem.getHeading(), heading); 
+    } else {
+      turningSpeed = 0;
+    }
     
     ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds( 
       xSpeed, ySpeed, turningSpeed, mSwerveSubsystem.getHeadingRotation2d());

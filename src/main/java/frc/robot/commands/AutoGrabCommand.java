@@ -45,7 +45,7 @@ public class AutoGrabCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        if (m_delayTimer.hasElapsed(0.1)) {
+        if (m_delayTimer.hasElapsed(0.15)) {
             m_gripperSubsystem.closeGripper();
             return true;
         }
