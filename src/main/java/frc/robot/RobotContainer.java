@@ -342,7 +342,7 @@ public class RobotContainer {
                 );
         }
 
-      //what we did on Thursday instead of parallel deadline group
+      // we did this on Thursday instead of parallel deadline group
         // new ParallelCommandGroup(
         //         new SequentialCommandGroup(
         //                 new WaitUntilDesiredHeadingCommand(m_swerveSubsystem, Rotation2d.fromDegrees(180.0)),
