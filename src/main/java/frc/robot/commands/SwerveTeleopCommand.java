@@ -11,6 +11,7 @@ import frc.robot.Constants.IOConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SwerveTeleopCommand extends CommandBase {
   @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
@@ -63,6 +64,7 @@ public class SwerveTeleopCommand extends CommandBase {
     // 1. Get real-time joystick inputs
 
     xSpeed = Math.pow(xSpdFunction.get(), 3);
+
     // xSpeed+= .2*Math.signum(xSpeed);
     ySpeed = Math.pow(ySpdFunction.get(), 3);
     // ySpeed+= .2*Math.signum(ySpeed);
@@ -87,6 +89,11 @@ public class SwerveTeleopCommand extends CommandBase {
       ySpeed *= DriveConstants.kSpeedMultiplier;
       turningSpeed *= DriveConstants.kSpeedMultiplier;
     }
+    else {
+      xSpeed *= 1.5;
+      ySpeed *= 1.5;
+      turningSpeed *= 1.5;
+    }
 
     // if (Math.abs(xSpeed - chassisSpeeds.vxMetersPerSecond) > activeAccel){
     //   xSpeed = chassisSpeeds.vxMetersPerSecond + (activeAccel * Math.signum(xSpeed - chassisSpeeds.vxMetersPerSecond));
@@ -94,7 +101,8 @@ public class SwerveTeleopCommand extends CommandBase {
     // if (Math.abs(ySpeed - chassisSpeeds.vyMetersPerSecond) > activeAccel){
     //   ySpeed = chassisSpeeds.vyMetersPerSecond + (activeAccel * Math.signum(ySpeed - chassisSpeeds.vyMetersPerSecond));
     // }
-
+      SmartDashboard.putNumber("XSpeed", xSpeed);
+      SmartDashboard.putNumber("YSpeed", ySpeed);
     
     // 4. Construct desired chassis speeds
     if (fieldOrientedFunction.get()) {

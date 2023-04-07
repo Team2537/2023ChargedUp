@@ -15,7 +15,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.Constants.LidarConstants;
 import frc.robot.commandGroups.SetPositionCommandGroup;
-import frc.robot.subsystems.SwerveSubsystem;
+
 import static frc.robot.Constants.ArmConstants.*;
 import static frc.robot.Constants.ColorConstants.*;
 
@@ -27,10 +27,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandGroupBase;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.subsystems.RGBSubsystem;
+
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
@@ -149,7 +150,8 @@ public class RobotContainer {
                 m_autoChooser.addOption("One Gamepiece", () -> getPlaceCmd());
                 m_autoChooser.addOption("Super Extension", () -> superExtensionCommand());
                 m_autoChooser.addOption("Red Two Piece Auto", () -> redGetTwoPieceCmd());
-
+                m_autoChooser.addOption("Test Auto Grab", () -> testAutoGrab());
+                m_autoChooser.addOption("Drive Cmd", () -> driveCmd());
                 Shuffleboard.getTab("Autonomous").add(m_autoChooser);
 
         }
@@ -219,8 +221,18 @@ public class RobotContainer {
                 return new PathCommand(m_swerveSubsystem, trajPath);
         }
 
+        public Command testAutoGrab() {
+                return new SequentialCommandGroup(
+                new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem),
+                new FixedAngleCommand(m_armPivotSubsystem, GRAB_ANGLE),
+                new FixedExtensionCommand(m_armTelescopeSubsystem, GRAB_EXTENSION),
+                new OpenGripperCommand(m_gripperSubsystem),
+                new AutonomousAutoGrabCommand(m_swerveSubsystem, m_gripperSubsystem)
+                );
+        }
+
         public Command placeAndDriveCommand() {
-                PathPlannerTrajectory trajPath = PathPlanner.loadPath("Path",
+                PathPlannerTrajectory trajPath = PathPlanner.loadPath("Path Copy",
                 new PathConstraints(3.0,
                        3.5)); //meters per second //seems to work better when constraint acceleration is higher than path planner acceleration
                 
@@ -244,8 +256,7 @@ public class RobotContainer {
                                 ),
                                 new PathCommand(m_swerveSubsystem, trajPath)
                                 
-                        ),
-                        new AutonomousAutoGrabCommand(m_swerveSubsystem, m_gripperSubsystem)
+                        )
                 );
                                
         }
@@ -279,13 +290,13 @@ public class RobotContainer {
                                 
                         ),
                         new AutonomousAutoGrabCommand(m_swerveSubsystem, m_gripperSubsystem),
-                        new ParallelCommandGroup(
+                        new ParallelDeadlineGroup(
+                                new PathCommand(m_swerveSubsystem, trajReversePath), //ends parallel deadline group when path command ends
                                 new SequentialCommandGroup(
-                                        new WaitUntilDesiredHeadingCommand(m_swerveSubsystem, new Rotation2d().fromDegrees(180.0)),
+                                        new WaitUntilDesiredHeadingCommand(m_swerveSubsystem, Rotation2d.fromDegrees(180.0)),
                                         new FixedAngleCommand(m_armPivotSubsystem, 15.66),
                                         new FixedExtensionCommand(m_armTelescopeSubsystem, 8.2)     
-                                ),
-                                new PathCommand(m_swerveSubsystem, trajReversePath)
+                                )     
                         ),
                         new OpenGripperCommand(m_gripperSubsystem)
                         
@@ -318,38 +329,28 @@ public class RobotContainer {
                                 
                         ),
                         new AutonomousAutoGrabCommand(m_swerveSubsystem, m_gripperSubsystem),
-                        new ParallelCommandGroup(
+                        new ParallelDeadlineGroup(
+                                new PathCommand(m_swerveSubsystem, trajReversePath), //ends parallel deadline group when path command ends
                                 new SequentialCommandGroup(
-                                        new WaitUntilDesiredHeadingCommand(m_swerveSubsystem, new Rotation2d().fromDegrees(180.0)),
+                                        new WaitUntilDesiredHeadingCommand(m_swerveSubsystem, Rotation2d.fromDegrees(180.0)),
                                         new FixedAngleCommand(m_armPivotSubsystem, 15.66),
                                         new FixedExtensionCommand(m_armTelescopeSubsystem, 8.2)     
-                                ),
-                                new PathCommand(m_swerveSubsystem, trajReversePath)
+                                )     
                         ),
                         new OpenGripperCommand(m_gripperSubsystem)
                         
                 );
         }
 
-        // public class getPlaceAndDriveCmd extends CommandBase {
-
-        //         public  getPlaceAndDriveCmd() {
-        //                 addSequential(new FixedAngleCommand(m_armPivotSubsystem, 15.66)); // 1
-        //                 addSequential(new FixedExtensionCommand(m_armTelescopeSubsystem, 8.2));
-        //                 addSequential(new OpenGripperCommand(m_gripperSubsystem));
-        //                 addSequential(new WaitCommand(0.1));
-        //                 addParallel(new PathCommand(m_swerveSubsystem, trajPath));
-        //                 addSequential(new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem)); // 2
-                
-        //                 addSequential(new FixedAngleCommand(m_armPivotSubsystem, GRAB_ANGLE);
-        //                 addSequential(new FixedExtensionCommand(m_armTelescopeSubsystem, GRAB_EXTENSION));
-        //                 addSequential(new AutonomousAutoGrabCommand(m_swerveSubsystem, m_gripperSubsystem));
-        //         }
-        //         }
-
-        // public  
-
-       
+      //what we did on Thursday instead of parallel deadline group
+        // new ParallelCommandGroup(
+        //         new SequentialCommandGroup(
+        //                 new WaitUntilDesiredHeadingCommand(m_swerveSubsystem, Rotation2d.fromDegrees(180.0)),
+        //                 new FixedAngleCommand(m_armPivotSubsystem, 15.66),
+        //                 new FixedExtensionCommand(m_armTelescopeSubsystem, 8.2)     
+        //         ),
+        //         new PathCommand(m_swerveSubsystem, trajReversePath)
+        // ),
        
 
         public Command getPlaceCmd() {

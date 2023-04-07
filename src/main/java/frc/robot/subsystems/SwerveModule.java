@@ -69,6 +69,8 @@ public class SwerveModule {
         mDriveMotor.setSmartCurrentLimit(30, 40);
         mSteerMotor.setSmartCurrentLimit(10, 40);
 
+        mDriveMotor.setClosedLoopRampRate(10); //seems to be 1/rate in rev hardware client
+
         mDriveMotor.burnFlash();
         mSteerMotor.burnFlash();
 

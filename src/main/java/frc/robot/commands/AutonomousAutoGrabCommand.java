@@ -34,7 +34,8 @@ public class AutonomousAutoGrabCommand extends CommandBase {
     @Override
     public void execute() {
         time = timer.get();
-        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+        if(time<2.0) {
+            ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
       0.25, 0.0, 0.0, mSwerveSubsystem.getHeadingRotation2d());
 
       // 5. Convert chassis speeds to individual module states
@@ -42,6 +43,18 @@ public class AutonomousAutoGrabCommand extends CommandBase {
 
      // 6. Output each module states to wheels
      mSwerveSubsystem.setModuleStates(moduleStates);
+        }
+        else {
+            ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+      0.0, 0.0, 0.0, mSwerveSubsystem.getHeadingRotation2d());
+
+      // 5. Convert chassis speeds to individual module states
+     SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+
+     // 6. Output each module states to wheels
+     mSwerveSubsystem.setModuleStates(moduleStates);
+        }
+        
      
     }
     
@@ -49,9 +62,6 @@ public class AutonomousAutoGrabCommand extends CommandBase {
     public boolean isFinished() {
         if (time>0.4 && mGripperSubsystem.isTarget() && mGripperSubsystem.isOpened()) {
             mGripperSubsystem.closeGripper();
-            return true;
-        }
-        else if(mSwerveSubsystem.getPose().getY()>7.8) {
             return true;
         }
         return false;
