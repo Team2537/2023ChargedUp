@@ -110,7 +110,7 @@ public final class Constants {
         public static final double kTeleDriveMaxAccelerationUnitsPerSecond = kPhysicalMaxAccelerationMps;
         public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = kPhysicalMaxAngularAccelerationRps;
 
-        public static final double kSpeedMultiplier = 0.3;
+        public static final double kSpeedMultiplier = 0.5;
 
         public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
                 new Translation2d(kWheelBaseMeters / 2, kTrackWidthMeters / 2), // mFrontLeft

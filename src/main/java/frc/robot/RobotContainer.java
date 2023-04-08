@@ -153,6 +153,7 @@ public class RobotContainer {
                 // m_autoChooser.addOption("Super Extension", () -> superExtensionCommand());
                 
                 m_autoChooser.addOption("Test Auto Grab", () -> testAutoGrab());
+                m_autoChooser.addOption("Test Auto Balance", () -> testAutoBalance());
                
                 Shuffleboard.getTab("Autonomous").add(m_autoChooser);
 
@@ -245,6 +246,14 @@ public class RobotContainer {
                 );
         }
 
+        public Command testAutoBalance() {
+                return new SequentialCommandGroup(
+                new BalanceBackUpCommand(m_swerveSubsystem, 1.0),
+                new BalanceRampCommand(m_swerveSubsystem, 0.7, 1.25),
+                new BalanceCommand(m_swerveSubsystem)
+                );
+        }
+
         public Command placeAndDriveCommand() {
                 PathPlannerTrajectory trajPath = PathPlanner.loadPath("Backup",
                 new PathConstraints(3.0,
@@ -305,15 +314,16 @@ public class RobotContainer {
                                 
                         ),
                         new AutonomousAutoGrabCommand(m_swerveSubsystem, m_gripperSubsystem),
-                        new ParallelDeadlineGroup(
-                                new PathCommand(m_swerveSubsystem, trajReversePath), //ends parallel deadline group when path command ends
+                        new ParallelCommandGroup(
                                 new SequentialCommandGroup(
                                         new WaitUntilDesiredHeadingCommand(m_swerveSubsystem, Rotation2d.fromDegrees(180.0)),
                                         new FixedAngleCommand(m_armPivotSubsystem, 15.66),
                                         new FixedExtensionCommand(m_armTelescopeSubsystem, 8.2)     
-                                )     
-                        ),
-                        new OpenGripperCommand(m_gripperSubsystem)
+                                ),    
+                                new PathCommand(m_swerveSubsystem, trajReversePath)
+                                
+                        )//,
+                        //new OpenGripperCommand(m_gripperSubsystem)
                         
                 );
         }
