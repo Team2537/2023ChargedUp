@@ -68,7 +68,7 @@ public class BalanceBackUpCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(Math.abs(mSwerveSubsystem.getPitchRotation2d().getDegrees())>3.0) {
+    if(Math.abs(mSwerveSubsystem.getPitchRotation2d().getDegrees())>10.0) {
          // 4. Construct desired chassis speeds
       // Relative to field
       chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(

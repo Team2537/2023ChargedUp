@@ -249,7 +249,7 @@ public class RobotContainer {
         public Command testAutoBalance() {
                 return new SequentialCommandGroup(
                 new BalanceBackUpCommand(m_swerveSubsystem, 1.0),
-                new BalanceRampCommand(m_swerveSubsystem, 0.7, 1.25),
+                // new BalanceRampCommand(m_swerveSubsystem, 0.7, 1.25),
                 new BalanceCommand(m_swerveSubsystem)
                 );
         }
