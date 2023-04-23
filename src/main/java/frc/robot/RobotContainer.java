@@ -55,8 +55,7 @@ public class RobotContainer {
         private final ArmPivotSubsystem m_armPivotSubsystem = new ArmPivotSubsystem();
         private final ArmTelescopeSubsystem m_armTelescopeSubsystem = new ArmTelescopeSubsystem();
         private final GripperSubsystem m_gripperSubsystem = new GripperSubsystem(LidarConstants.kTargetLow,
-                        LidarConstants.kTargetHigh, i -> {
-                        }, LidarConstants.kLidarReadPort, LidarConstants.kLidarTriggerPort);
+                        LidarConstants.kTargetHigh, LidarConstants.kLidarReadPort, LidarConstants.kLidarTriggerPort);
         private final LockCommand lockCommand = new LockCommand(m_swerveSubsystem);
         private final ZeroHeadingCommand m_zeroHeadingCommand = new ZeroHeadingCommand(m_swerveSubsystem);
         private final CameraSubsystem m_cameraSubsystem = new CameraSubsystem();

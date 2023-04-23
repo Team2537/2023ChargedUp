@@ -25,13 +25,9 @@ public class GripperSubsystem extends SubsystemBase {
   private DigitalInput m_read;
   private DutyCycle m_pwm;
   private boolean m_vibrate;
-  private final Consumer<Double> m_rumble;
   private boolean opened;
 
-  public GripperSubsystem(double target_low, double target_high, Consumer<Double> rumble, int lidar_read_port, int lidar_trigger_port) {
-    m_rumble = rumble;
-    
-
+  public GripperSubsystem(double target_low, double target_high, int lidar_read_port, int lidar_trigger_port) {
     // init lidar
     m_target_low = target_low;
     m_target_high = target_high;
