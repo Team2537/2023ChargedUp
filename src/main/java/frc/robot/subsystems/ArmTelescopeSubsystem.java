@@ -22,11 +22,6 @@ import static frc.robot.Constants.ArmConstants.*;
  * The ArmTelescopeSubsystem class is the subsystem that controls the telescoping motor.
  */
 public class ArmTelescopeSubsystem extends SubsystemBase {
-//this creates the log entries
-  private static BooleanLogEntry retractedLog;
-  private static DoubleLogEntry positionInRevolutionsLog;
-  private static DoubleLogEntry velocityLog;
-
 
   private SparkMaxPIDController m_pidController;
   private RelativeEncoder m_encoder;
@@ -47,11 +42,6 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
   private final DigitalInput m_telescopeMagnet = new DigitalInput(TELESCOPE_MAGNET_SENSOR);
 
   public ArmTelescopeSubsystem() {
-// this will put the values in the log
-  retractedLog = new BooleanLogEntry(DataLogManager.getLog(), "/ArmTelescopeSubsystem/Retracted");
-  positionInRevolutionsLog = new DoubleLogEntry(DataLogManager.getLog(), "/ArmTelescopeSubsystem/PositionInRevolutions");
-  velocityLog = new DoubleLogEntry(DataLogManager.getLog(), "/ArmTelescopeSubsystem/Velocity");
-
     // initialize motor
     m_motor = new CANSparkMax(EXTENSION_MOTOR, MotorType.kBrushless);
     m_motor.setInverted(true);
@@ -183,14 +173,7 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
   // Runs every time the scheduler is called (Every 20ms)
   @Override
   public void periodic() {
-//this will continually update the logs with the values from the shuffleboard
-  retractedLog.append(getMagnetClosed());
-  positionInRevolutionsLog.append(getPosition());
-  velocityLog.append(m_encoder.getVelocity());
-
-
-
-    m_pidController.setReference(target, CANSparkMax.ControlType.kPosition);
+   m_pidController.setReference(target, CANSparkMax.ControlType.kPosition);
   }
 
   @Override

@@ -14,8 +14,6 @@ public class RGBSubsystem extends SubsystemBase{
 
     private int targetValue = 0;
 
-    //private boolean updatePause = false;
-
     public RGBSubsystem(int port){
         lightLine = new PWM(port);
 
