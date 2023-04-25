@@ -27,19 +27,9 @@ public class FixedExtensionCommand extends CommandBase {
 
   @Override
   public void execute(){
-    // double position = m_subsystem.getPosition() + m_extensionRate * Math.signum(m_targetExtension - m_subsystem.getPosition());
-    // if(Math.abs(m_targetExtension - position) < m_extensionRate){
-    //   position = m_targetExtension;
-    // }
-    // m_subsystem.setExtension(position);
-
     m_subsystem.incrementPosition(m_targetExtension, m_extensionRate);
   }
 
-  @Override
-  public void end(boolean interrupted) {
-    System.out.println("Finished");
-  }
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {

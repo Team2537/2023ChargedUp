@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj.Timer;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 
-/** An example command that uses an example subsystem. */
 public class PathCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final SwerveSubsystem mSwerveSubsystem;

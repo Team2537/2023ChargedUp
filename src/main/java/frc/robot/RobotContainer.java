@@ -62,12 +62,6 @@ public class RobotContainer {
 
         private final RGBSubsystem m_RgbSubsystem = new RGBSubsystem(1);
 
-        private final FixedAngleCommand m_bottomRowAngle = new FixedAngleCommand(m_armPivotSubsystem, BOTTOM_ROW_ANGLE);
-        private final FixedExtensionCommand m_bottomRowExtension = new FixedExtensionCommand(m_armTelescopeSubsystem,
-                        BOTTOM_ROW_EXTENSION);
-        private final SetPositionCommandGroup m_bottomRowPosition = new SetPositionCommandGroup(m_bottomRowAngle,
-                        m_bottomRowExtension);
-
         // Position for middle cone row when bumpers are against the community
         private final FixedAngleCommand m_middleRowAngle = new FixedAngleCommand(m_armPivotSubsystem, MIDDLE_ROW_ANGLE);
         private final FixedExtensionCommand m_middleRowExtension = new FixedExtensionCommand(m_armTelescopeSubsystem,
@@ -99,13 +93,7 @@ public class RobotContainer {
         private final HomingCommand m_homingCommand = new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem);
 
         private final ArmEncoderSyncCommand m_encoderSync = new ArmEncoderSyncCommand(m_armPivotSubsystem);
-        // private final SetPositionCommand testPosition = new
-        // SetPositionCommand(testAngle, test);
 
-        // private final OpenGripperCommand openGripper = new
-        // OpenGripperCommand(m_gripperSubsystem);
-        // private final CloseGripperCommand closeGripper = new
-        // CloseGripperCommand(m_gripperSubsystem);
         private final ToggleGripperCommand toggleGripper = new ToggleGripperCommand(m_gripperSubsystem);
 
         private final AutoGrabCommand m_autoGrabCommand = new AutoGrabCommand(m_gripperSubsystem);
@@ -118,9 +106,7 @@ public class RobotContainer {
                         () -> m_gunnerJoystick.getAxis(1),
                         () -> 0.1 * m_gunnerJoystick.getHatSwitch());
 
-        /**
-         * The container for the robot. Contains subsystems, OI devices, and commands.
-         */
+
         private final SetColorCommand redColor = new SetColorCommand(m_RgbSubsystem, RED);
         private final SetColorCommand yellowColor = new SetColorCommand(m_RgbSubsystem, YELLOW);
         private final SetColorCommand purpleColor = new SetColorCommand(m_RgbSubsystem, PURPLE);
@@ -170,9 +156,6 @@ public class RobotContainer {
          */
         private void configureButtonBindings() {
                 Trigger yButton = new Trigger(() -> m_controller.getYButton());
-                // Trigger rightTrigger = new Trigger(() -> controller.getRightTriggerAxis() >
-                // 0.9);
-                // rightTrigger.onTrue(new LockCommand(swerveSubsystem));
 
                 yButton.toggleOnTrue(lockCommand);
 
@@ -185,10 +168,8 @@ public class RobotContainer {
                 m_gunnerJoystick.getButton(8).onTrue(m_homingCommand);
                 m_gunnerJoystick.getButton(2).onTrue(toggleGripper);
 
-                // m_gunnerJoystick.getButton(2).onTrue(m_bottomRowPosition);
                 m_gunnerJoystick.getButton(12).onTrue(m_encoderSync);
 
-                // m_gunnerJoystick.getButton(11).onTrue(m_bottomRowPosition);
                 m_gunnerJoystick.getButton(9).onTrue(m_middleRowPosition);
                 m_gunnerJoystick.getButton(7).onTrue(m_topRowPosition);
                 m_gunnerJoystick.getButton(4).onTrue(m_grabPosition);
@@ -257,10 +238,6 @@ public class RobotContainer {
                 PathPlannerTrajectory trajPath = PathPlanner.loadPath("Backup",
                 new PathConstraints(3.0,
                        3.5)); //meters per second //seems to work better when constraint acceleration is higher than path planner acceleration
-                
-                // PathPlannerTrajectory.transformTrajectoryForAlliance(trajPath, DriverStation.getAlliance());
-                // PathPlannerTrajectory.transformTrajectoryForAlliance(trajReversePath,
-                // DriverStation.getAlliance());
 
                 m_swerveSubsystem.resetOdometry(trajPath.getInitialState().poseMeters);
                 m_swerveSubsystem.setHeading(trajPath.getInitialState().holonomicRotation.getDegrees());

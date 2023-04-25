@@ -14,11 +14,6 @@ public class LockCommand extends InstantCommand {
   @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
   private final SwerveSubsystem m_swerveSubsystem;
 
-  /**
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
-   */
   public LockCommand(SwerveSubsystem subsystem) {
     m_swerveSubsystem = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -37,23 +32,6 @@ public class LockCommand extends InstantCommand {
     };
 
     m_swerveSubsystem.setModuleStates(moduleStates);
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-
-    /*
-     * SwerveModuleState[] moduleStates = {
-     * new SwerveModuleState(0, new Rotation2d(0)),
-     * new SwerveModuleState(0, new Rotation2d(0)),
-     * new SwerveModuleState(0, new Rotation2d(0)),
-     * new SwerveModuleState(0, new Rotation2d(0)),
-     * };
-     */
-
-    // 6. Output each module states to wheels
-
   }
 
   // Called once the command ends or is interrupted.

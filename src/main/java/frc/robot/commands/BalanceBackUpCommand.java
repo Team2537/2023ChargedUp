@@ -19,11 +19,7 @@ public class BalanceBackUpCommand extends CommandBase {
   private ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
   private double xSpeed;
 
-  /**
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
-   */
+
   public BalanceBackUpCommand(SwerveSubsystem swerveSubsystem, double xSpeed) {
       mSwerveSubsystem = swerveSubsystem;
       this.xSpeed = xSpeed;
@@ -33,10 +29,6 @@ public class BalanceBackUpCommand extends CommandBase {
     addRequirements(mSwerveSubsystem);
   }
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
-  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
