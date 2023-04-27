@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="Pain" pattern="file[2023ChargedUp.main]:java/frc/robot/subsystems/ArmPivotSubsystem.java||file[2023ChargedUp.main]:java/frc/robot/subsystems/ArmTelescopeSubsystem.java" />
+</component>
