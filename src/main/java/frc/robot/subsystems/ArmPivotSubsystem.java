@@ -33,6 +33,10 @@ public class ArmPivotSubsystem extends SubsystemBase {
 
   private double target = DEFAULT_ANGLE;
 
+  /**
+   * Constructs the arm pivot subsystem
+   * Initializes variables as well as setting initial motor and PID settings
+   */
   public ArmPivotSubsystem() {
     m_motor = new CANSparkMax(PIVOT_MOTOR, MotorType.kBrushless);
     m_motor.setSmartCurrentLimit(10, 30);
@@ -80,14 +84,23 @@ public class ArmPivotSubsystem extends SubsystemBase {
     armPivotTab.addNumber("Absolute Angle", () -> getAbsolutePosition());
   }
 
+  /**
+   * @return the current angle of the arm from the motor encoder
+   */
   public double getAngle() {
     return m_motorEncoder.getPosition();
   }
 
+  /**
+   * @return the current angle of the arm from the absolute encoder
+   */
   public double getAbsolutePosition() {
     return m_absoluteEncoder.get() * 360;
   }
 
+  /**
+   * Syncs the motor encoder with the absolute encoder
+   */
   public void syncEncoders() {
     setAngle(getAbsolutePosition());
     m_motorEncoder.setPosition(getAbsolutePosition());
@@ -101,6 +114,11 @@ public class ArmPivotSubsystem extends SubsystemBase {
     target = angleDeg;
   }
 
+  /**
+   * Check if the current angle is within 2% of the target
+   * @param target Target angle to check against
+   * @return If we're within 2% of the target angle
+   */
   public boolean isClose(double target){
     return Math.abs((target - m_motorEncoder.getPosition()) / target) <= 0.02;  
   }
