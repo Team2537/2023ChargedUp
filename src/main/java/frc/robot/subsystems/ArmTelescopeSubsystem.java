@@ -36,11 +36,17 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
 
   CANSparkMax m_motor;
 
+
   private double target = 0;
 
 
   private final DigitalInput m_telescopeMagnet = new DigitalInput(TELESCOPE_MAGNET_SENSOR);
 
+
+  /**
+   * Constructs the arm telescope subsystem
+   * Initializes variables as well as setting initial motor and PID settings
+   */
   public ArmTelescopeSubsystem() {
     // initialize motor
     m_motor = new CANSparkMax(EXTENSION_MOTOR, MotorType.kBrushless);
@@ -58,7 +64,7 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
 
     // PID coefficients
     kPPosition = 8;
-    kIPosition = 0.0; 
+    kIPosition = 0.0;
     kDPosition = 0;
     kIzPosition = 0;
     kFFPosition = 0.0;
@@ -91,10 +97,19 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
     telescopingTab.addNumber("Output", () -> m_motor.getAppliedOutput());
   }
 
-  public void setExtension(double amt) {
-    target = amt;
+  /**
+   * Method to set the target extension of the arm's extension PID Controller
+   * @param extension Target extension in motor rotations
+   */
+  public void setExtension(double extension) {
+    target = extension;
   }
 
+  /**
+   * Method to quickly extend the arm
+   * @param target Target extension in motor rotations
+   * @param rate Rate at which to extend
+   */
   public void incrementPosition(double target, double rate) {
     double next = getPosition() + rate * Math.signum(target - getPosition());
             if(Math.abs(target - next) <= rate){
@@ -103,6 +118,11 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
     setExtension(next);
   }
 
+  /**
+   * Method to constantly extend or distend
+   * @param forward Set the constant extension to be forwards or backwards
+   * @param rate Rate at which to extend or distend
+   */
   public void incrementPosition(boolean forward, double rate) {
     double next = getPosition() + rate * (forward ? 1 : -1);
     setExtension(next);
@@ -111,7 +131,7 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
   /*
    * Disables the positional PID temporarily and uses a velocity PID loop
    * Instead of trying to make it to a target position the loop tries to reach a target velocity
-   * Micah broke it :( 
+   * Micah broke it :(
    * NOOO I didn't do anything
    */
   /*public void setVelocity(double velocity) {
@@ -124,7 +144,7 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
 
   /**
    * Sets a raw speed to the motor in RPM
-   * 
+   *
    * @param speed the raw speed (0-1) to set to the motor
    */
   public void setRawSpeed(double speed) {
@@ -141,11 +161,15 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
 
   /**
    * @return the encoder value
-   */ 
+   */
   public double getPosition() {
     return m_encoder.getPosition();
   }
 
+  /**
+   *
+   * @return the current target of the PID Loop (In Rotations)
+   */
   public double getTarget(){
     return target;
   }
@@ -158,7 +182,7 @@ public class ArmTelescopeSubsystem extends SubsystemBase {
   }
 
   public boolean isClose(double target){
-    return Math.abs((target - m_encoder.getPosition()) / target) <= 0.02;  
+    return Math.abs((target - m_encoder.getPosition()) / target) <= 0.02;
   }
 
   /**
