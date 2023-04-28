@@ -407,7 +407,7 @@ div.table-tabs > button.active-table-tab {
    color: #253441;
 }
 div.table-tabs > button.table-tab {
-   background: #4D7A97;
+   background: #404040;
    color: #FFFFFF;
 }
 .two-column-summary {
@@ -594,7 +594,7 @@ main, nav, header, footer, section {
     font-weight:bold;
     font-size:15px;
     padding:7px 0 7px 3px;
-    background-color:#4D7A97;
+    background-color:#404040;
     color:#FFFFFF;
 }
 .result-item {
