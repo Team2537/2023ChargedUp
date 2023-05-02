@@ -5,7 +5,9 @@ import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
-
+/**
+ * The RGBSubsystem class is the subsystem that controls the LED strips on the robot
+ */
 public class RGBSubsystem extends SubsystemBase{
 
     private PWM lightLine;
@@ -14,6 +16,10 @@ public class RGBSubsystem extends SubsystemBase{
 
     private int targetValue = 0;
 
+    /**
+     * Constructs the RGBSubsystem class
+     * @param port PWM Port on the roboRIO that the arduino light controller is plugged into
+     */
     public RGBSubsystem(int port){
         lightLine = new PWM(port);
 

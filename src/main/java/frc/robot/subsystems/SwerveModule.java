@@ -12,6 +12,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.geometry.Rotation2d;
 
+/**
+ * SwerveModule class for implementation into the SwerveSubsystem
+ */
 public class SwerveModule {
     
 
@@ -27,6 +30,16 @@ public class SwerveModule {
     private final boolean mAbsoluteEncoderReversed;
     private final double mAbsoluteEncoderOffsetRad;
 
+    /**
+     * Constructs the SwerveModule class with offsets and motor IDs
+     * @param driveMotorId SparkMax ID for drive motor
+     * @param steerMotorId SparkMax ID for steer motor
+     * @param driveMotorReversed If the drive motor is reversed
+     * @param steerMotorReversed If the steer motor is reversed
+     * @param absoluteEncoderId Port of the module's absolute encoder
+     * @param absoluteEncoderOffset Offset of the modules absolute encoder
+     * @param absoluteEncoderReversed If the absolute encoder is reversed
+     */
     public SwerveModule(int driveMotorId, int steerMotorId, boolean driveMotorReversed, boolean steerMotorReversed,
             int absoluteEncoderId, double absoluteEncoderOffset, boolean absoluteEncoderReversed) {
         // absolute encoders
@@ -77,42 +90,77 @@ public class SwerveModule {
         Shuffleboard.getTab("Swerve Absolute Encoders").addNumber("" + absoluteEncoderId, () -> mAbsoluteEncoder.getAbsolutePosition());
     }
 
+    /**
+     * Get the position of the drive wheel
+     * @return the position of the drive wheel
+     */
     public double getDrivePosition() {
         return mDriveEncoder.getPosition();
     }
 
+    /**
+     * Get the position of the steer wheel
+     * @return the position of the steer wheel
+     */
     public double getSteerPosition() {
         return mSteerEncoder.getPosition();
     }
 
+    /**
+     * Get the velocity of the drive wheel
+     * @return the velocity of the drive wheel
+     */
     public double getDriveVelocity() {
         return mDriveEncoder.getVelocity(); // should be in meters per second
     }
 
+    /**
+     * Get the velocity of the steer wheel
+     * @return the velocity of the steer wheel
+     */
     public double getSteerVelocity() {
         return mSteerEncoder.getVelocity();
     }
 
+    /**
+     * Get the position of the steer wheel from the absolute encoder
+     * @return the absolute position of the steer wheel
+     */
     public double getAbsoluteEncoder() {
         double angle = mAbsoluteEncoder.getAbsolutePosition() - mAbsoluteEncoderOffsetRad;
         return angle * (mAbsoluteEncoderReversed ? -1.0 : 1.0);
 
     }
 
+    /**
+     * Reset the wheel encoders based on the absolute encoder's position
+     */
     public void resetEncoders() {
         mDriveEncoder.setPosition(0.0);
         mSteerEncoder.setPosition(getAbsoluteEncoder());
     }
 
+    /**
+     * Get the current state of the module
+     * @return the {@link SwerveModuleState} of the module
+     */
     public SwerveModuleState getState() {
         return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getSteerPosition()));
     }
 
+    /**
+     * Get the voltage of the drive motor
+     * @return the voltage of the drive motor
+     */
     public double getDriveVoltage(){
         return mDriveMotor.getBusVoltage();
     }
 
 
+    /**
+     * Set the state of the module
+     * @param state the target state of the module
+     */
     public void setDesiredState(SwerveModuleState state) {
         // if statement allows us to ignore commands that don't have substantial driving
         // velocity
@@ -134,6 +182,9 @@ public class SwerveModule {
         SmartDashboard.putNumber("Swerve[" + mDriveMotor.getDeviceId() + "] Actual velocity", getDriveVelocity());
     }
 
+    /**
+     * Stop the module's motion
+     */
     public void stop() {
         mDriveMotor.set(0);
         mSteerMotor.getPIDController().setReference(0.0, CANSparkMax.ControlType.kPosition);

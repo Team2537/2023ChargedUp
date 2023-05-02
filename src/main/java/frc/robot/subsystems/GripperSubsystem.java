@@ -15,11 +15,18 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 
+/**
+ * The GripperSubsystem class is the subsystem that controls the gripper, and relevant sensors
+ */
 public class GripperSubsystem extends SubsystemBase {
   private DigitalInput m_read;
   private boolean opened;
 
-  public GripperSubsystem(double target_low, double target_high, int lidar_read_port, int lidar_trigger_port) {
+  /**
+   * Constructs the GripperSubsystem class
+   * Initializes the IR sensor as well as closing the gripper when the robot starts.
+   */
+  public GripperSubsystem() {
     m_read = new DigitalInput(4);
     Shuffleboard.getTab("Gripper Subsystem").addBoolean("Gamepiece detected", () -> isTarget());
 
@@ -30,26 +37,34 @@ public class GripperSubsystem extends SubsystemBase {
   private final DoubleSolenoid m_solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 2, 3);
 
 
+  /**
+   * Sends a command to open the gripper
+   */
   public void openGripper() {
     m_solenoid.set(kForward);
     opened = true;
   }
 
+  /**
+   * Sends a command to close the gripper
+   */
   public void closeGripper() {
     m_solenoid.set(kReverse);
     opened = false;
   }
 
+  /**
+   * Check if the gripper is opened
+   * @return If the gripper is currently opened
+   */
   public boolean isOpened(){
     return opened;
   }
 
-  // implement a low pass filter
-  private double lowPass(double raw, double filtered, double alpha) {
-    return (1 - alpha) * filtered + alpha * (raw);
-  }
-
-  // return true if the target is in target bounds
+  /**
+   * Check if there is a gamepiece within range of the gripper
+   * @return if there is a gamepiece within range
+   */
   public boolean isTarget() {
     return !m_read.get();
   }

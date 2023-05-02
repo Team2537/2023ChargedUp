@@ -14,6 +14,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 
+/**
+ * The SwerveSubsystem class is the subsystem that controls the Swerve Drivetrain
+ */
 public class SwerveSubsystem extends SubsystemBase{
     //declare and instantiate all swerve modules
     private final SwerveModule mFrontLeft = new SwerveModule(
@@ -56,7 +59,10 @@ public class SwerveSubsystem extends SubsystemBase{
     private Pigeon2 imu = new Pigeon2(DriveConstants.kPigeonPort); 
 
     private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(DriveConstants.kDriveKinematics, new Rotation2d(0), getModulePositions());
-    //SwerveSubsystem constructor
+
+    /**
+     * Constructs the SwerveSubsystem
+     */
     public SwerveSubsystem() {
 
         mFrontLeft.resetEncoders();
