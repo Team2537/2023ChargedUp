@@ -4,6 +4,9 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.GripperSubsystem;
 
+/**
+ * Command to close the gripper automatically when a gamepiece is within range
+ */
 public class AutoGrabCommand extends CommandBase {
 
     private final GripperSubsystem m_gripperSubsystem;
