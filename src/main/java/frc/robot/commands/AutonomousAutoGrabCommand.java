@@ -8,6 +8,9 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.GripperSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
+/**
+ * Command to move forward until a gamepiece is within range, and then close the gripper
+ */
 public class AutonomousAutoGrabCommand extends CommandBase {
     private final SwerveSubsystem mSwerveSubsystem;
     private final GripperSubsystem mGripperSubsystem;
