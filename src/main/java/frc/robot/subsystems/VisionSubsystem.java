@@ -91,6 +91,13 @@ public class VisionSubsystem extends SubsystemBase{
         return pipe;
     }
 
+    public double getYOffset(){
+        return y;
+    }
+
+    public double getXOffset(){
+        return x;
+    }
 
      @Override
      public void periodic() {
