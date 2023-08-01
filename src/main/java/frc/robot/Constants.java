@@ -126,6 +126,12 @@ public final class Constants {
         public static final double kDeadband = 0.0;
     }
 
+    public static final class VisionConstants {
+        // Relevant heights for vision processing (inches)
+        public static final double LIMELIGHT_HEIGHT = 27.5;
+        public static final double APRIL_TAG_HEIGHT = 55.5;
+    }
+
     public static final class AutoConstants {
 
         public static final double kMaxSpeedMps = 1.0; //DriveConstants.kPhysicalMaxSpeedMps / 3.0
