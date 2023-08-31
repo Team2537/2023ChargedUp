@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -25,6 +26,7 @@ public class LogitechJoystick {
     public double getHatSwitch() {
         return m_joystick.getPOV() == -1 ? 0 : Math.cos(Math.toRadians(m_joystick.getPOV()));
     }
+
 
     /**
      * Gets an axis from the joystick

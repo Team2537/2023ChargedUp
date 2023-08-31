@@ -87,7 +87,7 @@ public class SwerveTeleopCommand extends CommandBase {
     if (!fastSpeedFunction.get()) {
       xSpeed *= DriveConstants.kSpeedMultiplier;
       ySpeed *= DriveConstants.kSpeedMultiplier;
-      turningSpeed *= DriveConstants.kSpeedMultiplier;
+      turningSpeed *= DriveConstants.kSpeedMultiplier * 2;
     }
     else {
       xSpeed *= 1.5;

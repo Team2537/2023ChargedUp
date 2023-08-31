@@ -34,9 +34,7 @@ public class RotateCommand extends CommandBase {
   private boolean isTimeEnd = false;
   private double distanceToEnd = 1000;
   private double angleToEnd = 1000;
-  private PathPlannerState startState, endState;
-
- 
+  private PathPlannerState startState, endState; 
 
   //private final double kp=0.1, ki=0.0, kd=0.0; //turn smoothly but oscillates at setpoint
   //private final double kp=0.03, ki=0.1, kd=0.0; //turn smoothly but oscillates at setpoint

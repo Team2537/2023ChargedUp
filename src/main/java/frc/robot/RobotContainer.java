@@ -5,13 +5,10 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.Constants.LidarConstants;
 import frc.robot.commandGroups.SetPositionCommandGroup;
@@ -21,20 +18,19 @@ import static frc.robot.Constants.ColorConstants.*;
 
 import java.util.function.Supplier;
 
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.CommandGroupBase;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -46,9 +42,10 @@ import com.pathplanner.lib.PathPlannerTrajectory;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-        public final XboxController m_controller = new XboxController(IOConstants.kXboxControllerPort); // TODO: make
-                                                                                                        // private
+        public final XboxController m_controller = new XboxController(IOConstants.kXboxControllerPort);
         private final LogitechJoystick m_gunnerJoystick = new LogitechJoystick(1);
+
+        // private final KeyboardControls m_keyboardControls = new KeyboardControls();
 
         // The robot's subsystems and commands are defined here...
         private final SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
@@ -140,8 +137,16 @@ public class RobotContainer {
                                 () -> -m_controller.getLeftY(), // xSpdFunction is for forward direction
                                 () -> -m_controller.getLeftX(),
                                 () -> -m_controller.getRightX(),
-                                () -> !m_controller.getRightBumper(),
+                                () -> m_controller.getRightBumper(),
                                 () -> m_controller.getLeftTriggerAxis()> 0.75));
+
+                // m_swerveSubsystem.setDefaultCommand(new SwerveTeleopCommand(
+                //                 m_swerveSubsystem,
+                //                 () -> m_keyboardControls.getForward(), // xSpdFunction is for forward direction
+                //                 () -> m_keyboardControls.getLeft(),
+                //                 () -> m_keyboardControls.getRotate(),
+                //                 () -> false,
+                //                 () -> false));
 
                 // Configure the button bindings
                 configureButtonBindings();
@@ -195,6 +200,13 @@ public class RobotContainer {
                 m_gunnerJoystick.getButton(4).onTrue(m_grabPosition);
                 m_gunnerJoystick.getButton(10).onTrue(m_shelfPosition);
 
+                // new Trigger(() -> m_keyboardControls.getClaw()).onTrue(new OpenGripperCommand(m_gripperSubsystem));
+                // new Trigger(() -> m_keyboardControls.getClaw()).onFalse(new CloseGripperCommand(m_gripperSubsystem));
+
+                // new Trigger(() -> m_keyboardControls.getPosition() == 1).onTrue(m_homingCommand);
+                // new Trigger(() -> m_keyboardControls.getPosition() == 2).onTrue(m_shelfPosition);
+                
+
                 m_gunnerJoystick.getButton(6).onTrue(m_returnExtension);
                 m_gunnerJoystick.getThrottle().whileTrue(m_manualControl);
 
@@ -202,6 +214,8 @@ public class RobotContainer {
                 m_gunnerJoystick.getButton(3).toggleOnTrue(yellowColor);
 
                 m_gunnerJoystick.getButton(1).toggleOnTrue(m_autoGrabCommand);
+
+                
 
                 // Trigger moveForwardTrigger = new Trigger(() -> m_controller.getPOV() == 0);
                 Trigger moveRightTrigger = new Trigger(() -> m_controller.getPOV() > 0 && m_controller.getPOV() < 180);
@@ -458,7 +472,8 @@ public class RobotContainer {
                 // new RotateCommand(m_swerveSubsystem, Rotation2d.fromDegrees(180.0)
                 // ))));
 
-                return m_autoChooser.getSelected().get();
+                // return m_autoChooser.getSelected().get();
+                return null;
                 // two cubes
                 // return new HomingCommand(m_armPivotSubsystem,
                 // m_armTelescopeSubsystem).andThen(
