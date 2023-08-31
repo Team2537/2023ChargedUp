@@ -136,8 +136,8 @@ public class RobotContainer {
 
                 m_swerveSubsystem.setDefaultCommand(new SwerveTeleopCommand(
                                 m_swerveSubsystem,
-                                () -> 0.0, // xSpdFunction is for forward direction
-                                () -> 0.0,
+                                () -> -m_controller.getLeftY(), // xSpdFunction is for forward direction
+                                () -> -m_controller.getLeftX(),
                                 () -> -m_controller.getRightX(),
                                 () -> !m_controller.getRightBumper(),
                                 () -> m_controller.getLeftTriggerAxis()> 0.75));
