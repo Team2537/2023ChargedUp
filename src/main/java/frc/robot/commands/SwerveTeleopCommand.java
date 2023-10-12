@@ -84,15 +84,15 @@ public class SwerveTeleopCommand extends CommandBase {
 
     // SmartDashboard.putNumber("Turning speed", turningSpeed);
 
-    if (!fastSpeedFunction.get()) {
-      xSpeed *= DriveConstants.kSpeedMultiplier;
-      ySpeed *= DriveConstants.kSpeedMultiplier;
-      turningSpeed *= DriveConstants.kSpeedMultiplier;
-    }
-    else {
+    if (fastSpeedFunction.get()) {
       xSpeed *= 3;
       ySpeed *= 3;
       turningSpeed *= 2.5;
+    }
+    else {
+      xSpeed *= DriveConstants.kSpeedMultiplier;
+      ySpeed *= DriveConstants.kSpeedMultiplier;
+      turningSpeed *= DriveConstants.kSpeedMultiplier;
     }
 
     // if (Math.abs(xSpeed - chassisSpeeds.vxMetersPerSecond) > activeAccel){
@@ -121,6 +121,8 @@ public class SwerveTeleopCommand extends CommandBase {
 
     // 6. Output each module states to wheels
     mSwerveSubsystem.setModuleStates(moduleStates);
+
+
 
   }
 

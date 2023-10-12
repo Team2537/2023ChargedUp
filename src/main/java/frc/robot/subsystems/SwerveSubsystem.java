@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import org.ejml.equation.ManagerFunctions;
+
 import com.ctre.phoenix.sensors.Pigeon2;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -103,10 +105,10 @@ public class SwerveSubsystem extends SubsystemBase{
         ShuffleboardTab swerveTab = Shuffleboard.getTab("Swerve State");
 
         swerveTab.addNumber("Heading", () -> getHeading());
-        swerveTab.addNumber("FLV", () -> mFrontLeft.getDriveVelocity());
-        swerveTab.addNumber("FRV", () -> mFrontRight.getDriveVelocity());
-        swerveTab.addNumber("BLV", () -> mBackLeft.getDriveVelocity());
-        swerveTab.addNumber("BRV", () -> mBackRight.getDriveVelocity());
+        swerveTab.addNumber("FLV", () -> Math.abs(mFrontLeft.getDriveVelocity()));
+        swerveTab.addNumber("FRV", () -> Math.abs(mFrontRight.getDriveVelocity()));
+        swerveTab.addNumber("BLV", () -> Math.abs(mBackLeft.getDriveVelocity()));
+        swerveTab.addNumber("BRV", () -> Math.abs(mBackRight.getDriveVelocity()));
         
 
 

@@ -73,7 +73,7 @@ public class ArmPivotSubsystem extends SubsystemBase {
 
     // PID coefficients
     kP = 0.0004;
-    kI = 0.00000001;
+    kI = 0.0000001;
     kD = 0;
 
     // set PID coefficients
