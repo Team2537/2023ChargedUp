@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -19,6 +20,7 @@ import frc.robot.commandGroups.SetPositionCommandGroup;
 import static frc.robot.Constants.ArmConstants.*;
 import static frc.robot.Constants.ColorConstants.*;
 
+import java.io.File;
 import java.util.function.Supplier;
 
 import frc.robot.commands.*;
@@ -26,6 +28,7 @@ import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandGroupBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -51,13 +54,11 @@ public class RobotContainer {
         private final LogitechJoystick m_gunnerJoystick = new LogitechJoystick(1);
 
         // The robot's subsystems and commands are defined here...
-        private final SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
+        private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"))
         private final ArmPivotSubsystem m_armPivotSubsystem = new ArmPivotSubsystem();
         private final ArmTelescopeSubsystem m_armTelescopeSubsystem = new ArmTelescopeSubsystem();
         private final GripperSubsystem m_gripperSubsystem = new GripperSubsystem(LidarConstants.kTargetLow,
                         LidarConstants.kTargetHigh, LidarConstants.kLidarReadPort, LidarConstants.kLidarTriggerPort);
-        private final LockCommand lockCommand = new LockCommand(m_swerveSubsystem);
-        private final ZeroHeadingCommand m_zeroHeadingCommand = new ZeroHeadingCommand(m_swerveSubsystem);
         private final CameraSubsystem m_cameraSubsystem = new CameraSubsystem();
 
         private final RGBSubsystem m_RgbSubsystem = new RGBSubsystem(1);
@@ -174,13 +175,13 @@ public class RobotContainer {
                 // 0.9);
                 // rightTrigger.onTrue(new LockCommand(swerveSubsystem));
 
-                yButton.toggleOnTrue(lockCommand);
 
                 Trigger bothTriggers = new Trigger(
                                 () -> (m_controller.getLeftTriggerAxis() > 0.75
                                                 && m_controller.getRightTriggerAxis() > 0.75));
 
-                bothTriggers.onTrue(m_zeroHeadingCommand);
+                bothTriggers.onTrue(new InstantCommand(drivebase::zeroGyro));
+                yButton.toggleOnTrue(new InstantCommand(drivebase::lock));
 
                 m_gunnerJoystick.getButton(8).onTrue(m_homingCommand);
                 m_gunnerJoystick.getButton(2).onTrue(toggleGripper);
@@ -207,10 +208,6 @@ public class RobotContainer {
                 // Trigger moveBackTrigger = new Trigger(() -> m_controller.getPOV() == 180);
                 Trigger moveLeftTrigger = new Trigger(() -> m_controller.getPOV() > 180 && m_controller.getPOV() < 360);
 
-                // moveForwardTrigger.whileTrue(new SetChassisStateCommand(m_swerveSubsystem, () -> 0.1, () -> 0.0, null));
-                moveRightTrigger.whileTrue(new SetChassisStateCommand(m_swerveSubsystem, () -> 0.0, () -> -0.1, null));
-                // moveBackTrigger.whileTrue(new SetChassisStateCommand(m_swerveSubsystem, () -> -0.1, () -> 0.0, null));
-                moveLeftTrigger.whileTrue(new SetChassisStateCommand(m_swerveSubsystem, () -> 0.0, () -> 0.1, null));
         }
 
         public Command superExtensionCommand() {
@@ -241,17 +238,10 @@ public class RobotContainer {
                 new FixedAngleCommand(m_armPivotSubsystem, GRAB_ANGLE),
                 new FixedExtensionCommand(m_armTelescopeSubsystem, GRAB_EXTENSION),
                 new OpenGripperCommand(m_gripperSubsystem),
-                new AutonomousAutoGrabCommand(m_swerveSubsystem, m_gripperSubsystem)
+                new AutonomousAutoGrabCommand(drivebase, m_gripperSubsystem)
                 );
         }
 
-        public Command testAutoBalance() {
-                return new SequentialCommandGroup(
-                new BalanceBackUpCommand(m_swerveSubsystem, 1.0),
-                // new BalanceRampCommand(m_swerveSubsystem, 0.7, 1.25),
-                new BalanceCommand(m_swerveSubsystem)
-                );
-        }
 
         public Command placeAndDriveCommand() {
                 PathPlannerTrajectory trajPath = PathPlanner.loadPath("Backup",
