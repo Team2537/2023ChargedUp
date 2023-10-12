@@ -90,9 +90,9 @@ public class SwerveTeleopCommand extends CommandBase {
       turningSpeed *= DriveConstants.kSpeedMultiplier;
     }
     else {
-      xSpeed *= 1.5;
-      ySpeed *= 1.5;
-      turningSpeed *= 1.5;
+      xSpeed *= 3;
+      ySpeed *= 3;
+      turningSpeed *= 2.5;
     }
 
     // if (Math.abs(xSpeed - chassisSpeeds.vxMetersPerSecond) > activeAccel){
