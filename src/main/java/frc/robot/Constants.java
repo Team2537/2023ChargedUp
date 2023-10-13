@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathConstraints;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
@@ -43,6 +47,18 @@ public final class Constants {
 
         public static final double MAX_SPEED        = 4;
         public static final double MAX_ACCELERATION = 2;
+    }
+
+    public static final class Paths{
+        public static final PathConstraints constraints = new PathConstraints(3.0, 3.5);
+
+        public static final PathPlannerTrajectory backupTraj = PathPlanner.loadPath("backup", constraints);
+        public static final PathPlannerTrajectory blueTwoPieceTraj = PathPlanner.loadPath("Path", constraints);
+        public static final PathPlannerTrajectory blueTwoPieceTrajReverse = PathPlanner.loadPath("Reverse Path", constraints);
+
+        public static final PathPlannerTrajectory redTwoPieceTraj = PathPlanner.loadPath("Red Path", constraints);
+        public static final PathPlannerTrajectory redTwoPieceTrajReverse = PathPlanner.loadPath("Red Reverse Path", constraints);
+
     }
 
     public static final class Drivebase

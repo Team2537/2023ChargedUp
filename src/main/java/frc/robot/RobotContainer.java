@@ -24,7 +24,9 @@ import java.io.File;
 import java.util.function.Supplier;
 
 import frc.robot.commands.*;
+import frc.robot.commands.swerve.FollowTrajectory;
 import frc.robot.commands.swerve.TeleopDrive;
+import frc.robot.commands.swerve.WaitUntilHeading;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -197,6 +199,84 @@ public class RobotContainer {
 
 
         }
+
+
+
+        
+        public Command placeAndDrive(){
+                return new SequentialCommandGroup(
+                new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem),
+                new SetPositionCommandGroup(m_topRowAngle, m_topRowExtension),
+                new OpenGripperCommand(m_gripperSubsystem),
+                new WaitCommand(0.1),
+                new ParallelCommandGroup(
+                        new ParallelCommandGroup(
+                                new SetPositionCommandGroup(m_grabAngle, m_grabExtension),
+                                new FollowTrajectory(drivebase, Constants.Paths.backupTraj, true)
+                        )
+                ));
+        }
+
+        public Command blueTwoPiece(){
+                return new SequentialCommandGroup(
+                        new SetPositionCommandGroup(m_topRowAngle, m_topRowExtension),
+                        new OpenGripperCommand(m_gripperSubsystem),
+                        new WaitCommand(0.1),
+                        new ParallelCommandGroup(                           
+                                new SetPositionCommandGroup(m_grabAngle, m_grabExtension),
+                                new FollowTrajectory(drivebase, Constants.Paths.blueTwoPieceTraj, true)
+                        ),
+                        new AutonomousAutoGrabCommand(drivebase, m_gripperSubsystem),
+                        new ParallelCommandGroup(
+                                new SequentialCommandGroup(
+                                        new WaitUntilHeading(drivebase, 180),
+                                        new SetPositionCommandGroup(m_topRowAngle, m_topRowExtension)
+
+                                ),
+                                new FollowTrajectory(drivebase, Constants.Paths.blueTwoPieceTrajReverse, true)
+                        ),
+                        new OpenGripperCommand(m_gripperSubsystem)
+                );
+        }
+
+        public Command redTwoPiece(){
+                return new SequentialCommandGroup(
+                        new SetPositionCommandGroup(m_topRowAngle, m_topRowExtension),
+                        new OpenGripperCommand(m_gripperSubsystem),
+                        new WaitCommand(0.1),
+                        new ParallelCommandGroup(                           
+                                new SetPositionCommandGroup(m_grabAngle, m_grabExtension),
+                                new FollowTrajectory(drivebase, Constants.Paths.redTwoPieceTraj, true)
+                        ),
+                        new AutonomousAutoGrabCommand(drivebase, m_gripperSubsystem),
+                        new ParallelCommandGroup(
+                                new SequentialCommandGroup(
+                                        new WaitUntilHeading(drivebase, 180),
+                                        new SetPositionCommandGroup(m_topRowAngle, m_topRowExtension)
+
+                                ),
+                                new FollowTrajectory(drivebase, Constants.Paths.redTwoPieceTrajReverse, true)
+                        ),
+                        new OpenGripperCommand(m_gripperSubsystem)
+                );
+        }
+
+        public Command basicPlace(){
+                return new SequentialCommandGroup(
+                        new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem),
+                        new SetPositionCommandGroup(m_topRowAngle, m_topRowExtension),
+                        new OpenGripperCommand(m_gripperSubsystem),
+                        new WaitCommand(0.1),
+                        new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem)
+                );
+        }
+
+        public Command getAutonomousCommand(){
+                return m_autoChooser.getSelected().get();
+        }
+
+                
+
 
         
 
