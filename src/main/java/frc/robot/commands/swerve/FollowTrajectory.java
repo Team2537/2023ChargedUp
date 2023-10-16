@@ -23,6 +23,7 @@ public class FollowTrajectory extends SequentialCommandGroup {
                         Constants.Auton.yAutoPID.createPIDController(),
                         Constants.Auton.angleAutoPID.createPIDController(),
                         drivebase::setChassisSpeeds,
+                        true,
                         drivebase
                             )
 
