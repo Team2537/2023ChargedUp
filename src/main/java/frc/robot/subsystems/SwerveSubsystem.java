@@ -7,10 +7,13 @@ import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -32,6 +35,7 @@ public class SwerveSubsystem extends SubsystemBase {
     private final SwerveDrive swerveDrive;
     private SwerveAutoBuilder autoBuilder = null;
     private final CommandXboxController driverXbox = new CommandXboxController(0);
+    private ShuffleboardTab swerveTab;
 
     public SwerveSubsystem(File directory){
         SwerveDriveTelemetry.verbosity = SwerveDriveTelemetry.TelemetryVerbosity.HIGH;
@@ -40,6 +44,11 @@ public class SwerveSubsystem extends SubsystemBase {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
+        swerveTab = Shuffleboard.getTab("Swerve Tab");
+        swerveTab.addNumber("Heading", () -> getHeading().getDegrees());
+
+        setMotorBrake(false);
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop){
@@ -73,6 +82,12 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public void zeroGyro(){
+
+        // Rotation3d currentRot = swerveDrive.getGyroRotation3d();
+        // currentRot.rotateBy(new Rotation3d(0, 0, -90));
+
+        // swerveDrive.setGyroOffset(currentRot);
+        
         swerveDrive.zeroGyro();
     }
 
