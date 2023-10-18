@@ -24,6 +24,7 @@ import java.io.File;
 import java.util.function.Supplier;
 
 import frc.robot.commands.*;
+import frc.robot.commands.swerve.AbsoluteDrive;
 import frc.robot.commands.swerve.FollowTrajectory;
 import frc.robot.commands.swerve.TeleopDrive;
 import frc.robot.commands.swerve.WaitUntilHeading;
@@ -140,16 +141,20 @@ public class RobotContainer {
         public RobotContainer() {
 
                 TeleopDrive closedTeleopDrive = new TeleopDrive(drivebase,
-                () -> m_controller.getLeftX(),
                 () -> m_controller.getLeftY(),
+                () -> m_controller.getLeftX(),
                 () -> -m_controller.getRightX(),
-                () -> m_controller.getHID().getLeftBumper(),
+                () -> !m_controller.getHID().getLeftBumper(),
                 false,
                 false);
+
                 // Configure the button bindings
                 configureButtonBindings();
                
                 Shuffleboard.getTab("Autonomous").add(m_autoChooser);
+
+                m_autoChooser.addOption("Blue Two Piece", () -> blueTwoPiece());
+                m_autoChooser.addOption("Test Drive", () -> testDrive());
 
                 drivebase.setDefaultCommand(closedTeleopDrive);
 
@@ -170,12 +175,9 @@ public class RobotContainer {
                 // rightTrigger.onTrue(new LockCommand(swerveSubsystem));
 
 
-                Trigger bothTriggers = new Trigger(
-                                () -> (m_controller.getLeftTriggerAxis() > 0.75
-                                                && m_controller.getRightTriggerAxis() > 0.75));
 
-                bothTriggers.onTrue(new InstantCommand(drivebase::zeroGyro));
                 m_controller.y().toggleOnTrue(new InstantCommand(drivebase::lock));
+                m_controller.a().onTrue(new InstantCommand(drivebase::zeroGyro));
 
                 m_gunnerJoystick.getButton(8).onTrue(m_homingCommand);
                 m_gunnerJoystick.getButton(2).onTrue(toggleGripper);
@@ -268,6 +270,17 @@ public class RobotContainer {
                         new OpenGripperCommand(m_gripperSubsystem),
                         new WaitCommand(0.1),
                         new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem)
+                );
+        }
+
+
+        public Command testDrive(){
+                return new SequentialCommandGroup(
+                        new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem),
+                        new SetPositionCommandGroup(m_middleRowAngle, m_middleRowExtension),
+                        new WaitCommand(0.1),
+                        new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem),
+                        new FollowTrajectory(drivebase, Constants.Paths.testDrive, true)
                 );
         }
 
