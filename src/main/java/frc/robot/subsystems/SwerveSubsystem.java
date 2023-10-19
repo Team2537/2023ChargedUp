@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.sensors.WPI_Pigeon2;
+import com.ctre.phoenix.sensors.Pigeon2.AxisDirection;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
@@ -36,6 +38,7 @@ public class SwerveSubsystem extends SubsystemBase {
     private SwerveAutoBuilder autoBuilder = null;
     private final CommandXboxController driverXbox = new CommandXboxController(0);
     private ShuffleboardTab swerveTab;
+    private WPI_Pigeon2 pigeon2;
 
     public SwerveSubsystem(File directory){
         SwerveDriveTelemetry.verbosity = SwerveDriveTelemetry.TelemetryVerbosity.HIGH;
@@ -49,6 +52,8 @@ public class SwerveSubsystem extends SubsystemBase {
         swerveTab.addNumber("Heading", () -> getHeading().getDegrees());
 
         setMotorBrake(false);
+        pigeon2 = (WPI_Pigeon2)(getSwerveDriveConfiguration().imu.getIMU());
+        pigeon2.configMountPose(AxisDirection.PositiveX, AxisDirection.PositiveZ);
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop){
