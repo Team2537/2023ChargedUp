@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -13,6 +14,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.Auton;
 import frc.robot.Constants.IOConstants;
 import frc.robot.Constants.LidarConstants;
 import frc.robot.commandGroups.SetPositionCommandGroup;
@@ -21,7 +23,12 @@ import static frc.robot.Constants.ArmConstants.*;
 import static frc.robot.Constants.ColorConstants.*;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.List;
 import java.util.function.Supplier;
+
+import javax.swing.plaf.TreeUI;
+import javax.xml.crypto.dsig.spec.HMACParameterSpec;
 
 import frc.robot.commands.*;
 import frc.robot.commands.swerve.AbsoluteDrive;
@@ -32,9 +39,11 @@ import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandGroupBase;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -43,6 +52,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.auto.PIDConstants;
+import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -134,6 +145,7 @@ public class RobotContainer {
         private final SetColorCommand awesomeColor = new SetColorCommand(m_RgbSubsystem, AWESOME);
 
         private final SendableChooser<Supplier<Command>> m_autoChooser = new SendableChooser<>();
+        private HashMap<String, Command> eventMap = new HashMap<>();
 
         /**
          * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -141,8 +153,8 @@ public class RobotContainer {
         public RobotContainer() {
 
                 TeleopDrive closedTeleopDrive = new TeleopDrive(drivebase,
-                () -> m_controller.getLeftY(),
-                () -> m_controller.getLeftX(),
+                () -> MathUtil.applyDeadband(m_controller.getLeftY(), Constants.OperatorConstants.LEFT_Y_DEADBAND),
+                () -> MathUtil.applyDeadband(m_controller.getLeftX(), Constants.OperatorConstants.LEFT_X_DEADBAND),
                 () -> -m_controller.getRightX(),
                 () -> !m_controller.getHID().getLeftBumper(),
                 false,
@@ -154,11 +166,20 @@ public class RobotContainer {
                 Shuffleboard.getTab("Autonomous").add(m_autoChooser);
 
                 m_autoChooser.addOption("Blue Two Piece", () -> blueTwoPiece());
-                m_autoChooser.addOption("Test Drive", () -> testDrive());
+                m_autoChooser.addOption("Straight Line", () -> testDrive());
+                m_autoChooser.addOption("Test Home and Place", () -> testHomeDrive());
+                m_autoChooser.addOption("Place and Drive", () -> placeAndDrive());
+                m_autoChooser.addOption("Test Event", () -> testEvent());
 
                 drivebase.setDefaultCommand(closedTeleopDrive);
 
-
+                // Add eventmap markers
+                eventMap.put("event", new PrintCommand("we did it"));
+                eventMap.put("home", new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem));
+                eventMap.put("angleMid", new FixedAngleCommand(m_armPivotSubsystem, Constants.ArmConstants.MIDDLE_ROW_ANGLE));
+                eventMap.put("extendMid", new FixedExtensionCommand(m_armTelescopeSubsystem, Constants.ArmConstants.MIDDLE_ROW_EXTENSION));
+                eventMap.put("openGripper", new OpenGripperCommand(m_gripperSubsystem));
+                
         }
 
         /**
@@ -178,6 +199,8 @@ public class RobotContainer {
 
                 m_controller.y().toggleOnTrue(new InstantCommand(drivebase::lock));
                 m_controller.a().onTrue(new InstantCommand(drivebase::zeroGyro));
+
+                m_controller.x().onTrue(new InstantCommand(() -> drivebase.postTrajectory(Constants.Auto.straightLine)));
 
                 m_gunnerJoystick.getButton(8).onTrue(m_homingCommand);
                 m_gunnerJoystick.getButton(2).onTrue(toggleGripper);
@@ -208,14 +231,14 @@ public class RobotContainer {
         public Command placeAndDrive(){
                 return new SequentialCommandGroup(
                 new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem),
-                new SetPositionCommandGroup(m_topRowAngle, m_topRowExtension),
+                new SetPositionCommandGroup(m_middleRowAngle, m_middleRowExtension),
                 new OpenGripperCommand(m_gripperSubsystem),
                 new WaitCommand(0.1),
+                new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem),
                 new ParallelCommandGroup(
-                        new ParallelCommandGroup(
-                                new SetPositionCommandGroup(m_grabAngle, m_grabExtension),
-                                new FollowTrajectory(drivebase, Constants.Paths.backupTraj, true)
-                        )
+                        new SetPositionCommandGroup(m_grabAngle, m_grabExtension),
+                        Commands.sequence(new FollowTrajectory(drivebase, Constants.Auto.backupTraj, true))
+                
                 ));
         }
 
@@ -226,7 +249,7 @@ public class RobotContainer {
                         new WaitCommand(0.1),
                         new ParallelCommandGroup(                           
                                 new SetPositionCommandGroup(m_grabAngle, m_grabExtension),
-                                new FollowTrajectory(drivebase, Constants.Paths.blueTwoPieceTraj, true)
+                                new FollowTrajectory(drivebase, Constants.Auto.blueTwoPieceTraj, true)
                         ),
                         new AutonomousAutoGrabCommand(drivebase, m_gripperSubsystem),
                         new ParallelCommandGroup(
@@ -235,7 +258,7 @@ public class RobotContainer {
                                         new SetPositionCommandGroup(m_topRowAngle, m_topRowExtension)
 
                                 ),
-                                new FollowTrajectory(drivebase, Constants.Paths.blueTwoPieceTrajReverse, true)
+                                new FollowTrajectory(drivebase, Constants.Auto.blueTwoPieceTrajReverse, true)
                         ),
                         new OpenGripperCommand(m_gripperSubsystem)
                 );
@@ -248,7 +271,7 @@ public class RobotContainer {
                         new WaitCommand(0.1),
                         new ParallelCommandGroup(                           
                                 new SetPositionCommandGroup(m_grabAngle, m_grabExtension),
-                                new FollowTrajectory(drivebase, Constants.Paths.redTwoPieceTraj, true)
+                                new FollowTrajectory(drivebase, Constants.Auto.redTwoPieceTraj, true)
                         ),
                         new AutonomousAutoGrabCommand(drivebase, m_gripperSubsystem),
                         new ParallelCommandGroup(
@@ -257,7 +280,7 @@ public class RobotContainer {
                                         new SetPositionCommandGroup(m_topRowAngle, m_topRowExtension)
 
                                 ),
-                                new FollowTrajectory(drivebase, Constants.Paths.redTwoPieceTrajReverse, true)
+                                new FollowTrajectory(drivebase, Constants.Auto.redTwoPieceTrajReverse, true)
                         ),
                         new OpenGripperCommand(m_gripperSubsystem)
                 );
@@ -275,12 +298,21 @@ public class RobotContainer {
 
 
         public Command testDrive(){
+                return new FollowTrajectory(drivebase, Constants.Auto.straightLine, true);
+        }
+
+        public CommandBase testEvent(){
+                List<PathPlannerTrajectory> path = PathPlanner.loadPathGroup("blueTwoPieceExit", Constants.Auto.constraints);
+
+                SwerveAutoBuilder autoBuilder = new SwerveAutoBuilder(drivebase::getPose, drivebase::resetOdometry, Constants.Auton.translationConstants, Constants.Auton.rotationConstants, drivebase::setChassisSpeeds, eventMap, drivebase);
+
+                return Commands.sequence(autoBuilder.fullAuto(path));
+        }
+
+        public CommandBase testHomeDrive(){
                 return new SequentialCommandGroup(
                         new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem),
-                        new SetPositionCommandGroup(m_middleRowAngle, m_middleRowExtension),
-                        new WaitCommand(0.1),
-                        new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem),
-                        new FollowTrajectory(drivebase, Constants.Paths.testDrive, true)
+                        Commands.sequence(new FollowTrajectory(drivebase, Constants.Auto.testDrive, true))
                 );
         }
 

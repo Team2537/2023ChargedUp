@@ -21,8 +21,8 @@ public class TeleopDrive extends CommandBase
 {
 
     private final SwerveSubsystem swerve;
-    private final DoubleSupplier   vX;
-    private final DoubleSupplier   vY;
+    private final DoubleSupplier   vForward;
+    private final DoubleSupplier   vSide;
     private final DoubleSupplier   omega;
     private final BooleanSupplier  driveMode;
     private final boolean          isOpenLoop;
@@ -38,12 +38,12 @@ public class TeleopDrive extends CommandBase
      *
      * @param swerve The subsystem used by this command.
      */
-    public TeleopDrive(SwerveSubsystem swerve, DoubleSupplier vX, DoubleSupplier vY, DoubleSupplier omega,
+    public TeleopDrive(SwerveSubsystem swerve, DoubleSupplier vForward, DoubleSupplier vSide, DoubleSupplier omega,
                        BooleanSupplier driveMode, boolean isOpenLoop, boolean headingCorrection)
     {
         this.swerve = swerve;
-        this.vX = vX;
-        this.vY = vY;
+        this.vForward = vForward;
+        this.vSide = vSide;
         this.omega = omega;
         this.driveMode = driveMode;
         this.isOpenLoop = isOpenLoop;
@@ -71,9 +71,12 @@ public class TeleopDrive extends CommandBase
     @Override
     public void execute()
     {
-        double xVelocity   = Math.pow(vX.getAsDouble(), 3);
-        double yVelocity   = Math.pow(vY.getAsDouble(), 3);
+
+        
+        double xVelocity   = Math.pow(vForward.getAsDouble(), 3);
+        double yVelocity   = Math.pow(vSide.getAsDouble(), 3);
         double angVelocity = Math.pow(omega.getAsDouble(), 3);
+
         SmartDashboard.putNumber("vX", xVelocity);
         SmartDashboard.putNumber("vY", yVelocity);
         SmartDashboard.putNumber("omega", angVelocity);

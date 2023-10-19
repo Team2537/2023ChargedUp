@@ -6,6 +6,10 @@ package frc.robot;
 
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.auto.PIDConstants;
+
+import java.util.HashMap;
+
 import com.pathplanner.lib.PathConstraints;
 
 import edu.wpi.first.math.geometry.Translation2d;
@@ -14,6 +18,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import swervelib.math.Matter;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj2.command.Command;
 import swervelib.parser.PIDFConfig;
 
 
@@ -42,17 +47,21 @@ public final class Constants {
     {
 
         public static final PIDFConfig xAutoPID     = new PIDFConfig(0.7, 0, 0);
-        public static final PIDFConfig yAutoPID     = new PIDFConfig(0.7, 0, 0);
-        public static final PIDFConfig angleAutoPID = new PIDFConfig(0.4, 0, 0.01);
+        public static final PIDFConfig yAutoPID     = new PIDFConfig(0.3, 0, 0.2);
+        public static final PIDFConfig angleAutoPID = new PIDFConfig(0.3, 0, 0.05);
+
+        public static final PIDConstants translationConstants = new PIDConstants(Auton.yAutoPID.p, Auton.yAutoPID.i, Auton.yAutoPID.d);
+        public static final PIDConstants rotationConstants = new PIDConstants(Auton.angleAutoPID.p, Auton.angleAutoPID.i, Auton.angleAutoPID.d);
 
         public static final double MAX_SPEED        = 4;
         public static final double MAX_ACCELERATION = 2;
     }
 
-    public static final class Paths{
+    public static final class Auto{
+
         public static final PathConstraints constraints = new PathConstraints(1.0, 0.5);
 
-        public static final PathPlannerTrajectory backupTraj = PathPlanner.loadPath("backup", constraints);
+        public static final PathPlannerTrajectory backupTraj = PathPlanner.loadPath("Backup", constraints);
         public static final PathPlannerTrajectory blueTwoPieceTraj = PathPlanner.loadPath("Path", constraints);
         public static final PathPlannerTrajectory blueTwoPieceTrajReverse = PathPlanner.loadPath("Reverse Path", constraints);
 
@@ -60,6 +69,7 @@ public final class Constants {
         public static final PathPlannerTrajectory redTwoPieceTrajReverse = PathPlanner.loadPath("Red Reverse Path", constraints);
 
         public static final PathPlannerTrajectory testDrive = PathPlanner.loadPath("blueTwoPieceExit", constraints);
+        public static final PathPlannerTrajectory straightLine = PathPlanner.loadPath("Straight Path", constraints);
 
     }
 

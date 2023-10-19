@@ -50,10 +50,18 @@ public class SwerveSubsystem extends SubsystemBase {
 
         swerveTab = Shuffleboard.getTab("Swerve Tab");
         swerveTab.addNumber("Heading", () -> getHeading().getDegrees());
+        swerveTab.addNumber("Pitch", () -> getPitch().getDegrees());
+
+        swerveTab.addNumber("Module 1", () -> getSwerveDriveConfiguration().modules[0].getAbsolutePosition());
+        swerveTab.addNumber("Module 2", () -> getSwerveDriveConfiguration().modules[1].getAbsolutePosition());
+        swerveTab.addNumber("Module 3", () -> getSwerveDriveConfiguration().modules[2].getAbsolutePosition());
+        swerveTab.addNumber("Module 4", () -> getSwerveDriveConfiguration().modules[3].getAbsolutePosition());
+
 
         setMotorBrake(false);
-        pigeon2 = (WPI_Pigeon2)(getSwerveDriveConfiguration().imu.getIMU());
-        pigeon2.configMountPose(AxisDirection.PositiveX, AxisDirection.PositiveZ);
+
+
+
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop){
@@ -87,12 +95,6 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public void zeroGyro(){
-
-        // Rotation3d currentRot = swerveDrive.getGyroRotation3d();
-        // currentRot.rotateBy(new Rotation3d(0, 0, -90));
-
-        // swerveDrive.setGyroOffset(currentRot);
-        
         swerveDrive.zeroGyro();
     }
 
