@@ -165,7 +165,6 @@ public class RobotContainer {
                
                 Shuffleboard.getTab("Autonomous").add(m_autoChooser);
 
-                m_autoChooser.addOption("Blue Two Piece", () -> blueTwoPiece());
                 m_autoChooser.addOption("Straight Line", () -> testDrive());
                 m_autoChooser.addOption("Test Home and Place", () -> testHomeDrive());
                 m_autoChooser.addOption("Place and Drive", () -> placeAndDrive());
@@ -242,49 +241,7 @@ public class RobotContainer {
                 ));
         }
 
-        public Command blueTwoPiece(){
-                return new SequentialCommandGroup(
-                        new SetPositionCommandGroup(m_topRowAngle, m_topRowExtension),
-                        new OpenGripperCommand(m_gripperSubsystem),
-                        new WaitCommand(0.1),
-                        new ParallelCommandGroup(                           
-                                new SetPositionCommandGroup(m_grabAngle, m_grabExtension),
-                                new FollowTrajectory(drivebase, Constants.Auto.blueTwoPieceTraj, true)
-                        ),
-                        new AutonomousAutoGrabCommand(drivebase, m_gripperSubsystem),
-                        new ParallelCommandGroup(
-                                new SequentialCommandGroup(
-                                        new WaitUntilHeading(drivebase, 180),
-                                        new SetPositionCommandGroup(m_topRowAngle, m_topRowExtension)
 
-                                ),
-                                new FollowTrajectory(drivebase, Constants.Auto.blueTwoPieceTrajReverse, true)
-                        ),
-                        new OpenGripperCommand(m_gripperSubsystem)
-                );
-        }
-
-        public Command redTwoPiece(){
-                return new SequentialCommandGroup(
-                        new SetPositionCommandGroup(m_topRowAngle, m_topRowExtension),
-                        new OpenGripperCommand(m_gripperSubsystem),
-                        new WaitCommand(0.1),
-                        new ParallelCommandGroup(                           
-                                new SetPositionCommandGroup(m_grabAngle, m_grabExtension),
-                                new FollowTrajectory(drivebase, Constants.Auto.redTwoPieceTraj, true)
-                        ),
-                        new AutonomousAutoGrabCommand(drivebase, m_gripperSubsystem),
-                        new ParallelCommandGroup(
-                                new SequentialCommandGroup(
-                                        new WaitUntilHeading(drivebase, 180),
-                                        new SetPositionCommandGroup(m_topRowAngle, m_topRowExtension)
-
-                                ),
-                                new FollowTrajectory(drivebase, Constants.Auto.redTwoPieceTrajReverse, true)
-                        ),
-                        new OpenGripperCommand(m_gripperSubsystem)
-                );
-        }
 
         public Command basicPlace(){
                 return new SequentialCommandGroup(
@@ -313,6 +270,38 @@ public class RobotContainer {
                 return new SequentialCommandGroup(
                         new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem),
                         Commands.sequence(new FollowTrajectory(drivebase, Constants.Auto.testDrive, true))
+                );
+        }
+
+        public CommandBase scoreBackBump(){
+                return new SequentialCommandGroup(
+                        new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem),
+                        new FixedAngleCommand(m_armPivotSubsystem, TOP_ROW_ANGLE),
+                        new FixedExtensionCommand(m_armTelescopeSubsystem, TOP_ROW_EXTENSION),
+                        new OpenGripperCommand(m_gripperSubsystem),
+                        new WaitCommand(0.1),
+                        new ParallelCommandGroup(
+                                new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem),
+                                new CloseGripperCommand(m_gripperSubsystem)
+                        ),
+                        Commands.sequence(new FollowTrajectory(drivebase, Constants.Auto.scoreBackBump, true))
+                        
+                );
+        }
+
+        public CommandBase scoreBackNoBump(){
+                return new SequentialCommandGroup(
+                        new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem),
+                        new FixedAngleCommand(m_armPivotSubsystem, TOP_ROW_ANGLE),
+                        new FixedExtensionCommand(m_armTelescopeSubsystem, TOP_ROW_EXTENSION),
+                        new OpenGripperCommand(m_gripperSubsystem),
+                        new WaitCommand(0.1),
+                        new ParallelCommandGroup(
+                                new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem),
+                                new CloseGripperCommand(m_gripperSubsystem)
+                        ),
+                        Commands.sequence(new FollowTrajectory(drivebase, Constants.Auto.scoreBackNoBump, true))
+                        
                 );
         }
 

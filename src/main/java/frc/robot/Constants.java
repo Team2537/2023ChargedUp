@@ -62,14 +62,12 @@ public final class Constants {
         public static final PathConstraints constraints = new PathConstraints(1.0, 0.5);
 
         public static final PathPlannerTrajectory backupTraj = PathPlanner.loadPath("Backup", constraints);
-        public static final PathPlannerTrajectory blueTwoPieceTraj = PathPlanner.loadPath("Path", constraints);
-        public static final PathPlannerTrajectory blueTwoPieceTrajReverse = PathPlanner.loadPath("Reverse Path", constraints);
-
-        public static final PathPlannerTrajectory redTwoPieceTraj = PathPlanner.loadPath("Red Path", constraints);
-        public static final PathPlannerTrajectory redTwoPieceTrajReverse = PathPlanner.loadPath("Red Reverse Path", constraints);
 
         public static final PathPlannerTrajectory testDrive = PathPlanner.loadPath("blueTwoPieceExit", constraints);
         public static final PathPlannerTrajectory straightLine = PathPlanner.loadPath("Straight Path", constraints);
+
+        public static final PathPlannerTrajectory scoreBackBump = PathPlanner.loadPath("score-exit-bump", constraints);
+        public static final PathPlannerTrajectory scoreBackNoBump = PathPlanner.loadPath("score-exit-nobump", constraints);
 
     }
 
