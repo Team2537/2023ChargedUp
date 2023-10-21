@@ -64,7 +64,12 @@ public final class Constants {
         public static final PathPlannerTrajectory backupTraj = PathPlanner.loadPath("Backup", constraints);
 
         public static final PathPlannerTrajectory testDrive = PathPlanner.loadPath("blueTwoPieceExit", constraints);
-        public static final PathPlannerTrajectory straightLine = PathPlanner.loadPath("Straight Path", constraints);
+        
+        public static final PathPlannerTrajectory straightLine = PathPlanner.loadPath("straight-path", constraints);
+        public static final PathPlannerTrajectory straightSpin = PathPlanner.loadPath("straight-path-spin", constraints);
+
+        public static final PathPlannerTrajectory diagonal = PathPlanner.loadPath("diagonal-path", constraints);
+        public static final PathPlannerTrajectory diagonalSpin = PathPlanner.loadPath("diagonal-path-spin", constraints);
 
         public static final PathPlannerTrajectory scoreBackBump = PathPlanner.loadPath("score-exit-bump", constraints);
         public static final PathPlannerTrajectory scoreBackNoBump = PathPlanner.loadPath("score-exit-nobump", constraints);

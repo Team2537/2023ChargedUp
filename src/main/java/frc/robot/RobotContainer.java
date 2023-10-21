@@ -165,7 +165,12 @@ public class RobotContainer {
                
                 Shuffleboard.getTab("Autonomous").add(m_autoChooser);
 
-                m_autoChooser.addOption("Straight Line", () -> testDrive());
+                m_autoChooser.addOption("Straight Line", () -> straightPath());
+                m_autoChooser.addOption("Straight Spin", () -> straightSpin());
+
+                m_autoChooser.addOption("Diagonal", () -> diagonalPath());
+                m_autoChooser.addOption("Diagonal Spin", () -> diagonalSpin());
+
                 m_autoChooser.addOption("Test Home and Place", () -> testHomeDrive());
                 m_autoChooser.addOption("Place and Drive", () -> placeAndDrive());
                 m_autoChooser.addOption("Test Event", () -> testEvent());
@@ -254,8 +259,20 @@ public class RobotContainer {
         }
 
 
-        public Command testDrive(){
+        public Command straightPath(){
                 return new FollowTrajectory(drivebase, Constants.Auto.straightLine, true);
+        }
+
+        public Command straightSpin(){
+                return new FollowTrajectory(drivebase, Constants.Auto.straightSpin, true);
+        }
+
+        public Command diagonalPath(){
+                return new FollowTrajectory(drivebase, Constants.Auto.diagonal, true);
+        }
+
+        public Command diagonalSpin(){
+                return new FollowTrajectory(drivebase, Constants.Auto.diagonalSpin, true);
         }
 
         public CommandBase testEvent(){
