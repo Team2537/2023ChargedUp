@@ -155,25 +155,31 @@ public class RobotContainer {
                 TeleopDrive closedTeleopDrive = new TeleopDrive(drivebase,
                 () -> MathUtil.applyDeadband(m_controller.getLeftY(), Constants.OperatorConstants.LEFT_Y_DEADBAND),
                 () -> MathUtil.applyDeadband(m_controller.getLeftX(), Constants.OperatorConstants.LEFT_X_DEADBAND),
-                () -> -m_controller.getRightX(),
+                () -> m_controller.getRightX(),
                 () -> !m_controller.getHID().getLeftBumper(),
                 false,
-                false);
+                false,
+                () -> m_controller.getHID().getRightBumper()
+                );
 
                 // Configure the button bindings
                 configureButtonBindings();
                
                 Shuffleboard.getTab("Autonomous").add(m_autoChooser);
 
-                m_autoChooser.addOption("Straight Line", () -> straightPath());
-                m_autoChooser.addOption("Straight Spin", () -> straightSpin());
+                // m_autoChooser.addOption("Straight Line", () -> straightPath());
+                // m_autoChooser.addOption("Straight Spin", () -> straightSpin());
 
-                m_autoChooser.addOption("Diagonal", () -> diagonalPath());
-                m_autoChooser.addOption("Diagonal Spin", () -> diagonalSpin());
+                // m_autoChooser.addOption("Diagonal", () -> diagonalPath());
+                // m_autoChooser.addOption("Diagonal Spin", () -> diagonalSpin());
 
                 m_autoChooser.addOption("Test Home and Place", () -> testHomeDrive());
-                m_autoChooser.addOption("Place and Drive", () -> placeAndDrive());
-                m_autoChooser.addOption("Test Event", () -> testEvent());
+                // m_autoChooser.addOption("Place and Drive", () -> placeAndDrive());
+                // m_autoChooser.addOption("Test Event", () -> testEvent());
+
+                m_autoChooser.addOption("Score w/ Bump", () -> scoreBackBump());
+                m_autoChooser.addOption("Score no Bump", () -> scoreBackNoBump());
+                m_autoChooser.addOption("No Auto", null);
 
                 drivebase.setDefaultCommand(closedTeleopDrive);
 
@@ -206,7 +212,7 @@ public class RobotContainer {
 
                 m_controller.x().onTrue(new InstantCommand(() -> drivebase.postTrajectory(Constants.Auto.straightLine)));
 
-                m_gunnerJoystick.getButton(8).onTrue(m_homingCommand);
+                //m_gunnerJoystick.getButton(8).onTrue(m_homingCommand);
                 m_gunnerJoystick.getButton(2).onTrue(toggleGripper);
 
                 // m_gunnerJoystick.getButton(2).onTrue(m_bottomRowPosition);
@@ -218,7 +224,7 @@ public class RobotContainer {
                 m_gunnerJoystick.getButton(4).onTrue(m_grabPosition);
                 m_gunnerJoystick.getButton(10).onTrue(m_shelfPosition);
 
-                m_gunnerJoystick.getButton(6).onTrue(m_returnExtension);
+                m_gunnerJoystick.getButton(6).onTrue(m_homingCommand);
                 m_gunnerJoystick.getThrottle().whileTrue(m_manualControl);
 
                 m_gunnerJoystick.getButton(5).toggleOnTrue(purpleColor);
@@ -296,12 +302,13 @@ public class RobotContainer {
                         new FixedAngleCommand(m_armPivotSubsystem, TOP_ROW_ANGLE),
                         new FixedExtensionCommand(m_armTelescopeSubsystem, TOP_ROW_EXTENSION),
                         new OpenGripperCommand(m_gripperSubsystem),
-                        new WaitCommand(0.1),
+                        new WaitCommand(0.5),
                         new ParallelCommandGroup(
                                 new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem),
                                 new CloseGripperCommand(m_gripperSubsystem)
                         ),
-                        Commands.sequence(new FollowTrajectory(drivebase, Constants.Auto.scoreBackBump, true))
+                        Commands.sequence(new FollowTrajectory(drivebase, Constants.Auto.scoreBackBump, true)),
+                        new InstantCommand(drivebase::zeroGyro)
                         
                 );
         }
@@ -312,12 +319,13 @@ public class RobotContainer {
                         new FixedAngleCommand(m_armPivotSubsystem, TOP_ROW_ANGLE),
                         new FixedExtensionCommand(m_armTelescopeSubsystem, TOP_ROW_EXTENSION),
                         new OpenGripperCommand(m_gripperSubsystem),
-                        new WaitCommand(0.1),
+                        new WaitCommand(0.5),
                         new ParallelCommandGroup(
                                 new HomingCommand(m_armPivotSubsystem, m_armTelescopeSubsystem),
                                 new CloseGripperCommand(m_gripperSubsystem)
                         ),
-                        Commands.sequence(new FollowTrajectory(drivebase, Constants.Auto.scoreBackNoBump, true))
+                        Commands.sequence(new FollowTrajectory(drivebase, Constants.Auto.scoreBackNoBump, true)),
+                        new InstantCommand(drivebase::zeroGyro)
                         
                 );
         }

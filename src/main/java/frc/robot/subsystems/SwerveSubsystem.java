@@ -51,6 +51,7 @@ public class SwerveSubsystem extends SubsystemBase {
         swerveTab = Shuffleboard.getTab("Swerve Tab");
         swerveTab.addNumber("Heading", () -> getHeading().getDegrees());
         swerveTab.addNumber("Pitch", () -> getPitch().getDegrees());
+        swerveTab.addNumber("Max Speed", () -> getSwerveDriveConfiguration().maxSpeed);
 
         swerveTab.addNumber("Module 1", () -> getSwerveDriveConfiguration().modules[0].getAbsolutePosition());
         swerveTab.addNumber("Module 2", () -> getSwerveDriveConfiguration().modules[1].getAbsolutePosition());
@@ -58,7 +59,7 @@ public class SwerveSubsystem extends SubsystemBase {
         swerveTab.addNumber("Module 4", () -> getSwerveDriveConfiguration().modules[3].getAbsolutePosition());
 
 
-        setMotorBrake(false);
+        setMotorBrake(true);
 
 
 
@@ -142,6 +143,10 @@ public class SwerveSubsystem extends SubsystemBase {
         return swerveDrive.getPitch();
     }
 
+    public void setMaxSpeed(double max){
+        getSwerveDriveConfiguration().maxSpeed = max;
+    }
+
     public Command createPathPlannerCommand(String path, PathConstraints constraints, Map<String, Command> eventMap,
                                             PIDConstants translation, PIDConstants rotation, boolean useAllianceColor) {
         List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup(path, constraints);
@@ -170,7 +175,8 @@ public class SwerveSubsystem extends SubsystemBase {
                 () -> -driverXbox.getRightX(),
                 () -> driverXbox.getHID().getLeftBumper(),
                 false,
-                true
+                true,
+                () -> driverXbox.getHID().getRightBumper()
         );
 
         return null;

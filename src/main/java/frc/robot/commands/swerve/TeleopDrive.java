@@ -25,6 +25,7 @@ public class TeleopDrive extends CommandBase
     private final DoubleSupplier   vSide;
     private final DoubleSupplier   omega;
     private final BooleanSupplier  driveMode;
+    private final BooleanSupplier  slowMode;
     private final boolean          isOpenLoop;
     private final SwerveController controller;
     private final Timer            timer    = new Timer();
@@ -39,13 +40,14 @@ public class TeleopDrive extends CommandBase
      * @param swerve The subsystem used by this command.
      */
     public TeleopDrive(SwerveSubsystem swerve, DoubleSupplier vForward, DoubleSupplier vSide, DoubleSupplier omega,
-                       BooleanSupplier driveMode, boolean isOpenLoop, boolean headingCorrection)
+                       BooleanSupplier driveMode, boolean isOpenLoop, boolean headingCorrection, BooleanSupplier slowMode)
     {
         this.swerve = swerve;
         this.vForward = vForward;
         this.vSide = vSide;
         this.omega = omega;
         this.driveMode = driveMode;
+        this.slowMode = slowMode;
         this.isOpenLoop = isOpenLoop;
         this.controller = swerve.getSwerveController();
         this.headingCorrection = headingCorrection;
@@ -71,11 +73,15 @@ public class TeleopDrive extends CommandBase
     @Override
     public void execute()
     {
+        double xVelocity   = vForward.getAsDouble(); //Math.pow(vForward.getAsDouble(), 3);
+        double yVelocity   = vSide.getAsDouble(); //Math.pow(vSide.getAsDouble(), 3);
+        double angVelocity = omega.getAsDouble(); //Math.pow(omega.getAsDouble(), 3);
 
-        
-        double xVelocity   = Math.pow(vForward.getAsDouble(), 3);
-        double yVelocity   = Math.pow(vSide.getAsDouble(), 3);
-        double angVelocity = Math.pow(omega.getAsDouble(), 3);
+        if (slowMode.getAsBoolean()) {
+            xVelocity *= 0.6;
+            yVelocity *= 0.6;
+            angVelocity *= 0.6;
+        }
 
         SmartDashboard.putNumber("vX", xVelocity);
         SmartDashboard.putNumber("vY", yVelocity);
