@@ -59,7 +59,7 @@ public final class Constants {
 
     public static final class Auto{
 
-        public static final PathConstraints constraints = new PathConstraints(1.0, 0.5);
+        public static final PathConstraints constraints = new PathConstraints(2.0, 1.5);
 
         public static final PathPlannerTrajectory backupTraj = PathPlanner.loadPath("Backup", constraints);
 
@@ -144,7 +144,7 @@ public final class Constants {
         public static final double TOP_ROW_EXTENSION = 11;
 
         public static final double GRAB_ANGLE = -53.2; //from ground
-        public static final double GRAB_EXTENSION = 2.45; //from ground
+        public static final double GRAB_EXTENSION = 4.1; //from ground
 
         public static final double SHELF_ANGLE = 17.5;
         public static final double SHELF_EXTENSION = 0.0;
