@@ -46,9 +46,9 @@ public final class Constants {
     public static final class Auton
     {
 
-        public static final PIDFConfig xAutoPID     = new PIDFConfig(0.7, 0, 0);
-        public static final PIDFConfig yAutoPID     = new PIDFConfig(0.3, 0, 0.2);
-        public static final PIDFConfig angleAutoPID = new PIDFConfig(0.3, 0, 0.05);
+        public static final PIDFConfig xAutoPID     = new PIDFConfig(0.3, 0, 0);
+        public static final PIDFConfig yAutoPID     = new PIDFConfig(0.3, 0, 0);
+        public static final PIDFConfig angleAutoPID = new PIDFConfig(0.3, 0, 0);
 
         public static final PIDConstants translationConstants = new PIDConstants(Auton.yAutoPID.p, Auton.yAutoPID.i, Auton.yAutoPID.d);
         public static final PIDConstants rotationConstants = new PIDConstants(Auton.angleAutoPID.p, Auton.angleAutoPID.i, Auton.angleAutoPID.d);
